@@ -244,9 +244,25 @@
                     <label>Mode of Payment:</label>
                     <span>{{ $reservation['payment_method'] }}</span>
                 </div>
+                <div class="summary-item">
+    <label>Driver's License:</label>
+    @if(isset($reservation['driver_license']) && !empty($reservation['driver_license']))
+        <a href="{{ $reservation['driver_license'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+    @else
+        <span class="text-gray-600">Not provided</span>
+    @endif
+</div>
+<div class="summary-item">
+    <label>Valid ID:</label>
+    @if(isset($reservation['valid_id']) && !empty($reservation['valid_id']))
+        <a href="{{ $reservation['valid_id'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+    @else
+        <span class="text-gray-600">Not provided</span>
+    @endif
+</div>
+
             </div>
             <div class="button-container">
-                
                 <button class="button button-confirm px-4 py-2 rounded-md" id="confirm-button">Confirm</button>
             </div>
         </div>
@@ -257,6 +273,7 @@
         <p>Thank you for your reservation. We will contact you soon with further details.</p>
     </div>
 </div>
+
 
 <script>
     document.getElementById('confirm-button').addEventListener('click', function() {

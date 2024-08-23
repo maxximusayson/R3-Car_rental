@@ -8,16 +8,18 @@ use App\Models\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class usersController extends Controller
 {
     public function show(User $user)
     {
         // Create an audit trail entry
         AuditTrail::create([
             'action' => 'Viewed user details',
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // Make sure this is 'user_id' and not 'user'
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-
+        
         // Retrieve uploaded files for the user
         $uploadedFiles = UploadedFile::where('user_id', $user->id)->get();
 

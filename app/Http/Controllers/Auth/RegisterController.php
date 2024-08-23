@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Services\SmsService;
+use Exception;
 use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
@@ -17,34 +19,25 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     protected $redirectTo = RouteServiceProvider::HOME;
+    protected $smsService;
 
-    public function __construct()
+    public function __construct(SmsService $smsService)
     {
         $this->middleware('guest');
+        $this->smsService = $smsService;
     }
 
-    /**
-     * Validate the registration data.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'max:11', 'regex:/^09\d{9}$/'], // Ensure phone number is in a valid format
-            'password' => ['required', 'string', 'min:8', 'confirmed']
-        ]);
-    }
+{
+    return Validator::make($data, [
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255'],
+        'phone' => ['required', 'string', 'regex:/^[9]\d{9}$/'], // Validate 10 digits starting with 9
+        'password' => ['required', 'string', 'min:8', 'confirmed']
+    ]);
+}
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
+
     protected function create(array $data)
     {
         return User::create([
@@ -55,12 +48,6 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Handle the request to send an OTP to the user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function requestOtp(Request $request)
     {
         $data = $request->all();
@@ -78,30 +65,25 @@ class RegisterController extends Controller
         $otp = rand(100000, 999999);
         Session::put('otp', $otp);
 
-        // Send OTP to user's phone using Semaphore
-        $response = Http::asForm()->post('https://api.semaphore.co/api/v4/messages', [
-            'apikey' => env('SEMAPHORE_API_KEY'),
-            'number' => $data['phone'],
-            'message' => "Your OTP code is $otp",
-            'sendername' => env('SEMAPHORE_SENDER_NAME')
-        ]);
-
-        // Check if the response indicates success
-        if ($response->successful()) {
-            return view('auth.otp'); // Show OTP input form
-        } else {
-            // Provide a more detailed error message if available
-            $errorMessage = $response->json('error') ?? 'Failed to send OTP. Please try again.';
-            return back()->with('error', $errorMessage);
+        try {
+            // Use the sendOtp method from SmsService
+            $response = $this->smsService->sendOtp($data['phone'], $otp);
+        
+            // Optionally store the phone number in the session for verification
+            session(['phone' => $data['phone']]);
+        
+            return response()->json([
+                'message' => 'OTP sent successfully.',
+                'semaphore_response' => $response,
+            ]);
+        } catch (Exception $e) {
+            // Handle exceptions during the SMS sending process
+            return response()->json([
+                'error' => 'Failed to send OTP: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
-    /**
-     * Verify the OTP and complete registration.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function verifyOtp(Request $request)
     {
         $request->validate([

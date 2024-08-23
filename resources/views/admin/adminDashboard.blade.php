@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
 @php
     $totalCars = \App\Models\Car::count();
     $totalUsedCars = \App\Models\Reservation::where('status', 'Active')->count();
@@ -11,61 +9,62 @@
 @endphp
 
 <div class="container mx-auto mt-8">
-    <div class="grid grid-cols-3 gap-4">
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 shadow-md flex items-center">
-            <div>
-                <svg class="w-10 h-10 text-gray-600 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M14 3a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h8zm0 1H6a1 1 0 00-1 1v9a1 1 0 001 1h8a1 1 0 001-1V5a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    <path fill-rule="evenodd" d="M8 13a1 1 0 100-2 1 1 0 000 2zM12 13a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div class="ml-4">
-                <div class="text-lg font-semibold text-gray-600 dark:text-gray-300">
-                    Total Cars
-                </div>
-                <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {{ $totalCars }}
-                </div>
-            </div>
+
+    <!-- Welcome Message -->
+    <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white p-6 rounded-lg shadow-lg mb-8">
+        <h1 class="text-2xl font-bold">Welcome, Admin!</h1>
+        <p class="mt-2">Here's an overview of your current activities and statistics.</p>
+    </div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Total Cars -->
+    <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+        <div class="flex-shrink-0">
+            <!-- Icon for Total Cars -->
+            <svg class="w-12 h-12 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.75l-1.5 9.5h7.5l-1.5-9.5M4.5 13.5h15v5h-1.5l-1.5 3h-9l-1.5-3H4.5v-5zm0-3h15a1.5 1.5 0 100-3h-15a1.5 1.5 0 100 3z" />
+            </svg>
         </div>
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 shadow-md flex items-center">
-            <div>
-                <svg class="w-10 h-10 text-gray-600 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a1 1 0 01-1-1V8H4a1 1 0 01-1-1V5a1 1 0 011-1h2a1 1 0 011-1h6a1 1 0 011 1h2a1 1 0 011 1v2a1 1 0 01-1 1h-4v9a1 1 0 01-1 1h-2zm-1-10h2v8h-2v-8zm-3-3h6v1H6V5zm8 0h1v1h-1V5zm-8 3h6v1H6V8zm8 0h1v1h-1V8z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div class="ml-4">
-                <div class="text-lg font-semibold text-gray-600 dark:text-gray-300">
-                    Total Cars in Use
-                </div>
-                <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {{ $totalUsedCars }}
-                </div>
-            </div>
+        <div class="ml-6">
+            <h3 class="text-lg font-semibold text-gray-700">Total Cars</h3>
+            <p class="text-4xl font-bold text-gray-900">{{ $totalCars }}</p>
         </div>
-        <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 shadow-md flex items-center">
-            <div>
-                <svg class="w-10 h-10 text-gray-600 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 011.414 0L10 8.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    <path fill-rule="evenodd" d="M4 11a1 1 0 011-1h10a1 1 0 010 2H5a1 1 0 01-1-1z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div class="ml-4">
-                <div class="text-lg font-semibold text-gray-600 dark:text-gray-300">
-                    Total Cars Not in Use
-                </div>
-                <div class="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {{ $totalNotUsedCars }}
-                </div>
-            </div>
+    </div>
+    
+    <!-- Cars in Use -->
+    <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+        <div class="flex-shrink-0">
+            <!-- Icon for Cars in Use -->
+            <svg class="w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 17h14M8 12h8" />
+            </svg>
+        </div>
+        <div class="ml-6">
+            <h3 class="text-lg font-semibold text-gray-700">Cars in Use</h3>
+            <p class="text-4xl font-bold text-gray-900">{{ $totalUsedCars }}</p>
+        </div>
+    </div>
+    
+    <!-- Cars Not in Use -->
+    <div class="bg-white p-6 rounded-lg shadow-lg flex items-center">
+        <div class="flex-shrink-0">
+            <!-- Icon for Cars Not in Use -->
+            <svg class="w-12 h-12 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9V3.75m0 16.5V15m0 0H9.75M12 15h2.25M21 6.75l-1.5 9.5h-15l-1.5-9.5M4.5 13.5h15v5h-1.5l-1.5 3h-9l-1.5-3H4.5v-5z" />
+            </svg>
+        </div>
+        <div class="ml-6">
+            <h3 class="text-lg font-semibold text-gray-700">Cars Not in Use</h3>
+            <p class="text-4xl font-bold text-gray-900">{{ $totalNotUsedCars }}</p>
         </div>
     </div>
 </div>
 
-    <!-- Clock -->
-    <div id="clock" class="text-gray-900 dark:text-gray-300 text-lg font-semibold absolute top-4 right-4">
-        <span id="time"></span>
-    </div>
+
+<!-- Clock -->
+<div id="clock" class="text-white text-lg font-semibold absolute top-6 right-6 bg-gradient-to-r from-blue-500 to-indigo-600 py-2 px-4 rounded-lg shadow-lg">
+    <span id="time"></span>
 </div>
 
 <script>
@@ -86,17 +85,32 @@
         const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
         document.getElementById('time').textContent = `${dateString} ${timeString}`;
     }
+
     setInterval(updateTime, 1000);
     updateTime();  // Initial call to display the time immediately
 </script>
-
-
-<!-- Admin Notification Section -->
+<!-- Notifications Section -->
 <div class="container mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <h2 class="px-6 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Notifications</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="flex justify-between items-center px-6 py-4">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-300">Notifications</h2>
+            <div>
+                <form action="{{ route('notifications.export') }}" method="GET" class="inline">
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700">
+                        Export to CSV
+                    </button>
+                </form>
+                <form action="{{ route('notifications.import') }}" method="POST" enctype="multipart/form-data" class="inline">
+                    @csrf
+                    <input type="file" name="csv_file" accept=".csv" class="hidden" id="csv-file-input">
+                    <label for="csv-file-input" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-700 cursor-pointer">
+                        Import CSV
+                    </label>
+                </form>
+            </div>
+        </div>
         <div class="overflow-x-auto">
-            <div class="min-w-full overflow-y-auto" style="max-height: 300px;"> <!-- Adjust max-height to your desired value -->
+            <div class="min-w-full overflow-y-auto" style="max-height: 300px;">
                 <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
@@ -139,97 +153,83 @@
     </div>
 </div>
 
-<script>
-document.querySelectorAll('.notification-row').forEach(row => {
-    row.addEventListener('click', function() {
-        const notificationId = this.getAttribute('data-id');
 
-        fetch(`/notifications/${notificationId}/mark-as-seen`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ id: notificationId })
-        }).then(response => response.json()).then(data => {
-            if (data.success) {
-                this.querySelector('.bg-green-500').classList.remove('bg-green-500');
-            }
-        });
-    });
-});
-</script>
-
-
-
-
-
-
-<!-- Chart -->
+<!-- Chart Section -->
 <div class="container px-4 mx-auto mt-8">
-    <h2 class="my-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
-        Reservations per Month
+    <h2 class="my-4 text-xl font-semibold text-gray-800 dark:text-gray-300">
+        Reservations Distribution
     </h2>
-    <div class="w-full p-6 bg-white border rounded-lg shadow-md">
-        <canvas id="reservationsChart" width="600" height="300"></canvas>
+    <div class="w-full p-6 bg-white rounded-lg shadow-lg">
+        <canvas id="reservationsPieChart" width="600" height="300"></canvas>
     </div>
 </div>
 
-
-
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    var ctx = document.getElementById('reservationsChart').getContext('2d');
+    var ctx = document.getElementById('reservationsPieChart').getContext('2d');
     var reservationsData = {!! json_encode($reservationsData) !!};
 
-    var reservationsChart = new Chart(ctx, {
-        type: 'bar',
+    var reservationsPieChart = new Chart(ctx, {
+        type: 'pie',
         data: {
             labels: reservationsData.labels,
             datasets: [{
                 label: 'Reservations',
                 data: reservationsData.data,
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)'
                 ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+                borderColor: '#ffffff', // White border for clean separation between segments
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
+            plugins: {
+                legend: {
+                    position: 'right', // Position the legend to the right
+                    labels: {
+                        color: '#6b7280', // Modern gray color for legend labels
+                        font: {
+                            size: 14
+                        }
                     }
-                }]
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background for tooltips
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    titleFont: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    cornerRadius: 8,
+                    padding: 10
+                }
             }
         }
     });
 </script>
 
-<!-- Booking History -->    
+
+<!-- Booking History -->
 <div class="container mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <h2 class="px-6 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Booking History</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <h2 class="px-6 py-4 text-xl font-semibold text-gray-800 dark:text-gray-300">Booking History</h2>
         <div class="overflow-x-auto">
-            <div class="min-w-full overflow-y-auto" style="max-height: 200px;"> <!-- Adjust max-height to your desired value -->
+            <div class="min-w-full overflow-y-auto" style="max-height: 200px;">
                 <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
@@ -241,8 +241,8 @@ document.querySelectorAll('.notification-row').forEach(row => {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($bookingHistory->take(5) as $index => $reservation) <!-- Limiting to 5 rows -->
-                        <tr class="text-gray-700 dark:text-gray-400 @if($index == 0) bg-yellow-200 @endif"> <!-- Highlighting the first row -->
+                        @foreach($bookingHistory->take(5) as $index => $reservation)
+                        <tr class="text-gray-700 dark:text-gray-400 @if($index == 0) bg-yellow-200 @endif">
                             <td class="px-6 py-4">{{ $reservation->user->name }}</td>
                             <td class="px-6 py-4">{{ $reservation->car->model }}</td>
                             <td class="px-6 py-4">{{ $reservation->start_date }}</td>
@@ -257,13 +257,12 @@ document.querySelectorAll('.notification-row').forEach(row => {
     </div>
 </div>
 
-
 <!-- Upcoming Bookings -->
 <div class="container mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <h2 class="px-6 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Upcoming Bookings</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <h2 class="px-6 py-4 text-xl font-semibold text-gray-800 dark:text-gray-300">Upcoming Bookings</h2>
         <div class="overflow-x-auto">
-            <div class="min-w-full overflow-y-auto" style="max-height: 200px;"> <!-- Adjust max-height to your desired value -->
+            <div class="min-w-full overflow-y-auto" style="max-height: 200px;">
                 <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
@@ -275,8 +274,8 @@ document.querySelectorAll('.notification-row').forEach(row => {
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($upcomingBookings->take(5)->reverse() as $index => $reservation) <!-- Limiting to 5 rows and then reversing the array -->
-                        <tr class="text-gray-700 dark:text-gray-400 @if($reservation->status == 'Active') bg-yellow-200 @endif"> <!-- Highlighting the active bookings -->
+                        @forelse($upcomingBookings->take(5)->reverse() as $index => $reservation)
+                        <tr class="text-gray-700 dark:text-gray-400 @if($reservation->status == 'Active') bg-yellow-200 @endif">
                             <td class="px-6 py-4">{{ $reservation->user->name }}</td>
                             <td class="px-6 py-4">{{ $reservation->car->model }}</td>
                             <td class="px-6 py-4">{{ $reservation->start_date }}</td>
@@ -295,29 +294,24 @@ document.querySelectorAll('.notification-row').forEach(row => {
     </div>
 </div>
 
-
-
-
-<!-- Ensure you have FontAwesome included -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-XXXXX" crossorigin="anonymous" />
-
-<!-- Current Users -->
+<!-- Users Section -->
 <div class="container mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <h2 class="px-6 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300">Current Users</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <h2 class="px-6 py-4 text-xl font-semibold text-gray-800 dark:text-gray-300">Current Users</h2>
         
-        <!-- Filter/Search Input with Icon -->
+        <!-- Search Input -->
         <div class="px-6 py-4 flex items-center">
             <div class="mr-3">
                 <i class="fas fa-search text-gray-400"></i>
             </div>
-            <input type="text" id="userFilter" placeholder="Search users..." class="w-40 sm:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-500">
+            <input type="text" id="userFilter" placeholder="Search users..." class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full whitespace-nowrap">
                 <thead>
                     <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
+                        <th class="px-6 py-3">Profile Picture</th>
                         <th class="px-6 py-3">Name</th>
                         <th class="px-6 py-3">Email</th>
                         <th class="px-6 py-3">Status</th>
@@ -326,25 +320,82 @@ document.querySelectorAll('.notification-row').forEach(row => {
                 <tbody id="userTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach ($currentUsers as $user)
                     <tr class="text-gray-700 dark:text-gray-400">
+                        <!-- Profile Picture -->
+                        <td class="px-6 py-4">
+                            @if($user->profile_picture_url)
+                                <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full object-cover">
+                            @else
+                                <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Picture" class="h-10 w-10 rounded-full object-cover">
+                            @endif
+                        </td>
                         <td class="px-6 py-4">{{ $user->name }}</td>
                         <td class="px-6 py-4">{{ $user->email }}</td>
                         <td class="px-6 py-4 flex items-center">
                             <div class="h-4 w-4 rounded-full mr-2 @if($user->active) bg-green-500 @else bg-red-500 @endif"></div>
-                            @if($user->active)
-                                <span class="text-green-500">Active</span>
-                            @else
-                                <span class="text-red-500">Not Active</span>
-                            @endif
+                            <span>@if($user->active) Active @else Not Active @endif</span>
                         </td>
                     </tr>
                     @endforeach
                     @if ($currentUsers->isEmpty())
                     <tr class="text-gray-700 dark:text-gray-400" id="noUsersFound">
-                        <td colspan="3" class="text-center py-4">No current users found.</td>
+                        <td colspan="4" class="text-center py-4">No current users found.</td>
                     </tr>
                     @endif
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Reservation Table -->
+<div class="container mx-auto mt-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <h2 class="px-6 py-4 text-xl font-semibold text-gray-800 dark:text-gray-300">Reservations</h2>
+        <div class="overflow-x-auto">
+            <div class="min-w-full overflow-y-auto" style="max-height: 200px;">
+                <table class="w-full whitespace-nowrap">
+                    <thead>
+                        <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
+                            <th class="px-6 py-3">Client</th>
+                            <th class="px-6 py-3">Car</th>
+                            <th class="px-6 py-3">Started at</th>
+                            <th class="px-6 py-3">End at</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse ($reservations->take(5) as $index => $reservation)
+                        <tr class="text-gray-700 dark:text-gray-400 @if($reservation->status == 'Active') bg-yellow-200 @endif">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">{{ $reservation->user->name }}</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ $reservation->user->email }}</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">{{ $reservation->car->brand }} {{ $reservation->car->model }}</td>
+                            <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->start_date)->format('Y-m-d') }}</td>
+                            <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->end_date)->format('Y-m-d') }}</td>
+                            <td class="px-6 py-4">{{ $reservation->status }}</td>
+                            <td class="px-6 py-4">
+                                <a class="text-blue-600 hover:underline" href="{{ route('editStatus', ['reservation' => $reservation->id]) }}">Update Client Status</a><br>
+                                <a class="text-blue-600 hover:underline" href="{{ route('editPayment', ['reservation' => $reservation->id]) }}">Edit Payment</a><br>
+                                <a class="text-red-600 hover:underline" href="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this reservation?')) { document.getElementById('delete-form-{{ $reservation->id }}').submit(); }">Delete</a>
+                                <form id="delete-form-{{ $reservation->id }}" action="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" method="POST" style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr class="text-gray-700 dark:text-gray-400">
+                            <td colspan="6" class="text-center py-4">No reservations found.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -386,66 +437,4 @@ document.querySelectorAll('.notification-row').forEach(row => {
     });
 </script>
 
-
-
-
-
-
-<!-- Reservation Table -->
-<div class="container mx-auto mt-8">
-    <main class="h-full overflow-y-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <h2 class="px-6 py-4 text-lg font-semibold text-gray-700 dark:text-gray-300">RESERVATIONS</h2>
-            <div class="overflow-x-auto">
-                <div class="min-w-full overflow-y-auto" style="max-height: 200px;"> <!-- Adjust max-height to your desired value -->
-                    <table class="w-full whitespace-nowrap">
-                        <thead>
-                            <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
-                                <th class="px-6 py-3">Client</th>
-                                <th class="px-6 py-3">Car</th>
-                                <th class="px-6 py-3">Started at</th>
-                                <th class="px-6 py-3">End at</th>
-                                <th class="px-6 py-3">Status</th>
-                                <th class="px-6 py-3">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($reservations->take(5) as $index => $reservation) <!-- Limiting to 5 rows -->
-                            <tr class="text-gray-700 dark:text-gray-400 @if($reservation->status == 'Active') bg-yellow-200 @endif"> <!-- Highlighting the active reservations -->
-                                <td class="px-6 py-4">
-                                    <div>
-                                        <p class="font-semibold">{{ $reservation->user->name }}</p>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $reservation->user->email }}</p>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">{{ $reservation->car->brand }} {{ $reservation->car->model }}</td>
-                                <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->start_date)->format('Y-m-d') }}</td>
-                                <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->end_date)->format('Y-m-d') }}</td>
-                                <td class="px-6 py-4">{{ $reservation->status }}</td>
-                                <td class="px-6 py-4">
-                                    <a class="text-blue-600 hover:underline" href="{{ route('editStatus', ['reservation' => $reservation->id]) }}">Update Client Status</a><br>
-                                    <a class="text-blue-600 hover:underline" href="{{ route('editPayment', ['reservation' => $reservation->id]) }}">Edit Payment</a><br>
-                                    <a class="text-red-600 hover:underline" href="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this reservation?')) { document.getElementById('delete-form-{{ $reservation->id }}').submit(); }">Delete</a>
-                                    <form id="delete-form-{{ $reservation->id }}" action="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" method="POST" style="display: none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr class="text-gray-700 dark:text-gray-400">
-                                <td colspan="6" class="text-center py-4">No reservations found.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-
-
-           
 @endsection

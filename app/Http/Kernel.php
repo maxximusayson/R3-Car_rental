@@ -71,6 +71,8 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // Other middleware
         'log.activity' => \App\Http\Middleware\LogActivity::class,
+        'auth.admin' => \App\Http\Middleware\AdminMiddleware::class,
+
     ];
     
 }

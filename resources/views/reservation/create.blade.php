@@ -2,238 +2,9 @@
 
 @section('content')
 
-<style>
-    .stepper-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding: 10px;
-        background-color: #f4f4f4;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .stepper-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        position: relative;
-        text-align: center;
-    }
-
-    .stepper-item::before {
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background-color: #e0e0e0;
-        top: 50%;
-        left: 50%;
-        z-index: -1;
-    }
-
-    .stepper-item.active .step-counter,
-    .stepper-item.active .step-name {
-        font-weight: bold;
-        color: #3b82f6;
-    }
-
-    .stepper-item:first-child::before {
-        display: none;
-    }
-
-    .stepper-item:last-child::before {
-        display: none;
-    }
-
-    .step-counter {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #fff;
-        border: 2px solid #e0e0e0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 5px;
-        font-size: 18px;
-        color: #3b82f6;
-    }
-
-    .stepper-item.active .step-counter {
-        border-color: #3b82f6;
-        background-color: #3b82f6;
-        color: #fff;
-    }
-
-    .step-name {
-        font-size: 14px;
-        color: #6b7280;
-    }
-
-    .stepper-item.active .step-name {
-        color: #3b82f6;
-    }
-
-    .payment-button {
-        background-color: #fff;
-        border: 1px solid #e5e7eb;
-        padding: 12px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-        transition: background-color 0.3s, border-color 0.3s;
-        width: 100%;
-    }
-
-    .payment-button.active {
-        background-color: #f0f0f0;
-        border-color: #ddd;
-    }
-
-    .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .form-group label {
-        font-size: 0.875rem;
-        color: #4b5563;
-        font-weight: 500;
-    }
-
-    .form-input {
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        font-size: 1rem;
-        background-color: #ffffff;
-    }
-
-    .form-input:focus {
-        border-color: #4f46e5;
-        outline: none;
-    }
-
-    .button {
-        padding: 12px;
-        border-radius: 6px;
-        color: #fff;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .button:disabled {
-        background-color: #ddd;
-        cursor: not-allowed;
-    }
-
-    .button-primary {
-        background-color: #3b82f6;
-    }
-
-    .button-danger {
-        background-color: #f44336;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 16px;
-    }
-
-    .custom-date-input {
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        padding: 0.5rem;
-        font-size: 1rem;
-        background-color: #ffffff;
-        transition: border-color 0.2s ease-in-out;
-    }
-
-    .custom-date-input:focus {
-        border-color: #4f46e5;
-        outline: none;
-    }
-
-    .payment-section img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .payment-info {
-        margin-top: 1rem;
-        font-size: 1rem;
-        color: #333;
-    }
-
-    .instructions {
-        margin-top: 1rem;
-        font-size: 1rem;
-        color: #333;
-    }
-
-    .instructions ol {
-        padding-left: 20px;
-    }
-
-    .terms-modal-content {
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    /* Additional styles for the right-side image */
-    .car-image-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 16px;
-    }
-
-    .car-image {
-        width: 100%;
-        height: auto;
-        max-width: 500px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .note {
-        background-color: #fffbeb;
-        border-left: 4px solid #fbbf24;
-        padding: 16px;
-        border-radius: 4px;
-        margin-top: 16px;
-        font-size: 14px;
-        color: #b45309;
-    }
-
-    .note-title {
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    .note-item {
-        margin-left: 20px;
-        margin-bottom: 4px;
-    }
-</style>
-
 <!-- Stepper and Form Container -->
-<div class="container">
-    <div class="stepper-container">
+<div class="container mx-auto px-4 py-8">
+    <div class="stepper-container mb-6 flex justify-between">
         <div class="stepper-item active" id="step-1">
             <div class="step-counter">1</div>
             <div class="step-name">Fill up Information and Payments</div>
@@ -265,20 +36,21 @@
                 <div class="w-1/4 h-[1px] bg-gray-300"></div>
             </div>
 
-            <form id="reservation_form" action="{{ route('car.reservationStore', ['car' => $car->id]) }}" method="POST" class="mt-8">
+            <!-- Form Starts -->
+            <form id="reservation_form" action="{{ route('car.reservationStore', ['car' => $car->id]) }}" method="POST" enctype="multipart/form-data" class="mt-8">
                 @csrf
 
                 <div class="form-group mb-6">
                     <label for="full-name">Full Name</label>
-                    <input type="text" name="full-name" id="full-name" value="{{ $user->name }}" class="form-input" required>
-                    @error('name')
+                    <input type="text" name="full-name" id="full-name" value="{{ old('full-name', $user->name) }}" class="form-input" required>
+                    @error('full-name')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="{{ $user->email }}" class="form-input" required>
+                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="form-input" required>
                     @error('email')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
@@ -301,23 +73,40 @@
                     @enderror
                 </div>
 
+                <!-- File Uploads -->
+                <div class="form-group mb-6">
+                    <label for="driver_license">Upload Driver's License ID</label>
+                    <input type="file" name="driver_license" id="driver_license" class="form-input" required>
+                    @error('driver_license')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-6">
+                    <label for="valid_id">Upload Another Valid ID</label>
+                    <input type="file" name="valid_id" id="valid_id" class="form-input" required>
+                    @error('valid_id')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <!-- Mode of Payment -->
                 <div class="form-group mb-6">
                     <label for="payment_method">Mode of Payment</label>
                     <div class="flex gap-4 mt-2">
                         <button type="button" class="payment-button" data-method="gcash">
-                            <img src="{{ asset('images/gcash-icon.png') }}" alt="GCash" class="w-8 h-8"> <span>GCash</span>
+                            <img src="{{ asset('images/icons/gcash-icon.png') }}" alt="GCash" class="w-8 h-8"> <span>GCash</span>
                         </button>
                         <button type="button" class="payment-button" data-method="cash">
-                            <img src="{{ asset('images/cash.png') }}" alt="Cash" class="w-8 h-8"> <span>Cash</span>
+                            <img src="{{ asset('images/icons/cash.png') }}" alt="Cash" class="w-8 h-8"> <span>Cash</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Note Section -->
-                <div class="note">
-                    <p class="note-title">Note:</p>
-                    <ul>
+                <div class="note mb-6">
+                    <p class="note-title font-bold">Note:</p>
+                    <ul class="list-disc ml-6">
                         <li class="note-item"><strong>First Payment:</strong> Pay the downpayment of 1k.</li>
                         <li class="note-item"><strong>On the Day of the Rent:</strong> Pay the remaining balance.</li>
                         <li class="note-item"><strong>Additional Charges:</strong> If the car goes outside of Metro Manila, there is an additional charge of 500 - 1000.</li>
@@ -415,12 +204,12 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Terms and Conditions -->
                 <div class="form-group mb-6 flex items-center">
                     <input type="checkbox" id="agree" class="mr-2" required>
                     <label for="agree">I agree to the <a href="#" id="openModal" class="text-blue-600 hover:underline">terms and conditions</a>.</label>
                 </div>
-
 
                 <script>
                     document.getElementById('openModal').addEventListener('click', function(event) {
@@ -440,19 +229,48 @@
                     });
                 </script>
 
-
                 <!-- Hidden field to track GCash status -->
                 <input type="hidden" id="gcash-status" name="gcash_status" value="pending">
 
-                <div class="flex justify-end mt-6">
+                <div class="flex justify-between mt-6">
+                    <button type="button" id="cancel-reservation" class="button button-secondary py-2 px-4 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">Cancel</button>
                     <button type="submit" class="button button-primary py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" id="confirm-reservation">Confirm Reservation</button>
                 </div>
             </form>
+
+            <!-- Confirmation Modal -->
+            <div id="confirmModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 z-50 hidden">
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <p>Are you sure you want to cancel the reservation?</p>
+                        <div class="flex justify-end gap-4 mt-4">
+                            <button id="confirmYes" class="button button-primary bg-red-600 text-white py-2 px-4 rounded-lg">Yes</button>
+                            <button id="confirmNo" class="button button-secondary bg-gray-300 text-black py-2 px-4 rounded-lg">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('cancel-reservation').addEventListener('click', function() {
+                    document.getElementById('confirmModal').classList.remove('hidden');
+                });
+
+                document.getElementById('confirmNo').addEventListener('click', function() {
+                    document.getElementById('confirmModal').classList.add('hidden');
+                });
+
+                document.getElementById('confirmYes').addEventListener('click', function() {
+                    window.location.href = "{{ route('home') }}";
+                });
+            </script>
         </div>
 
         <!-- Car Image on the Right Side -->
         <div class="md:w-1/3 flex items-center justify-center mt-6 md:mt-0 car-image-container">
-            <img src="{{ asset('images/' . $car->image) }}" alt="{{ $car->brand }} {{ $car->model }}" class="car-image">
+            <img loading="lazy" class="object-cover w-full h-auto" 
+                 src="{{ asset($car->images->first()->image_path) }}" 
+                 alt="Car image" />
         </div>
     </div>
 </div>
@@ -463,7 +281,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <script>
+    
 $(document).ready(function() {
+    
     // Initialize Flatpickr on both fields
     function initializeFlatpickr() {
         var today = new Date();
@@ -564,16 +384,36 @@ $(document).ready(function() {
     });
 
     // Handle proceed to PayMongo button click
-    $('#proceed-to-paymongo').click(function() {
+    $('#proceed-to-paymongo').click(function () {
         // Change the GCash status to indicate payment is pending
         $('#gcash-status').val('pending');
 
-        // Redirect to the PayMongo dashboard URL (replace with your actual URL)
-        window.location.href = 'https://dashboard.paymongo.com/';
+        // Make an AJAX request to your backend to create a PayMongo source
+        $.ajax({
+            url: '/paymongo/create-source',  // Ensure this route matches the one in your routes/web.php
+            type: 'POST',
+            data: {
+                // You can pass any additional data needed here
+                _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token if necessary
+            },
+            success: function (response) {
+                // Parse the response to get the PayMongo URL
+                var responseData = JSON.parse(response);
+                var paymongoUrl = responseData.data.attributes.redirect.checkout_url;
+
+                // Redirect the user to the PayMongo checkout page
+                window.location.href = paymongoUrl;
+            },
+            error: function (xhr, status, error) {
+                // Handle errors here
+                console.error('Error creating PayMongo source:', error);
+                alert('There was an error processing your payment. Please try again.');
+            }
+        });
     });
 
     // Handle the form submission
-    $('#reservation_form').submit(function(e) {
+    $('#reservation_form').submit(function (e) {
         var gcashStatus = $('#gcash-status').val();
         var paymentMethod = $('.payment-button.active').data('method');
 
@@ -582,6 +422,7 @@ $(document).ready(function() {
             alert('You need to complete the payment in the GCash app.');
         }
     });
+
 
     // Handle modal open and close
     $('#openModal').click(function() {
@@ -606,7 +447,320 @@ $(document).ready(function() {
     $('#agree').change(function() {
         validateForm();
     });
+
+    
+    // Handle the cancel button click
+    $('#cancel-reservation').click(function() {
+        // Show the confirmation modal
+        $('#confirmModal').removeClass('hidden');
+    });
+
+    // Handle Yes button click
+    $('#confirmYes').click(function() {
+        // Redirect to cars.blade.php
+        window.location.href = '/cars'; // Adjust this path if your route to cars.blade.php is different
+    });
+
+    // Handle No button click
+    $('#confirmNo').click(function() {
+        // Hide the confirmation modal
+        $('#confirmModal').addClass('hidden');
+    });
+
+    // Optional: Hide the modal when clicking outside of it
+    $('#confirmModal').click(function(event) {
+        if (event.target === this) {
+            $(this).addClass('hidden');
+        }
+    }); 
+
+    // Initialize Flatpickr
+    initializeFlatpickr();
+
+    // Validate form when terms checkbox changes
+    $('#agree').change(function() {
+        validateForm();
+    });
 });
 </script>
+
+<style>
+.stepper-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f0f4f8; /* Light blue background */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stepper-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    text-align: center;
+}
+
+.stepper-item::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #d1e3f8; /* Light blue line */
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+}
+
+.stepper-item:first-child::before,
+.stepper-item:last-child::before {
+    display: none;
+}
+
+.step-counter {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #d1e3f8; /* Light blue border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #1d4ed8; /* Dark blue color */
+    font-weight: bold;
+}
+
+.stepper-item.active .step-counter {
+    border-color: #1d4ed8; /* Dark blue border for active step */
+    background-color: #1d4ed8; /* Dark blue background for active step */
+    color: #ffffff; /* White text for active step */
+}
+
+.step-name {
+    font-size: 16px;
+    color: #4b5563; /* Dark gray color for step names */
+    font-weight: 500;
+}
+
+.stepper-item.active .step-name {
+    color: #1d4ed8; /* Dark blue color for active step names */
+}
+
+.payment-button {
+    background-color: #ffffff;
+    border: 1px solid #d1e3f8; /* Light blue border */
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    width: 100%;
+    color: #1d4ed8; /* Dark blue text */
+}
+
+.payment-button.active {
+    background-color: #f0f4f8; /* Light blue background when active */
+    border-color: #b0c4de; /* Slightly darker blue border when active */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.form-input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+    background-color: #ffffff;
+}
+
+.form-input:focus {
+    border-color: #1d4ed8; /* Dark blue border on focus */
+    outline: none;
+}
+
+.button {
+    padding: 12px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.button-primary {
+    background-color: #1d4ed8; /* Dark blue button */
+}
+
+.button-danger {
+    background-color: #f44336; /* Red button for danger actions */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.custom-date-input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.custom-date-input:focus {
+    border-color: #1d4ed8; /* Dark blue border on focus */
+    outline: none;
+}
+
+.payment-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+.payment-info,
+.instructions {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.instructions ol {
+    padding-left: 20px;
+}
+
+.terms-modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.car-image-container {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    padding: 10px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.car-image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.note {
+    background-color: #fffbeb;
+    border-left: 4px solid #fbbf24;
+    padding: 16px;
+    border-radius: 4px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #b45309;
+}
+
+.note-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.note-item {
+    margin-left: 20px;
+    margin-bottom: 4px;
+}
+/* Modal Background */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Make sure the modal appears on top of other content */
+}
+
+/* Hidden class to hide the modal */
+.hidden {
+    display: none;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px; /* Adjust width as needed */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: add shadow for better visibility */
+}
+
+/* Buttons */
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.button-primary:hover {
+    background-color: #0056b3;
+}
+
+.button-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.button-secondary:hover {
+    background-color: #5a6268;
+}
+
+
+
+
+</style>
 
 @endsection

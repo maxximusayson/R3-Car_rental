@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin</title>
+    <title>Administrator</title>
     @vite('resources/css/app.css')
-    <link rel="icon" type="image/x-icon" href="/images/logos/logo1.jpg"> {{-- tab icon --}}
+    <link rel="icon" type="image/x-icon" href="/images/icons/admin.png"> {{-- tab icon --}}
     @vite('node_modules/flowbite/dist/flowbite.min.js')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -22,7 +22,7 @@
             flex-direction: column;
             min-height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Century Gothic', sans-serif;
         }
 
         main {
@@ -32,10 +32,9 @@
 
         .sidebar {
             width: 250px;
-            background-color: #3B8CBF;
+            background-color: #343a40;
             color: white;
             padding-top: 20px;
-            transition: width 0.3s ease;
             position: fixed;
             top: 0;
             left: 0;
@@ -98,6 +97,26 @@
             transition: margin-left 0.3s ease;
         }
 
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            cursor: pointer;
+            background-color: #343a40;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px;
+            background: #fff;
+        }
+
         @media screen and (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -114,32 +133,6 @@
             .sidebar.open {
                 transform: translateX(0);
             }
-        }
-
-        .sidebar {
-            background-color: #343a40;
-            color: #ffffff;
-            padding-top: 20px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #495057;
-        }
-
-        .user-info img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .user-info p {
-            margin: 0;
-            font-size: 18px;
-            font-weight: bold;
         }
 
         .nav-links {
@@ -169,27 +162,6 @@
         .nav-link i {
             margin-right: 10px;
         }
-
-        .hidden {
-            display: none;
-        }
-
-        .hamburger-menu {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            cursor: pointer;
-        }
-
-        .hamburger-menu span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            margin: 5px;
-            background: #000;
-        }
     </style>
 </head>
 
@@ -206,7 +178,7 @@
     @else
     <aside class="sidebar" id="sidebar">
         <div class="user-info">
-            <img loading="lazy" src="/images/user.png" alt="user icon">
+            <img loading="lazy" src="/images/icons/admin.png" alt="user icon">
             <div>
                 @if (Auth::user()->role == 'admin')
                 <p>{{ Auth::user()->name }}</p>
@@ -227,6 +199,9 @@
             <a href="{{ route('users') }}" class="nav-link">
                 <i class="fas fa-users"></i> USERS
             </a>
+            <!-- <a href="{{ route('users') }}" class="nav-link">
+                <i class="fas fa-users"></i> NOTIFICATIONS
+            </a> -->
             <a href="{{ route('insurances.index') }}" class="nav-link">
                 <i class="fas fa-shield-alt"></i> INSURANCE
             </a>

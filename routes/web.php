@@ -12,6 +12,7 @@ use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\invoiceController;
 use App\Http\Controllers\AdminAuth\LoginController;
 use App\Http\Controllers\AuditTrailController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\User;
 use App\Models\Car;
@@ -24,10 +25,19 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UploadController;
 use App\Models\AuditTrail;
 use App\Http\Controllers\BotManController;
+use App\Http\Controllers\CarSearchController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CsvController;
+use App\Http\Controllers\CurlTestController;
+use App\Http\Controllers\FailedController;
 use App\Http\Controllers\OTPController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuccessController;
+use App\Http\Controllers\TestFilterController;
+use Illuminate\Auth\Events\Failed;
+use App\Http\Controllers\ClientController;
+
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
     $cars = Car::take(6)->where('status', '=', 'available')->get();
@@ -130,7 +140,7 @@ Route::get('/reservations/{reservation}/editPaymentMode', [ReservationController
 
     Route::delete('/users/{user}', [ReservationController::class, 'destroy'])->name('deleteUser');
 
-    Route::get('/userDetails/{user}', [usersController::class, 'show'])->name('userDetails');
+
 
     Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroyReservation'])->name('deleteReservation');
     Route::delete('/users/{user}', [ReservationController::class, 'destroyUser'])->name('deleteUser');
@@ -235,8 +245,7 @@ Route::post('/upload', [FileUploadController::class, 'upload'])->name('upload');
 // Route for handling file uploads
 Route::post('/upload-files', [FileUploadController::class, 'upload'])->name('uploadFiles');
 
-// Route for showing client details
-Route::get('/client-details', [UsersController::class, 'show'])->name('client.details');
+
 
 
 
@@ -305,8 +314,8 @@ Route::get('/reservation/done', [ReservationController::class, 'done'])->name('r
 Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
 Route::get('/admin/audit-trail', [adminDashboardController::class, 'auditTrail'])->name('admin.audit-trail');
 
-Route::get('/clients/{client}', [usersController::class, 'show'])->name('clients.show');
-Route::get('/clients/{client}', [usersController::class, 'show'])->name('clients.show');
+// Route::get('/clients/{client}', [usersController::class, 'show'])->name('clients.show');
+// Route::get('/clients/{client}', [usersController::class, 'show'])->name('clients.show');
 
 
 Route::post('/upload-files', [FileUploadController::class, 'uploadFiles'])->name('uploadFiles');
@@ -328,23 +337,96 @@ Route::post('/verify-otp', [RegisterController::class, 'verifyOtp'])->name('veri
 Route::get('/otp', [OTPController::class, 'sendMessage'])->name('send.otp');
 
 
+Route::post('/password/phone', [ForgotPasswordController::class, 'sendResetLinkViaPhone'])->name('password.phone');
+
+
+// Paymongo
+// Route::post('/paymongo/success', [SuccessController::class, 'success'])->name('paymongo.success');
+// Route::get('/paymongo/success', [SuccessController::class, 'success'])->name('paymongo.success');
+
+// Route::post('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
+// Route::get('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
+
+Route::post('/paymongo/create-source', [PaymentController::class, 'createSource'])->name('paymongo.createSource');
+Route::get('/paymongo/success', function () {
+    // Handle success
+    return view('paymongo.success');
+})->name('paymongo.success');
+
+Route::get('/paymongo/failed', function () {
+    // Handle failure
+    return view('paymongo.failed');
+})->name('paymongo.failed');
+
+// Going back to reservation form
+Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+
+
+Route::get('/test-curl', [CurlTestController::class, 'testCurl']);
+Route::get('/test-filter', [TestFilterController::class, 'testFilter']);
+
+Route::post('/request-otp', [OTPController::class, 'sendOtp'])->name('request.otp');
+
+
+
+
+
+
+
 
 // Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 // Route::post('login', [LoginController::class, 'login']);
 // Route::post('2fa/verify', [LoginController::class, 'verify2fa'])->name('2fa.verify');
 
 // Route::post('/request-otp', [OTPController::class, 'requestOtp'])->name('request.otp');
-// Route::post('/verify-otp', [OTPController::class, 'verifyOtp'])->name('verify.otp');
-// Route::get('/registration-success', function () {
-//     return view('registration-success');
-// })->name('registration.success');
+Route::post('/verify-otp', [OTPController::class, 'verifyOtp'])->name('verify.otp');
+Route::get('/registration-success', function () {
+    return view('registration-success');
+})->name('registration.success');
+
+
+//otp
+// Route to display the registration form
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+
+// Route to handle OTP request
+Route::post('/send-otp', [OTPController::class, 'sendOtp'])->name('send.otp');
+// Route to handle OTP verification (display OTP form and verify OTP)
+Route::post('/verify-otp', [OTPController::class, 'verifyOtp'])->name('verify.otp');
+
+
+Route::get('/verify-otp', function () {
+    return view('verify');
+})->name('verify.otp');
+
+// Calendar
+// Route::get('/available-dates', [ReservationController::class, 'getAvailableDates']);
+
+
+//car search sa homepage
+
+Route::post('/search-cars', [CarSearchController::class, 'search'])->name('search.cars');
+Route::get('/search-cars', [CarController::class, 'searchCars'])->name('search-cars');
+Route::post('/search-cars', [CarController::class, 'searchCars'])->name('search-cars');
+
+// upload pic/id
+Route::post('/uploadFiles', [FileUploadController::class, 'uploadFiles'])->name('uploadFiles');
+Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+
+
+// details view,  nakikita ni admin yung details
+
+Route::get('/clients/export', [ClientController::class, 'export'])->name('clients.export');
+Route::post('/clients/import', [ClientController::class, 'import'])->name('clients.import');
+Route::get('/clients/{id}', [ClientController::class, 'show'])->name('clients.show');
 
 
 
 
+// CSV
 
-
-
+Route::get('/notifications/export', [ReservationController::class, 'exportNotifications'])->name('notifications.export');
+Route::post('/notifications/import', [ReservationController::class, 'importNotifications'])->name('notifications.import');
 
 
 

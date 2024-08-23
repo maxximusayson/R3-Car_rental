@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class FileUploadController extends Controller
 {
@@ -104,26 +105,33 @@ class FileUploadController extends Controller
 
 
     public function uploadFiles(Request $request)
-    {
-        $request->validate([
-            'valid_id' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'proof_of_billing' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    // Validate the files
+    $request->validate([
+        'valid_id' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'proof_of_billing' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        // Handle the valid ID upload
-        if ($request->hasFile('valid_id')) {
-            $validIdPath = $request->file('valid_id')->store('uploads', 'public');
-            $validIdUrl = Storage::url($validIdPath);
-            session(['validIdImageUrl' => $validIdUrl]);
-        }
-
-        // Handle the proof of billing upload
-        if ($request->hasFile('proof_of_billing')) {
-            $proofOfBillingPath = $request->file('proof_of_billing')->store('uploads', 'public');
-            $proofOfBillingUrl = Storage::url($proofOfBillingPath);
-            session(['proofOfBillingImageUrl' => $proofOfBillingUrl]);
-        }
-
-        return redirect()->back()->with('success', 'Files uploaded successfully.');
+    // Handle Valid ID Upload
+    if ($request->hasFile('valid_id')) {
+        $validIdPath = $request->file('valid_id')->store('uploads', 'public');
     }
+
+    // Handle Proof of Billing Upload
+    if ($request->hasFile('proof_of_billing')) {
+        $proofOfBillingPath = $request->file('proof_of_billing')->store('uploads', 'public');
+    }
+
+    // Store the file paths in session
+    session([
+        'validIdImageUrl' => Storage::url($validIdPath),
+        'proofOfBillingImageUrl' => Storage::url($proofOfBillingPath),
+    ]);
+
+    // Redirect back to the form with success message
+    return back()->with([
+        'validIdImageUrl' => Storage::url($validIdPath),
+        'proofOfBillingImageUrl' => Storage::url($proofOfBillingPath),
+    ]);
+}
 }

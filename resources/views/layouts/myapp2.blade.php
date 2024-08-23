@@ -9,61 +9,71 @@
     <title>R3 Garage Car Rentals</title>
     @vite('resources/css/app.css')
     @vite('node_modules/flowbite/dist/flowbite.min.js')
-    <link rel="icon" type="image/x-icon" href="/images/logos/logo1.jpg"> {{-- tab icon --}}
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-WVZ9P8XS0ezOjR0+T6H0u9f4MbVJ4u3n5Fdjp1kNqff+gECfn9ZoT6Bx0tqu9Tcq3mIjSjbPqGfbiK3+TW9P5A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="/images/logos/logo.png">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         html {
             scroll-behavior: smooth;
         }
 
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
         .sidebar {
             height: 100%;
-            width: 250px;
+            width: 260px;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             top: 0;
             left: 0;
-            background-color: #3B9ABF;
-            padding-top: 20px;
+            background-color: #20232a;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             color: #fff;
             transition: transform 0.3s ease;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
         }
 
         .sidebar a {
-            padding: 15px 20px;
+            padding: 15px 25px;
             text-decoration: none;
-            font-size: 18px;
-            color: white;
+            font-size: 17px;
+            color: #ffffff;
             display: flex;
             align-items: center;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a .material-icons {
+            margin-right: 20px;
+            font-size: 24px;
         }
 
         .sidebar a:hover {
-            background-color: #3BA7BF;
-        }
-
-        .sidebar a .fa {
-            margin-right: 10px;
+            background-color: #3b3f46;
         }
 
         .main-content {
-            margin-left: 260px;
-            padding: 20px;
+            margin-left: 270px;
+            padding: 30px;
             background-color: #f9fafb;
             min-height: 100vh;
+            transition: margin-left 0.3s ease;
         }
 
         .dropdown-btn {
-            font-size: 18px;
+            font-size: 17px;
             border: none;
             background: none;
             color: white;
-            padding: 15px 20px;
+            padding: 15px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -71,48 +81,61 @@
             text-align: left;
             cursor: pointer;
             outline: none;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-btn .material-icons {
+            margin-right: 20px;
+            font-size: 24px;
         }
 
         .dropdown-btn:hover {
-            background-color: #3B9ABF;
+            background-color: #3b3f46;
         }
 
         .dropdown-container {
             display: none;
-            background-color: #3B9ABF;
-            padding-left: 20px;
+            background-color: #20232a;
+            padding-left: 40px;
         }
 
         .dropdown-container a {
-            padding: 10px 20px;
-            color: white;
+            padding: 10px 0;
+            color: #ffffff;
             display: flex;
             align-items: center;
         }
 
+        .dropdown-container a .material-icons {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
         .dropdown-container a:hover {
-            background-color: #3B9ABF;
+            background-color: #3b3f46;
         }
 
         .logo img {
             height: 60px;
+            display: block;
+            margin: 0 auto 20px;
         }
 
         .sidebar-footer {
             padding: 20px;
-            background-color: #3B9ABF;
+            background-color: #3b3f46;
             text-align: center;
         }
 
         .sidebar-footer a {
             display: block;
             margin: 10px 0;
-            color: #fff;
+            color: #f1f1f1;
+            font-size: 14px;
         }
 
         .sidebar-footer a:hover {
-            color: #f3f4f6;
+            color: #ffffff;
         }
 
         .hamburger-menu {
@@ -120,16 +143,19 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            z-index: 2;
+            z-index: 1001;
             cursor: pointer;
+            background-color: #20232a;
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .hamburger-menu span {
             display: block;
-            width: 25px;
+            width: 28px;
             height: 3px;
-            margin: 5px;
-            background: #000;
+            margin: 6px 0;
+            background: #ffffff;
         }
 
         @media screen and (max-width: 768px) {
@@ -139,7 +165,6 @@
 
             .main-content {
                 margin-left: 0;
-                padding-top: 60px;
             }
 
             .hamburger-menu {
@@ -169,49 +194,46 @@
             </div>
             @guest
             <a href="{{ route('login') }}">
-                <i class="fa-solid fa-sign-in-alt"></i>Login
+                <span class="material-icons">login</span>Login
             </a>
             <a href="{{ route('register') }}">
-                <i class="fa-solid fa-user-plus"></i>Register
+                <span class="material-icons">person_add</span>Register
             </a>
             <a href="/">
-                <i class="fa-solid fa-home"></i>Home
+                <span class="material-icons">home</span>Home
             </a>
             <a href="{{ route('cars') }}">
-                <i class="fa-solid fa-car"></i>Cars
+                <span class="material-icons">directions_car</span>Cars
             </a>
             <a href="/location">
-                <i class="fa-solid fa-map-marker-alt"></i>Location
+                <span class="material-icons">place</span>Location
             </a>
             <a href="/contact_us">
-                <i class="fa-solid fa-envelope"></i>Contact
+                <span class="material-icons">mail</span>Contact
             </a>
             @else
             <a href="/">
-                <i class="fa-solid fa-home"></i>Home
+                <span class="material-icons">home</span>Home
             </a>
             <a href="{{ route('cars') }}">
-                <i class="fa-solid fa-car"></i>Cars
+                <span class="material-icons">directions_car</span>Cars
             </a>
             <a href="/location">
-                <i class="fa-solid fa-map-marker-alt"></i>Location
+                <span class="material-icons">place</span>Location
             </a>
             <a href="/contact_us">
-                <i class="fa-solid fa-envelope"></i>Contact
+                <span class="material-icons">mail</span>Contact
             </a>
             <button class="dropdown-btn">
                 <span>
-                    <i class="fa-solid fa-user"></i>{{ Auth::user()->name }}
+                    <span class="material-icons">person</span>{{ Auth::user()->name }}
                 </span>
-                <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
+                <span class="material-icons">expand_more</span>
             </button>
             <div class="dropdown-container">
                 <a href="{{ route('logout') }}" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
-                    <i class="fa-solid fa-sign-out-alt"></i>{{ __('Logout') }}
+                    <span class="material-icons">logout</span>{{ __('Logout') }}
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                     @csrf
@@ -231,10 +253,8 @@
     </div>
 
     <script>
-        var dropdown = document.querySelector('.dropdown-btn');
-        var dropdownContainer = document.querySelector('.dropdown-container');
-
-        dropdown.addEventListener('click', function () {
+        document.querySelector('.dropdown-btn').addEventListener('click', function () {
+            var dropdownContainer = document.querySelector('.dropdown-container');
             dropdownContainer.style.display = dropdownContainer.style.display === 'block' ? 'none' : 'block';
         });
 

@@ -31,7 +31,7 @@
     @guest
     
         <header>
-        <nav class="bg-custom-orange border-black-100 px-4 lg:px-6 py-4 text-white" style="font-family: Arial Black;">
+        <nav class="bg-custom-orange border-black-100 px-4 lg:px-6 py-4 text-white" style="font-family: 'Century Gothic', sans-serif;">
 
   <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
 
@@ -309,7 +309,7 @@
     
     <!---------------------------------------------------------------- chatbot ------------------------------------------------------------------->
 
-    <!-- <body>
+    <body>
 
 <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
 <script>
@@ -379,7 +379,7 @@
     window.addEventListener('load', sendAutoPilotMessages);
 </script>
 </body>
- -->
+
 
 
 

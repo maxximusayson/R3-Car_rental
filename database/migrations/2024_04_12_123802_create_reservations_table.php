@@ -35,6 +35,16 @@ class CreateReservationsTable extends Migration
             
             $table->timestamps();
         });
+
+        // In the migration file for reservations
+        Schema::create('reservations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('car_id')->constrained()->onDelete('cascade');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->timestamps();
+        });
+
     }
 
     /**

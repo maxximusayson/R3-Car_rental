@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Models\Alert;
 use App\Models\Audit;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -56,5 +57,22 @@ class ProfileController extends Controller
         ]);
 
         return back()->with('status', 'Profile updated successfully!');
+    }
+    public function uploadFiles(Request $request)
+    {
+        $request->validate([
+            'valid_id' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'proof_of_billing' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $validIdPath = $request->file('valid_id')->store('uploads', 'public');
+        $proofOfBillingPath = $request->file('proof_of_billing')->store('uploads', 'public');
+
+        session([
+            'validIdImageUrl' => Storage::url($validIdPath),
+            'proofOfBillingImageUrl' => Storage::url($proofOfBillingPath),
+        ]);
+
+        return redirect()->back()->with('success', 'Files uploaded successfully!');
     }
 }

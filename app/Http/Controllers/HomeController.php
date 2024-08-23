@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Config;
@@ -50,4 +51,10 @@ class HomeController extends Controller
 
         return redirect()->route('about_us')->with('success', 'About Us content updated successfully!');
     }
+
+    public function index() {
+        $cars = Car::all(); // Or whatever query you use to get cars
+        return view('your-view', compact('cars'));
+    }
+    
 }

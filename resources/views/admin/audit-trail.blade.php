@@ -41,6 +41,8 @@
                         <th class="pb-3 text-left">User</th>
                         <th class="pb-3 text-left">Action</th>
                         <th class="pb-3 text-left">Details</th>
+                        <th class="pb-3 text-left">Reservation</th>
+                        <th class="pb-3 text-left">Payment</th>
                         <th class="pb-3 text-left">Date</th>
                     </tr>
                 </thead>
@@ -50,6 +52,24 @@
                             <td class="py-2">{{ $audit->user->name }}</td>
                             <td class="py-2">{{ $audit->action }}</td>
                             <td class="py-2">{{ $audit->details }}</td>
+                            <td class="py-2">
+                                @if($audit->reservation)
+                                    <div><strong>Car:</strong> {{ $audit->reservation->car->model }}</div>
+                                    <div><strong>Start Date:</strong> {{ $audit->reservation->start_date->format('Y-m-d') }}</div>
+                                    <div><strong>End Date:</strong> {{ $audit->reservation->end_date->format('Y-m-d') }}</div>
+                                @else
+                                    <span class="text-gray-500">No reservation data</span>
+                                @endif
+                            </td>
+                            <td class="py-2">
+                                @if($audit->payment)
+                                    <div><strong>Amount:</strong> ${{ number_format($audit->payment->amount, 2) }}</div>
+                                    <div><strong>Method:</strong> {{ $audit->payment->method }}</div>
+                                    <div><strong>Status:</strong> {{ $audit->payment->status }}</div>
+                                @else
+                                    <span class="text-gray-500">No payment data</span>
+                                @endif
+                            </td>
                             <td class="py-2">{{ $audit->created_at->format('Y-m-d H:i:s') }}</td>
                         </tr>
                     @endforeach

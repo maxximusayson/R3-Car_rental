@@ -8,6 +8,7 @@ class SmsService
 {
     protected $apiKey;
     protected $senderName;
+    protected $apiURL = 'https://api.semaphore.co/api/v4/otp';
 
     public function __construct()
     {
@@ -15,12 +16,15 @@ class SmsService
         $this->senderName = env('SEMAPHORE_SENDER_NAME', 'SEMAPHORE');
     }
 
-    public function sendSms($recipient, $message)
+    public function sendOtp($recipient, $otp)
     {
         // Ensure the API key is set
         if (empty($this->apiKey)) {
             throw new \Exception('API key is not set.');
         }
+
+        // Prepare the message with OTP
+        $message = "Your OTP code is: $otp. Please use it within 5 minutes.";
 
         // Prepare the data for the POST request
         $postData = [
@@ -28,43 +32,20 @@ class SmsService
             'number' => $recipient,
             'message' => $message,
             'sendername' => $this->senderName,
+            'code' => $otp,  // The OTP code to be sent
         ];
 
-        // Initialize cURL
-        $ch = curl_init('https://semaphore.co/api/v4/messages');
+        // Send request to Semaphore
+        $response = Http::asForm()->post($this->apiURL, $postData);
 
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Log and handle the response
+        \Log::info('Semaphore OTP Response:', $response->json());
 
-        // Execute cURL request
-        $response = curl_exec($ch);
-
-        // Check for cURL errors
-        if ($response === false) {
-            throw new \Exception('cURL Error: ' . curl_error($ch));
+        if ($response->failed()) {
+            \Log::error('Failed to send OTP: ' . $response->body());
+            throw new \Exception('Failed to send OTP: ' . $response->body());
         }
 
-        // Close cURL resource
-        curl_close($ch);
-
-        // Decode the JSON response
-        $responseData = json_decode($response, true);
-
-        // Check for API errors
-        if (isset($responseData['error'])) {
-            throw new \Exception('API Error: ' . $responseData['error']);
-        }
-
-        return $responseData;
-    }
-
-    public function send($phoneNumber, $message)
-    {
-        Http::post($this->apiUrl, [
-            'apikey' => $this->apiKey,
-            'to' => $phoneNumber,
-            'message' => $message,
-        ]);
+        return $response->json();
     }
 }
