@@ -469,124 +469,137 @@
         <div id="imageModal">
             <div id="imageModalContent">
                 <span class="close" onclick="hideModal()">&times;</span>
-                <div class="carousel-container">
-                    <button class="carousel-control prev" onclick="prevImage()">&#10094;</button>
-                    <div class="carousel-images" id="carouselImages"></div>
-                    <button class="carousel-control next" onclick="nextImage()">&#10095;</button>
-                </div>
                 <div id="modalDescription" class="modal-description"></div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentImageIndex = 0;
-        let images = [];
+      let currentImageIndex = 0;
+let images = [];
 
-        function showModal(event) {
-            event.preventDefault();
-            const target = event.currentTarget;
-            images = JSON.parse(target.getAttribute('data-images').replace(/&quot;/g,'"'));
-            const brand = target.getAttribute('data-brand');
-            const model = target.getAttribute('data-model');
-            const engine = target.getAttribute('data-engine');
-            const price = target.getAttribute('data-price');
-            const description = target.getAttribute('data-description');
-            const branch = target.getAttribute('data-branch');
+function showModal(event) {
+    event.preventDefault();
+    const target = event.currentTarget;
+    images = JSON.parse(target.getAttribute('data-images').replace(/&quot;/g,'"'));
+    const brand = target.getAttribute('data-brand');
+    const model = target.getAttribute('data-model');
+    const engine = target.getAttribute('data-engine');
+    const price = target.getAttribute('data-price');
+    const description = target.getAttribute('data-description');
+    const branch = target.getAttribute('data-branch');
 
-            currentImageIndex = 0;
-            updateModalImage();
+    // Create a collage of images
+    let collageImages = images.map((img, index) => 
+        `<img src="${img}" alt="Car Image ${index + 1}" style="width: 100%; height: auto; object-fit: cover;" onclick="viewFitScreen('${img}')">`
+    ).join('');
 
-            document.getElementById('modalDescription').innerHTML = `
+    // Update modal content
+    const modalContent = `
+        <div style="display: flex; flex-direction: row; align-items: flex-start;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1;">
+                ${collageImages}
+            </div>
+            <div style="max-width: 400px; padding-left: 20px; flex: 1;">
                 <p><strong>Brand:</strong> ${brand}</p>
                 <p><strong>Model:</strong> ${model}</p>
                 <p><strong>Engine:</strong> ${engine}</p>
                 <p><strong>Price:</strong> ₱${price}</p>
                 <p><strong>Description:</strong> ${description}</p>
                 <p><strong>Branch:</strong> ${branch}</p>
-            `;
-            document.getElementById('imageModal').style.display = 'flex';
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDescription').innerHTML = modalContent;
+    document.getElementById('imageModal').style.display = 'flex';
+}
+
+function viewFitScreen(imageSrc) {
+    const imgElement = document.createElement('img');
+    imgElement.src = imageSrc;
+    imgElement.style.maxWidth = '90%';
+    imgElement.style.maxHeight = '90%';
+    imgElement.style.objectFit = 'contain';
+    imgElement.style.cursor = 'pointer';
+    
+    const fitScreenContainer = document.createElement('div');
+    fitScreenContainer.style.position = 'fixed';
+    fitScreenContainer.style.top = '0';
+    fitScreenContainer.style.left = '0';
+    fitScreenContainer.style.width = '100%';
+    fitScreenContainer.style.height = '100%';
+    fitScreenContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    fitScreenContainer.style.display = 'flex';
+    fitScreenContainer.style.justifyContent = 'center';
+    fitScreenContainer.style.alignItems = 'center';
+    fitScreenContainer.style.zIndex = '10000';
+    fitScreenContainer.appendChild(imgElement);
+
+    document.body.appendChild(fitScreenContainer);
+
+    // Click to close the view
+    fitScreenContainer.addEventListener('click', () => {
+        document.body.removeChild(fitScreenContainer);
+    });
+}
+
+function hideModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+function hideConfirmationModal() {
+    document.getElementById('confirmationModal').style.display = 'none';
+}
+
+document.getElementById('searchInput').addEventListener('input', filterCars);
+document.getElementById('priceRange').addEventListener('change', filterCars);
+document.getElementById('carBranch').addEventListener('change', filterCars);
+
+function filterCars() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const priceRange = document.getElementById('priceRange').value;
+    const carBranch = document.getElementById('carBranch').value;
+
+    document.querySelectorAll('.car-row').forEach(car => {
+        const brand = car.getAttribute('data-brand').toLowerCase();
+        const branch = car.getAttribute('data-branch');
+        const price = parseInt(car.getAttribute('data-price'));
+
+        let priceMin = 0;
+        let priceMax = Infinity;
+
+        if (priceRange) {
+            const [min, max] = priceRange.split('-').map(Number);
+            priceMin = min;
+            priceMax = max;
         }
 
-        function hideModal() {
-            document.getElementById('imageModal').style.display = 'none';
+        const matchesSearch = !searchInput || brand.includes(searchInput);
+        const matchesPrice = price >= priceMin && price <= priceMax;
+        const matchesBranch = !carBranch || branch === carBranch;
+
+        if (matchesSearch && matchesPrice && matchesBranch) {
+            car.style.display = 'block';
+        } else {
+            car.style.display = 'none';
         }
+    });
+}
 
-        function hideConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
+document.querySelectorAll('.reserve-button').forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const confirmationModal = document.getElementById('confirmationModal');
+        confirmationModal.style.display = 'flex';
+        document.getElementById('confirmYes').onclick = () => {
+            window.location.href = button.href;
+        };
+        document.getElementById('confirmNo').onclick = hideConfirmationModal;
+    });
+});
 
-        function updateModalImage() {
-            const carouselImages = document.getElementById('carouselImages');
-            carouselImages.innerHTML = '';
-            if (images.length > 0) {
-                const imgElement = document.createElement('img');
-                imgElement.src = images[currentImageIndex];
-                imgElement.alt = `Car Image ${currentImageIndex + 1}`;
-                carouselImages.appendChild(imgElement);
-            }
-        }
 
-        function nextImage() {
-            if (currentImageIndex < images.length - 1) {
-                currentImageIndex++;
-                updateModalImage();
-            }
-        }
-
-        function prevImage() {
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-                updateModalImage();
-            }
-        }
-
-        document.getElementById('searchInput').addEventListener('input', filterCars);
-        document.getElementById('priceRange').addEventListener('change', filterCars);
-        document.getElementById('carBranch').addEventListener('change', filterCars);
-
-        function filterCars() {
-            const searchInput = document.getElementById('searchInput').value.toLowerCase();
-            const priceRange = document.getElementById('priceRange').value;
-            const carBranch = document.getElementById('carBranch').value;
-
-            document.querySelectorAll('.car-row').forEach(car => {
-                const brand = car.getAttribute('data-brand').toLowerCase();
-                const branch = car.getAttribute('data-branch');
-                const price = parseInt(car.getAttribute('data-price'));
-
-                let priceMin = 0;
-                let priceMax = Infinity;
-
-                if (priceRange) {
-                    const [min, max] = priceRange.split('-').map(Number);
-                    priceMin = min;
-                    priceMax = max;
-                }
-
-                const matchesSearch = !searchInput || brand.includes(searchInput);
-                const matchesPrice = price >= priceMin && price <= priceMax;
-                const matchesBranch = !carBranch || branch === carBranch;
-
-                if (matchesSearch && matchesPrice && matchesBranch) {
-                    car.style.display = 'block';
-                } else {
-                    car.style.display = 'none';
-                }
-            });
-        }
-
-        document.querySelectorAll('.reserve-button').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const confirmationModal = document.getElementById('confirmationModal');
-                confirmationModal.style.display = 'flex';
-                document.getElementById('confirmYes').onclick = () => {
-                    window.location.href = button.href;
-                };
-                document.getElementById('confirmNo').onclick = hideConfirmationModal;
-            });
-        });
     </script>
 
     @endsection
