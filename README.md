@@ -8,15 +8,16 @@ open another terminal
 php artisan serve
 
 
+(admin)
+email: admin@gmail.com
+pass: admin123
+
+(user)test
+email: analyn.segundo@gmail.com
+pass: analyn123
 
 
 
-## Features
-
--   User Registration and Authentication
--   Car Listing and Management
--   Rental Booking and Management
--   Admin Panel for managing cars, bookings, users, etc
 
 
 
