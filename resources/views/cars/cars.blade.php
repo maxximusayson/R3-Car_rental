@@ -312,9 +312,85 @@
         li {
             margin-bottom: 10px;
         }
+        .search-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+    }
+
+    .search-bar select,
+    .search-bar input {
+        margin: 0 10px;
+        padding: 10px 15px;
+        border-radius: 30px;
+        border: 1px solid #ced4da;
+        font-family: 'Century Gothic', sans-serif;
+        font-size: 16px;
+        color: #495057;
+        background-color: #fff;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .search-select {
+        appearance: none;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none" stroke="%23495057" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><path d="M1 1l4 4-4 4"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+    }
+
+    .search-input::placeholder {
+        color: #6c757d;
+        opacity: 0.7;
+    }
+
+    .search-bar select:focus,
+    .search-bar input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none;
+    }
+
+    .search-bar select:hover,
+    .search-bar input:hover {
+        border-color: #007bff;
+    }
+
+    .search-bar input[type="text"] {
+        flex-grow: 1;
+        max-width: 400px;
+    }
     </style>
 
 
+<!-- Filter Controls -->
+<div class="search-bar">
+    <select id="carBranch" class="search-select">
+        <option value="">Select Branch</option>
+        <option value="marikina">Marikina</option>
+        <option value="isabela">Isabela</option>
+        <!-- Add more branches as needed -->
+    </select>
+
+    <select id="carBrand" class="search-select">
+        <option value="">Select Brand</option>
+        <option value="toyota">Toyota</option>
+        <option value="mitsubishi">Mitsubishi</option>
+        <option value="nissan">Nissan</option>
+        <option value="mg">MG</option>
+        <!-- Add more brands as needed -->
+    </select>
+
+    <input type="text" id="searchInput" class="search-input" placeholder="Search by model...">
+</div>
 
 
 <!-- car section -->
@@ -327,7 +403,7 @@
             data-price="{{ $car->price_per_day }}">
             
             @if ($car->images->isNotEmpty() || $car->videos->isNotEmpty())
-                <a class="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl" href="#" 
+                <a class="relative mx-3 mt-3 flex h-100 overflow-hidden rounded-xl" href="#" 
                 data-images="{{ $car->images->pluck('image_path') }}" 
                 data-videos="{{ $car->videos->pluck('path') }}" 
                 data-brand="{{ addslashes($car->brand) }}" 
@@ -597,8 +673,37 @@ document.querySelectorAll('.reserve-button').forEach(button => {
         };
         document.getElementById('confirmNo').onclick = hideConfirmationModal;
     });
+    
 });
 
+
+    </script>
+    <script>
+        document.getElementById('searchInput').addEventListener('input', filterCars);
+document.getElementById('carBranch').addEventListener('change', filterCars);
+document.getElementById('carBrand').addEventListener('change', filterCars);
+
+function filterCars() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const selectedBranch = document.getElementById('carBranch').value.toLowerCase();
+    const selectedBrand = document.getElementById('carBrand').value.toLowerCase();
+
+    document.querySelectorAll('.car-row').forEach(car => {
+        const brand = car.getAttribute('data-brand').toLowerCase();
+        const branch = car.getAttribute('data-branch').toLowerCase();
+        const price = parseInt(car.getAttribute('data-price'));
+
+        const matchesSearch = !searchInput || car.querySelector('h5').innerText.toLowerCase().includes(searchInput);
+        const matchesBranch = !selectedBranch || branch === selectedBranch;
+        const matchesBrand = !selectedBrand || brand.includes(selectedBrand);
+
+        if (matchesSearch && matchesBranch && matchesBrand) {
+            car.style.display = 'block';
+        } else {
+            car.style.display = 'none';
+        }
+    });
+}
 
     </script>
 

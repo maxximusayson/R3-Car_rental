@@ -10,7 +10,7 @@
     
 
 
-    <title>R3 Garage Car Rentals</title>
+    <title>R3 Garage Car Rental</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/x-icon" href="/images/logos/logo1.jpg"> {{-- tab icon --}}
     @vite('node_modules/flowbite/dist/flowbite.min.js')
@@ -66,35 +66,44 @@
 
             
 
-                    {{-- NAVBAR-LOOK = HOME, CARS, LOCATIONS, CONTACT US CODES --}}
-                    <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
+<div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
     <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
         <li>
             <a href="/" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer">Home</span>
+                <span class="group text-center group-hover:cursor-pointer custom-font">Home</span>
                 <div class="block invisible bg-pr-400 w-12 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
             </a>
         </li>
         <li>
             <a href="{{ route('cars') }}" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer">Car</span>
+                <span class="group text-center group-hover:cursor-pointer custom-font">Car</span>
                 <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
             </a>
         </li>
         <li>
             <a href="/location" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer">Location</span>
+                <span class="group text-center group-hover:cursor-pointer custom-font">Location</span>
                 <div class="block invisible bg-pr-400 w-16 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
             </a>
         </li>
         <li>
             <a href="/contact_us" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer">Contact</span>
+                <span class="group text-center group-hover:cursor-pointer custom-font">Contact</span>
                 <div class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
             </a>
         </li>
     </ul>
 </div>
+
+<style>
+    /* Add custom font styling */
+    .custom-font {
+        font-family: 'Century Gothic', sans-serif;
+        font-size: 18px; /* Adjust font size as needed */
+        font-weight: normal; /* Adjust font weight as needed */
+    }
+</style>
+
 
 
 
@@ -104,7 +113,7 @@
 
                     {{-- user when login --}}
                         <header>
-                        <nav class="custom-nav border-blue-200 px-4 lg:px-6 py-4 dark:bg-blue-700">
+                        <nav class="custom-nav border-blue-200 px-4 lg:px-6 py-4 dark:bg-blue-700 ">
                 <style>
                     .custom-nav {
                     background-color: #3B9ABF;
@@ -210,49 +219,54 @@
                         </div>
                     @else
 
-            <!-- Customer login POV -->
-                        <div class="hidden justify-between items-center w-full lg:flex lg:w-auto" id="mobile-menu-2">
-                            <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-                            <li>
-                        <a href="/" class="text-white" style="font-family: Arial Black, Arial, sans-serif;">
-                            <div class="group text-center">
-                                <div class="group-hover:cursor-pointer">Home</div>
-                                <div class="block invisible bg-pr-400 w-12 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('cars') }}" class="text-white" style="font-family: Arial Black, Arial, sans-serif;">
-                            <div class="group text-center">
-                                <div class="group-hover:cursor-pointer">Cars</div>
-                                <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/location" class="text-white" style="font-family: Arial Black, Arial, sans-serif;">
-                            <div class="group text-center">
-                                <div class="group-hover:cursor-pointer">Location</div>
-                                <div class="block invisible bg-pr-400 w-16 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                                </div>
-                            </div>
-                        </a>
+          <!-- Customer login POV -->
+<div class="hidden justify-between items-center w-full lg:flex lg:w-auto" id="mobile-menu-2">
+    <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+        <li>
+            <a href="/" class="text-white custom-font">
+                <div class="group text-center">
+                    <div class="group-hover:cursor-pointer">Home</div>
+                    <div class="block invisible bg-pr-400 w-12 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
+                    </div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('cars') }}" class="text-white custom-font">
+                <div class="group text-center">
+                    <div class="group-hover:cursor-pointer">Cars</div>
+                    <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
+                    </div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="/location" class="text-white custom-font">
+                <div class="group text-center">
+                    <div class="group-hover:cursor-pointer">Location</div>
+                    <div class="block invisible bg-pr-400 w-16 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
+                    </div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="/contact_us" class="text-white custom-font">
+                <div class="group text-center">
+                    <div class="group-hover:cursor-pointer">Contact</div>
+                    <div class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+<style>
+    .custom-font {
+        font-family: 'Century Gothic', Arial, sans-serif;
+        font-size: 18px; /* Adjust as needed */
+    }
+</style>
 
-                    </li>
-                    <li>
-                        <a href="/contact_us" class="text-white" style="font-family: Arial Black, Arial, sans-serif;">
-                            <div class="group text-center">
-                                <div class="group-hover:cursor-pointer">Contact</div>
-                                <div class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-
-                            </ul>
-                        </div>
 
                         <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
                                 class="text-white bg-black hover:bg-gray-900 font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center"

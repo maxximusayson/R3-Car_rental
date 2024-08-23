@@ -199,9 +199,6 @@
             <a href="{{ route('users') }}" class="nav-link">
                 <i class="fas fa-users"></i> USERS
             </a>
-            <!-- <a href="{{ route('users') }}" class="nav-link">
-                <i class="fas fa-users"></i> NOTIFICATIONS
-            </a> -->
             <a href="{{ route('insurances.index') }}" class="nav-link">
                 <i class="fas fa-shield-alt"></i> INSURANCE
             </a>

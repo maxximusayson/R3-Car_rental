@@ -18,8 +18,8 @@
         }
 
         body {
-            font-family: 'Century Gothic', sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
             margin: 0;
             padding: 0;
         }
@@ -31,7 +31,7 @@
             z-index: 1000;
             top: 0;
             left: 0;
-            background-color: #20232a;
+            background-color: #1f2937;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -44,35 +44,37 @@
         .sidebar a {
             padding: 15px 25px;
             text-decoration: none;
-            font-size: 17px;
-            color: #ffffff;
+            font-size: 16px;
+            color: #e5e7eb;
             display: flex;
             align-items: center;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .sidebar a .material-icons {
             margin-right: 20px;
             font-size: 24px;
+            color: #9ca3af;
         }
 
         .sidebar a:hover {
-            background-color: #3b3f46;
+            background-color: #374151;
+            color: #f3f4f6;
         }
 
         .main-content {
             margin-left: 270px;
             padding: 30px;
-            background-color: #f9fafb;
+            background-color: #ffffff;
             min-height: 100vh;
             transition: margin-left 0.3s ease;
         }
 
         .dropdown-btn {
-            font-size: 17px;
+            font-size: 16px;
             border: none;
             background: none;
-            color: white;
+            color: #e5e7eb;
             padding: 15px 25px;
             display: flex;
             align-items: center;
@@ -81,27 +83,29 @@
             text-align: left;
             cursor: pointer;
             outline: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .dropdown-btn .material-icons {
             margin-right: 20px;
             font-size: 24px;
+            color: #9ca3af;
         }
 
         .dropdown-btn:hover {
-            background-color: #3b3f46;
+            background-color: #374151;
+            color: #f3f4f6;
         }
 
         .dropdown-container {
             display: none;
-            background-color: #20232a;
+            background-color: #1f2937;
             padding-left: 40px;
         }
 
         .dropdown-container a {
             padding: 10px 0;
-            color: #ffffff;
+            color: #9ca3af;
             display: flex;
             align-items: center;
         }
@@ -109,33 +113,35 @@
         .dropdown-container a .material-icons {
             margin-right: 15px;
             font-size: 20px;
+            color: #9ca3af;
         }
 
         .dropdown-container a:hover {
-            background-color: #3b3f46;
+            color: #f3f4f6;
         }
 
         .logo img {
             height: 60px;
             display: block;
             margin: 0 auto 20px;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1));
         }
 
         .sidebar-footer {
             padding: 20px;
-            background-color: #3b3f46;
+            background-color: #374151;
             text-align: center;
         }
 
         .sidebar-footer a {
             display: block;
             margin: 10px 0;
-            color: #f1f1f1;
+            color: #e5e7eb;
             font-size: 14px;
         }
 
         .sidebar-footer a:hover {
-            color: #ffffff;
+            color: #f3f4f6;
         }
 
         .hamburger-menu {
@@ -145,9 +151,10 @@
             left: 20px;
             z-index: 1001;
             cursor: pointer;
-            background-color: #20232a;
+            background-color: #1f2937;
             padding: 10px;
             border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .hamburger-menu span {
@@ -155,7 +162,7 @@
             width: 28px;
             height: 3px;
             margin: 6px 0;
-            background: #ffffff;
+            background: #e5e7eb;
         }
 
         @media screen and (max-width: 768px) {

@@ -4,7 +4,7 @@
 <style>
     /* Font style for paragraphs */
     .custom-font {
-        font-family: "Arial Black", Arial, sans-serif;
+        font-family: "Century Gothic", sans-serif;
         font-size: 18px;
         line-height: 1.6;
     }
