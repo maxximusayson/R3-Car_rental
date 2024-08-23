@@ -13,8 +13,8 @@ email: admin@gmail.com
 pass: admin123
 
 (user)test
-analyn.segundo@gmail.com
-analyn123
+email: analyn.segundo@gmail.com
+pass: analyn123
 
 
 
