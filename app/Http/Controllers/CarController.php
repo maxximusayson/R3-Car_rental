@@ -74,37 +74,47 @@ class CarController extends Controller
             'engine' => 'required|string|max:255',
             'quantity' => 'required|integer',
             'price_per_day' => 'required|numeric',
-            'stars' => 'required|integer|min:1|max:5',
-            'images.*' => 'nullable|mimes:jpg,jpeg,png,gif|max:10240',
+            'images.*' => 'nullable|mimes:jpg,jpeg,png,gif|max:10240', // Validate images
+            'video' => 'nullable|mimes:mp4,avi,mov|max:51200', // Validate video file
             'description' => 'nullable|string',
             'insurance_status' => 'required|string',
             'status' => 'required|string',
             'branch' => 'required|string',
         ]);
-
+    
         $car = new Car();
         $car->brand = $request->brand;
         $car->model = $request->model;
         $car->engine = $request->engine;
         $car->quantity = $request->quantity;
         $car->price_per_day = $request->price_per_day;
-        $car->stars = $request->stars;
         $car->description = $request->description;
         $car->insurance_status = $request->insurance_status;
         $car->status = $request->status;
         $car->branch = $request->branch;
         $car->save();
-
+    
+        // Handle image uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('images', 'public');
-                $car->images()->create(['path' => $path]);
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $path = $image->move(public_path('images/cars'), $imageName);
+                $car->images()->create(['image_path' => 'images/cars/' . $imageName]);
             }
         }
-
+    
+        // Handle video upload (optional)
+        if ($request->hasFile('video')) {
+            $videoName = time() . '_' . $request->video->getClientOriginalName();
+            $videoPath = $request->video->move(public_path('videos/cars'), $videoName);
+            $car->video_path = 'videos/cars/' . $videoName;
+            $car->save();
+        }
+    
         return redirect()->route('cars.index')->with('success', 'Car details created successfully.');
     }
-
+    
+    
     /**
      * Display the specified resource.
      */
@@ -137,8 +147,9 @@ class CarController extends Controller
             'branch' => 'required|string',
             'description' => 'nullable|string',
             'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:10240', // Validate multiple images
+            'video' => 'nullable|mimes:mp4,avi,mov|max:51200', // Validate video file
         ]);
-
+    
         $car->update([
             'brand' => $request->brand,
             'model' => $request->model,
@@ -149,22 +160,33 @@ class CarController extends Controller
             'status' => $request->status,
             'branch' => $request->branch,
         ]);
-
+    
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imageName = $request->brand . '-' . $request->model . '-' . $request->engine . '-' . Str::random(10) . '.' . $image->extension();
                 $path = $image->storeAs('images/cars', $imageName, 'public');
-
+    
                 CarImage::create([
                     'car_id' => $car->id,
                     'image_path' => $path,
                 ]);
             }
         }
-
-
+    
+        if ($request->hasFile('video')) {
+            // Delete the old video if exists
+            if ($car->video_path) {
+                Storage::disk('public')->delete($car->video_path);
+            }
+    
+            $videoPath = $request->file('video')->store('videos/cars', 'public');
+            $car->video_path = $videoPath;
+            $car->save();
+        }
+    
         return redirect()->route('cars.index')->with('success', 'Car details updated successfully.');
     }
+    
 
     /**
      * Remove the specified resource from storage.

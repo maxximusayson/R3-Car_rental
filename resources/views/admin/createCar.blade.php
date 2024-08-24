@@ -95,6 +95,25 @@
                             <span class="text-red-500">{{ $message }}</span>
                         @enderror
                     </div>
+                    <!-- Video Upload -->
+                    <div class="col-span-full">
+    <label for="video" class="block text-sm font-medium text-gray-700">Upload Video</label>
+    <div class="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+        <div class="text-center">
+            <label for="video"
+                class="relative cursor-pointer rounded-md font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                <span>Upload video</span>
+                <input id="video" name="video" type="file" class="sr-only" accept="video/*">
+            </label>
+            <p class="pl-1">or drag and drop</p>
+        </div>
+        <p class="text-xs text-gray-500">MP4, AVI, MOV up to 50MB</p>
+    </div>
+    @error('video')
+        <span class="text-red-500">{{ $message }}</span>
+    @enderror
+</div>
+
 
 
                     <!-- Description -->

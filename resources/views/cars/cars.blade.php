@@ -393,8 +393,7 @@
 </div>
 
 
-<!-- car section -->
-<!-- car section -->
+<!-- Car Section -->
 <div class="mt-6 mb-2 grid md:grid-cols-3 gap-4 justify-center items-center mx-auto max-w-screen-xl" id="carList">
     @forelse($cars as $car)
         <div class="relative flex flex-col overflow-hidden rounded-lg border border-orange-100 bg-orange-50 shadow-md car-container car-row"
@@ -402,46 +401,51 @@
             data-branch="{{ $car->branch }}"
             data-price="{{ $car->price_per_day }}">
             
-            @if ($car->images->isNotEmpty())
-                <a class="relative mx-3 mt-3 flex h-100 overflow-hidden rounded-xl" href="#" 
+         <!-- Folder-like view for images -->
+<div class="p-0 bg-white rounded-lg shadow-md">
+    <div class="relative grid grid-cols-1 gap-0">
+        <!-- Image Section -->
+        @if ($car->images->isNotEmpty())
+            <a class="relative overflow-hidden rounded-xl" href="#" 
                 data-images="{{ $car->images->pluck('image_path') }}" 
                 data-brand="{{ addslashes($car->brand) }}" 
                 data-model="{{ addslashes($car->model) }}" 
                 data-engine="{{ addslashes($car->engine) }}" 
                 data-price="{{ number_format($car->price_per_day, 2) }}" 
                 data-description="{{ addslashes($car->description) }}" 
-                data-branch="{{ addslashes($car->branch) }}" 
+                data-branch="{{ addslashes($car->branch) }}"
+                data-video-path="{{ addslashes($car->video_path) }}"
                 onclick="showModal(event)">
-                    
-                    <img loading="lazy" class="object-cover w-full h-full" 
-                        src="{{ asset($car->images->first()->image_path) }}" 
-                        alt="Car image" />
-                    
-                    <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
-                        Click to view details
-                    </span>
+                
+                <img loading="lazy" class="object-cover w-full h-full rounded-lg" 
+                    src="{{ asset($car->images->first()->image_path) }}" 
+                    alt="Car image" style="width: 100%; height: auto;" />
 
-                </a>
-            @else
-                <a class="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl" href="#" 
+                    <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
+                    Click to view details
+                </span>
+                
+            </a>
+        @else
+            <a class="relative overflow-hidden rounded-xl" href="#" 
                 data-images="[]" 
                 data-brand="{{ addslashes($car->brand) }}" 
                 data-model="{{ addslashes($car->model) }}" 
                 data-engine="{{ addslashes($car->engine) }}" 
                 data-price="{{ number_format($car->price_per_day, 2) }}" 
                 data-description="{{ addslashes($car->description) }}" 
-                data-branch="{{ addslashes($car->branch) }}" 
+                data-branch="{{ addslashes($car->branch) }}"
+                data-video-path="{{ addslashes($car->video_path) }}"
                 onclick="showModal(event)">
-                    <img loading="lazy" class="object-cover w-full h-full" 
-                        src="{{ asset('path/to/default/image.jpg') }}" 
-                        alt="Default image" />
-                    <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
-                        Click to view details
-                    </span>
+                <img loading="lazy" class="object-cover w-full h-full rounded-lg" 
+                    src="{{ asset('path/to/default/image.jpg') }}" 
+                    alt="Default image" style="width: 100%; height: auto;" />
+            </a>
+        @endif
+    </div>
+</div>
 
-                </a>
-            @endif
-            
+            <!-- Car Details Section -->
             <div class="mt-4 px-5 pb-5">
                 <h5 class="font-semibold text-xl text-gray-800">{{ $car->brand }} {{ $car->model }} {{ $car->engine }}</h5>
                 <p class="text-sm text-gray-600">Branch: {{ $car->branch }}</p>
@@ -449,14 +453,13 @@
                 <div class="mt-2 mb-5 flex items-center justify-between">
                     <span class="text-3xl font-bold text-black">₱{{ number_format($car->price_per_day, 2) }}</span>
                 </div>
-                
-                <div class="flex justify-between">
-                <a href="{{ route('car.reservation', ['car' => $car->id]) }}" 
-                   class="reserve-button flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
-                   style="font-family: 'Century Gothic', sans-serif;">
-                    Rent Now
-                </a>
 
+                <div class="flex justify-between mt-4">
+                    <a href="{{ route('car.reservation', ['car' => $car->id]) }}" 
+                       class="reserve-button flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
+                       style="font-family: 'Century Gothic', sans-serif;">
+                        Rent Now
+                    </a>
                 </div>
                 
                 @auth
@@ -493,209 +496,180 @@
     @endforelse
 </div>
 
-
-
-
-    <style>
-        .availability-indicator {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-
-    .available-date {
-        background-color: #d4edda;
-        color: #155724;
-        border-radius: 3px;
-        padding: 3px 8px;
-        font-size: 0.875rem;
-    }
-        
-    </style>
-
-        <div id="confirmationModal">
-            <div id="confirmationModalContent">
-                <span class="close" onclick="hideConfirmationModal()">&times;</span>
-                <h2>Notice: Important Information Before Renting</h2>
-                <p>Please be aware of the following before proceeding with your reservation:</p>
-                <ul>
-                    <li><strong>Booking Confirmation:</strong> Ensure that all details provided are accurate. Once you proceed, the reservation will be confirmed, and any changes may be subject to cancellation fees.</li>
-                    <li><strong>Identification:</strong> Valid identification and a driver’s license (if applicable) will be required at the time of pickup.</li>
-
-                    <li><strong>Insurance:</strong> Verify that you have adequate insurance coverage or opt-in for additional insurance options provided.</li>
-                    <li><strong>Terms and Conditions:</strong> Familiarize yourself with our rental terms and conditions to avoid any misunderstandings.</li>
-                </ul>
-                <p>Proceeding with this reservation signifies your acceptance of these terms and conditions. If you have any questions or need assistance, please contact our support team.</p>
-                <div class="modal-buttons">
-                    <button id="confirmYes" class="btn-confirm">Yes</button>
-                    <button id="confirmNo" class="btn-cancel" onclick="hideConfirmationModal()">No</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="imageModal">
-            <div id="imageModalContent">
-                <span class="close" onclick="hideModal()">&times;</span>
-                <div id="modalDescription" class="modal-description"></div>
-            </div>
+<!-- Confirmation Modal -->
+<div id="confirmationModal" style="display: none;">
+    <div id="confirmationModalContent" class="bg-white rounded-lg shadow-lg p-6 max-w-lg mx-auto">
+        <span class="close text-black text-xl cursor-pointer" onclick="hideConfirmationModal()">&times;</span>
+        <h2 class="text-xl font-semibold mb-4">Notice: Important Information Before Renting</h2>
+        <p class="mb-4">Please be aware of the following before proceeding with your reservation:</p>
+        <ul class="list-disc list-inside mb-4">
+            <li><strong>Booking Confirmation:</strong> Ensure that all details provided are accurate. Once you proceed, the reservation will be confirmed, and any changes may be subject to cancellation fees.</li>
+            <li><strong>Identification:</strong> Valid identification and a driver’s license (if applicable) will be required at the time of pickup.</li>
+            <li><strong>Insurance:</strong> Verify that you have adequate insurance coverage or opt-in for additional insurance options provided.</li>
+            <li><strong>Terms and Conditions:</strong> Familiarize yourself with our rental terms and conditions to avoid any misunderstandings.</li>
+        </ul>
+        <p class="mb-4">Proceeding with this reservation signifies your acceptance of these terms and conditions. If you have any questions or need assistance, please contact our support team.</p>
+        <div class="flex justify-end space-x-4">
+            <button id="confirmYes" class="btn-confirm bg-green-600 text-white px-4 py-2 rounded-lg">Yes</button>
+            <button id="confirmNo" class="btn-cancel bg-red-600 text-white px-4 py-2 rounded-lg" onclick="hideConfirmationModal()">No</button>
         </div>
     </div>
+</div>
 
-    <script>
-      let currentImageIndex = 0;
-let images = [];
+<!-- Image Modal -->
+<div id="imageModal" style="display: none;">
+    <div id="imageModalContent" class="bg-white rounded-lg shadow-lg p-6 max-w-3xl mx-auto">
+        <span class="close text-black text-xl cursor-pointer" onclick="hideModal()">&times;</span>
+        <div id="modalDescription" class="modal-description"></div>
+    </div>
+</div>
 
-function showModal(event) {
-    event.preventDefault();
-    const target = event.currentTarget;
-    images = JSON.parse(target.getAttribute('data-images').replace(/&quot;/g,'"'));
-    const brand = target.getAttribute('data-brand');
-    const model = target.getAttribute('data-model');
-    const engine = target.getAttribute('data-engine');
-    const price = target.getAttribute('data-price');
-    const description = target.getAttribute('data-description');
-    const branch = target.getAttribute('data-branch');
+<script>
+    let currentImageIndex = 0;
+    let images = [];
 
-    // Create a collage of images
-    let collageImages = images.map((img, index) => 
-        `<img src="${img}" alt="Car Image ${index + 1}" style="width: 100%; height: auto; object-fit: cover;" onclick="viewFitScreen('${img}')">`
-    ).join('');
-
-    // Update modal content
-    const modalContent = `
-        <div style="display: flex; flex-direction: row; align-items: flex-start;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1;">
-                ${collageImages}
-            </div>
-            <div style="max-width: 400px; padding-left: 20px; flex: 1;">
-                <p><strong>Brand:</strong> ${brand}</p>
-                <p><strong>Model:</strong> ${model}</p>
-                <p><strong>Engine:</strong> ${engine}</p>
-                <p><strong>Price:</strong> ₱${price}</p>
-                <p><strong>Description:</strong> ${description}</p>
-                <p><strong>Branch:</strong> ${branch}</p>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('modalDescription').innerHTML = modalContent;
-    document.getElementById('imageModal').style.display = 'flex';
-}
-
-function viewFitScreen(imageSrc) {
-    const imgElement = document.createElement('img');
-    imgElement.src = imageSrc;
-    imgElement.style.maxWidth = '90%';
-    imgElement.style.maxHeight = '90%';
-    imgElement.style.objectFit = 'contain';
-    imgElement.style.cursor = 'pointer';
-    
-    const fitScreenContainer = document.createElement('div');
-    fitScreenContainer.style.position = 'fixed';
-    fitScreenContainer.style.top = '0';
-    fitScreenContainer.style.left = '0';
-    fitScreenContainer.style.width = '100%';
-    fitScreenContainer.style.height = '100%';
-    fitScreenContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    fitScreenContainer.style.display = 'flex';
-    fitScreenContainer.style.justifyContent = 'center';
-    fitScreenContainer.style.alignItems = 'center';
-    fitScreenContainer.style.zIndex = '10000';
-    fitScreenContainer.appendChild(imgElement);
-
-    document.body.appendChild(fitScreenContainer);
-
-    // Click to close the view
-    fitScreenContainer.addEventListener('click', () => {
-        document.body.removeChild(fitScreenContainer);
-    });
-}
-
-function hideModal() {
-    document.getElementById('imageModal').style.display = 'none';
-}
-
-function hideConfirmationModal() {
-    document.getElementById('confirmationModal').style.display = 'none';
-}
-
-document.getElementById('searchInput').addEventListener('input', filterCars);
-document.getElementById('priceRange').addEventListener('change', filterCars);
-document.getElementById('carBranch').addEventListener('change', filterCars);
-
-function filterCars() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const priceRange = document.getElementById('priceRange').value;
-    const carBranch = document.getElementById('carBranch').value;
-
-    document.querySelectorAll('.car-row').forEach(car => {
-        const brand = car.getAttribute('data-brand').toLowerCase();
-        const branch = car.getAttribute('data-branch');
-        const price = parseInt(car.getAttribute('data-price'));
-
-        let priceMin = 0;
-        let priceMax = Infinity;
-
-        if (priceRange) {
-            const [min, max] = priceRange.split('-').map(Number);
-            priceMin = min;
-            priceMax = max;
-        }
-
-        const matchesSearch = !searchInput || brand.includes(searchInput);
-        const matchesPrice = price >= priceMin && price <= priceMax;
-        const matchesBranch = !carBranch || branch === carBranch;
-
-        if (matchesSearch && matchesPrice && matchesBranch) {
-            car.style.display = 'block';
-        } else {
-            car.style.display = 'none';
-        }
-    });
-}
-
-document.querySelectorAll('.reserve-button').forEach(button => {
-    button.addEventListener('click', function(event) {
+    function showModal(event) {
         event.preventDefault();
-        const confirmationModal = document.getElementById('confirmationModal');
-        confirmationModal.style.display = 'flex';
-        document.getElementById('confirmYes').onclick = () => {
-            window.location.href = button.href;
-        };
-        document.getElementById('confirmNo').onclick = hideConfirmationModal;
+        const target = event.currentTarget;
+        images = JSON.parse(target.getAttribute('data-images').replace(/&quot;/g,'"'));
+        const brand = target.getAttribute('data-brand');
+        const model = target.getAttribute('data-model');
+        const engine = target.getAttribute('data-engine');
+        const price = target.getAttribute('data-price');
+        const description = target.getAttribute('data-description');
+        const branch = target.getAttribute('data-branch');
+        const videoPath = target.getAttribute('data-video-path');
+
+        // Create a collage of images
+        let collageImages = images.map((img, index) => 
+            `<img src="${img}" alt="Car Image ${index + 1}" style="width: 100%; height: auto; object-fit: cover;" onclick="viewFitScreen('${img}')">`
+        ).join('');
+
+        // Update modal content
+        const modalContent = `
+            <div style="display: flex; flex-direction: row; align-items: flex-start;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1;">
+                    ${collageImages}
+                </div>
+                <div style="max-width: 400px; padding-left: 20px; flex: 1;">
+                    <p><strong>Brand:</strong> ${brand}</p>
+                    <p><strong>Model:</strong> ${model}</p>
+                    <p><strong>Engine:</strong> ${engine}</p>
+                    <p><strong>Price:</strong> ₱${price}</p>
+                    <p><strong>Description:</strong> ${description}</p>
+                    <p><strong>Branch:</strong> ${branch}</p>
+                    ${videoPath ? `
+                    <!-- Include video playback here if exists -->
+                    <div class="mt-4 rounded-lg overflow-hidden">
+                        <video controls class="w-full rounded-lg">
+                            <source src="${videoPath}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>` : ''}
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalDescription').innerHTML = modalContent;
+        document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    function viewFitScreen(imageSrc) {
+        const imgElement = document.createElement('img');
+        imgElement.src = imageSrc;
+        imgElement.style.maxWidth = '90%';
+        imgElement.style.maxHeight = '90%';
+        imgElement.style.objectFit = 'contain';
+        imgElement.style.cursor = 'pointer';
+        
+        const fitScreenContainer = document.createElement('div');
+        fitScreenContainer.style.position = 'fixed';
+        fitScreenContainer.style.top = '0';
+        fitScreenContainer.style.left = '0';
+        fitScreenContainer.style.width = '100%';
+        fitScreenContainer.style.height = '100%';
+        fitScreenContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        fitScreenContainer.style.display = 'flex';
+        fitScreenContainer.style.justifyContent = 'center';
+        fitScreenContainer.style.alignItems = 'center';
+        fitScreenContainer.style.zIndex = '10000';
+        fitScreenContainer.appendChild(imgElement);
+
+        document.body.appendChild(fitScreenContainer);
+
+        // Click to close the view
+        fitScreenContainer.addEventListener('click', () => {
+            document.body.removeChild(fitScreenContainer);
+        });
+    }
+
+    function hideModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    function hideConfirmationModal() {
+        document.getElementById('confirmationModal').style.display = 'none';
+    }
+
+    document.querySelectorAll('.reserve-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const confirmationModal = document.getElementById('confirmationModal');
+            confirmationModal.style.display = 'flex';
+            document.getElementById('confirmYes').onclick = () => {
+                window.location.href = button.href;
+            };
+            document.getElementById('confirmNo').onclick = hideConfirmationModal;
+        });
     });
-    
-});
 
+    document.getElementById('searchInput').addEventListener('input', filterCars);
+    document.getElementById('priceRange').addEventListener('change', filterCars);
+    document.getElementById('carBranch').addEventListener('change', filterCars);
 
-    </script>
-    <script>
-        document.getElementById('searchInput').addEventListener('input', filterCars);
-document.getElementById('carBranch').addEventListener('change', filterCars);
-document.getElementById('carBrand').addEventListener('change', filterCars);
+    function filterCars() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const priceRange = document.getElementById('priceRange').value;
+        const carBranch = document.getElementById('carBranch').value;
 
-function filterCars() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const selectedBranch = document.getElementById('carBranch').value.toLowerCase();
-    const selectedBrand = document.getElementById('carBrand').value.toLowerCase();
+        document.querySelectorAll('.car-row').forEach(car => {
+            const brand = car.getAttribute('data-brand').toLowerCase();
+            const branch = car.getAttribute('data-branch');
+            const price = parseInt(car.getAttribute('data-price'));
 
-    document.querySelectorAll('.car-row').forEach(car => {
-        const brand = car.getAttribute('data-brand').toLowerCase();
-        const branch = car.getAttribute('data-branch').toLowerCase();
-        const price = parseInt(car.getAttribute('data-price'));
+            let priceMin = 0;
+            let priceMax = Infinity;
 
-        const matchesSearch = !searchInput || car.querySelector('h5').innerText.toLowerCase().includes(searchInput);
-        const matchesBranch = !selectedBranch || branch === selectedBranch;
-        const matchesBrand = !selectedBrand || brand.includes(selectedBrand);
+            if (priceRange) {
+                const [min, max] = priceRange.split('-').map(Number);
+                priceMin = min;
+                priceMax = max;
+            }
 
-        if (matchesSearch && matchesBranch && matchesBrand) {
-            car.style.display = 'block';
-        } else {
-            car.style.display = 'none';
-        }
+            const matchesSearch = !searchInput || brand.includes(searchInput);
+            const matchesPrice = price >= priceMin && price <= priceMax;
+            const matchesBranch = !carBranch || branch === carBranch;
+
+            if (matchesSearch && matchesPrice && matchesBranch) {
+                car.style.display = 'block';
+            } else {
+                car.style.display = 'none';
+            }
+        });
+    }
+
+    document.querySelectorAll('.reserve-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const confirmationModal = document.getElementById('confirmationModal');
+            confirmationModal.style.display = 'flex';
+            document.getElementById('confirmYes').onclick = () => {
+                window.location.href = button.href;
+            };
+            document.getElementById('confirmNo').onclick = hideConfirmationModal;
+        });
     });
-}
+</script>
 
-    </script>
 
     @endsection

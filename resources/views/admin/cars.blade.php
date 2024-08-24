@@ -31,71 +31,82 @@
     </div>
 
     <div class="overflow-x-auto bg-white shadow sm:rounded-lg mx-auto max-w-screen-xl">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Engine</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price per Day</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reserved</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-        </thead>
-        <tbody id="carTableBody" class="bg-white divide-y divide-gray-200">
-            @foreach ($cars as $car)
-                <tr class="hover:bg-gray-100 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center space-x-2">
-                            @if ($car->images && $car->images->count() > 0)
-                                @foreach ($car->images as $image)
-                                    <div class="flex-shrink-0 h-24 w-24 relative group">
-                                        <img class="w-full h-24 object-cover rounded-md" 
-                                             src="{{ asset($image->image_path) }}" 
-                                             alt="{{ $car->brand }} {{ $car->model }}">
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="flex-shrink-0 h-24 w-24">
-                                    <img class="h-24 w-24 object-cover rounded-md" 
-                                         src="{{ asset('path/to/default-image.jpg') }}" 
-                                         alt="default car image">
-                                </div>
-                            @endif
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $car->brand }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->model }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->engine }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($car->price_per_day, 2) }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->quantity }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $car->status == 'Reserved' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
-                            {{ $car->status }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="{{ route('cars.edit', ['car' => $car->id]) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
-                        <form action="{{ route('cars.destroy', ['car' => $car->id]) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-
-            <!-- Displayed when no cars match the search -->
-            @if ($cars->isEmpty())
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
                 <tr>
-                    <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">No cars found.</td>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images/Videos</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Engine</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price per Day</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reserved</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                 </tr>
-            @endif
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody id="carTableBody" class="bg-white divide-y divide-gray-200">
+                @foreach ($cars as $car)
+                    <tr class="hover:bg-gray-100 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center space-x-2">
+                                @if ($car->images && $car->images->count() > 0)
+                                    @foreach ($car->images as $image)
+                                        <div class="flex-shrink-0 h-24 w-24 relative group">
+                                        <img class="w-full h-24 object-cover rounded-md" 
+                                            src="{{ asset($image->image_path) }}" 
+                                            alt="{{ $car->brand }} {{ $car->model }}">
+
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="flex-shrink-0 h-24 w-24">
+                                        <img class="h-24 w-24 object-cover rounded-md" 
+                                             src="{{ asset('path/to/default-image.jpg') }}" 
+                                             alt="default car image">
+                                    </div>
+                                @endif
+
+                                <!-- Display the video if available -->
+                                @if($car->video_path)
+                                    <div class="flex-shrink-0 h-24 w-24 relative group mt-2">
+                                        <video controls class="w-full h-full rounded-md">
+                                            <source src="{{ asset('storage/' . $car->video_path) }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $car->brand }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->model }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->engine }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($car->price_per_day, 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->quantity }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $car->status == 'Reserved' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $car->status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="{{ route('cars.edit', ['car' => $car->id]) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                            <form action="{{ route('cars.destroy', ['car' => $car->id]) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+
+                <!-- Displayed when no cars match the search -->
+                @if ($cars->isEmpty())
+                    <tr>
+                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">No cars found.</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+    </div>
 
     <script>
         // JavaScript for filtering cars based on input and dropdown selection
