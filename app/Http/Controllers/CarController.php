@@ -119,10 +119,12 @@ class CarController extends Controller
      * Display the specified resource.
      */
     public function show(Car $car)
-    {
-        $car->load('images', 'reservations');
-        return view('car.details', compact('car'));
-    }
+{
+    $car->load(['images', 'reservations', 'ratings.user']);
+    return view('car.details', compact('car'));
+}
+    
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -273,6 +275,7 @@ class CarController extends Controller
 
         return $availableDates;
     }
+    
 }
 
 

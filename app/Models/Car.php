@@ -56,5 +56,9 @@ class Car extends Model
 {
     return $this->hasMany(CarVideo::class);
 }
+public function ratings()
+{
+    return $this->hasMany(Rating::class);
+}
     
 }

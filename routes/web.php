@@ -37,6 +37,7 @@ use App\Http\Controllers\SuccessController;
 use App\Http\Controllers\TestFilterController;
 use Illuminate\Auth\Events\Failed;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\RatingController;
 
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
@@ -429,7 +430,8 @@ Route::get('/notifications/export', [ReservationController::class, 'exportNotifi
 Route::post('/notifications/import', [ReservationController::class, 'importNotifications'])->name('notifications.import');
 
 
-
+// ratings
+Route::resource('ratings', RatingController::class)->only(['store', 'update', 'destroy']);
 
 
 
