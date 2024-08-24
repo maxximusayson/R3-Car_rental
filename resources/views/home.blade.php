@@ -7,53 +7,53 @@
 
 <main>
 <div class="container-fluid main-content py-4">
-    <div class="row justify-content-center">
-        <!-- Welcome Message -->
-        <div class="col-12 col-md-10 col-lg-8 text-center">
-            <h1 class="welcome-message mb-3">Welcome to Our Car Rental Service!</h1>
-            <p class="lead text-muted mb-4">We are thrilled to have you here. Explore our wide range of vehicles and find the perfect one for your next journey.</p>
-        </div>
-        
-        <!-- Carousel Section -->
-        <div class="col-12 col-md-10 col-lg-8">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ asset('images/homepage/cover1.png') }}" class="d-block w-100" alt="Cover Image 1">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5 class="text-shadow">Unlock Your Dream Ride</h5>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('images/homepage/cover2.png') }}" class="d-block w-100" alt="Cover Image 2">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5 class="text-shadow">Incredible Car Rentals Await!</h5>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('images/homepage/cover3.png') }}" class="d-block w-100" alt="Cover Image 3">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5 class="text-shadow">Affordable and Reliable</h5>
-                        </div>
+<div class="row justify-content-center">
+    <!-- Carousel Section -->
+    <div class="col-12 col-md-10 col-lg-8">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ asset('images/homepage/cover1.png') }}" class="d-block w-100" alt="Cover Image 1">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5 class="text-shadow">Unlock Your Dream Ride</h5>
                     </div>
                 </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
+                <div class="carousel-item">
+                    <img src="{{ asset('images/homepage/cover2.png') }}" class="d-block w-100" alt="Cover Image 2">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5 class="text-shadow">Incredible Car Rentals Await!</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('images/homepage/cover3.png') }}" class="d-block w-100" alt="Cover Image 3">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5 class="text-shadow">Affordable and Reliable</h5>
+                    </div>
+                </div>
             </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
     </div>
+
+    <!-- Welcome Message -->
+    <div class="col-12 col-md-10 col-lg-8 text-center">
+        <h1 class="welcome-message mb-3">Welcome to Our Car Rental Service!</h1>
+        <p class="lead text-muted mb-4">We are thrilled to have you here. Explore our wide range of vehicles and find the perfect one for your next journey.</p>
+    </div>
 </div>
+
 
 <!-- Our Cars Section -->
 <section class="our-cars py-4">
@@ -329,6 +329,12 @@ body {
     .card {
         margin-bottom: 1rem;
     }
+}
+.carousel-inner img {
+    width: 500%;
+    height: auto; /* Maintain aspect ratio */
+    max-height: 500px; /* Adjust this value as needed */
+    object-fit: cover; /* Ensure the image covers the container */
 }
 </style>
 

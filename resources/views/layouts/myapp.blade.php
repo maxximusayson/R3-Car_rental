@@ -12,7 +12,7 @@
 
     <title>R3 Garage Car Rental</title>
     @vite('resources/css/app.css')
-    <link rel="icon" type="image/x-icon" href="/images/logos/logo1.jpg"> {{-- tab icon --}}
+    <link rel="icon" type="image/x-icon" href="/images/logos/r3.jpg"> {{-- tab icon --}}
     @vite('node_modules/flowbite/dist/flowbite.min.js')
     
     <style>
@@ -44,24 +44,17 @@
             {{-- login & Register buttons --}}
             <div class="flex items-center lg:order-2">
     <a href="{{ route('login') }}">
-        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fill-rule="evenodd" d="M4.464 10l6.716-6.716a.75.75 0 011.06 1.06l-7.5 7.5a.75.75 0 000 1.06l7.5 7.5a.75.75 0 01-1.06 1.06L4.464 12H17.25a.75.75 0 000-1.5H4.464z" clip-rule="evenodd" />
-            </svg>
+        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded">         
             LOGIN
         </button>
     </a>
     <a href="{{ route('register') }}">
-        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM4 10a6 6 0 1112 0H4z" clip-rule="evenodd" />
-                <path d="M9 8a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM7 12a1 1 0 100 2h6a1 1 0 100-2H7z" />
-            </svg>
+        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded">
             REGISTER
         </button>
     </a>
 </div>
+
 
 
             
@@ -76,7 +69,7 @@
         </li>
         <li>
             <a href="{{ route('cars') }}" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer custom-font">Car</span>
+                <span class="group text-center group-hover:cursor-pointer custom-font">Cars</span>
                 <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
             </a>
         </li>
@@ -405,51 +398,173 @@
 @if (Auth::check() && Auth::user()->role == 'admin')
 
 @else
-<footer class="px-4 sm:p-6 bg-[#3B8CBF]">
-    <div class="pt-10 mx-auto max-w-screen-xl relative">
-        <div class="md:flex md:justify-between">
-            <div class="mb-12 md:mb-0 flex justify-center ">
-                <a href="" class="flex items-center">
-                    <img loading="lazy" src="/images/logos/logor3.png" class="mr-3 h-24" alt="Logo" />
-                </a>
-            </div>
-
-            <div class="grid grid-cols-3 gap-8">    
-    <div>
-        <h2 class="mb-6 text-sm font-semibold uppercase text-white" style="font-family: 'Arial Black', Arial, sans-serif;">Follow us</h2>
-        <ul class="text-sm text-white"> 
-            <li class="mb-4">
-                <a href="https://www.facebook.com/r3carrental" class="hover:underline" target='_blank'>Facebook</a>
-            </li>
-            <li>
-                <a href="https://www.facebook.com/messages/t/107981499010175" class="hover:underline" target='_blank'>Email Us</a>
-            </li>
-        </ul>
-    </div>
-    <div>
-        <h2 class="mb-6 text-sm font-semibold uppercase text-white" style="font-family: 'Arial Black', Arial, sans-serif;">Legal</h2>
-        <ul class="text-sm text-white"> <!-- Added text-black class here -->
-            <li class="mb-4">
-                <a href="{{route('privacy_policy')}}" class="hover:underline">Privacy Policy</a>
-            </li>
-            <li>
-                <a href="{{route('terms_conditions')}}" class="hover:underline">Terms &amp; Conditions</a>
-            </li>
-        </ul>
-    </div>
-</div>
-
+<footer class="footer">
+    <div class="footer-top">
+        <p>Get connected with us on social networks:</p>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/r3carrental"><img src="/images/icons/Facebook_icon.svg" alt="Facebook"></a>
+            <a href="#"><img src="/images/icons/google.svg" alt="Google"></a>
+            <a href="https://github.com/iceon25"><img src="/images/icons/github.svg" alt="GitHub"></a>
         </div>
-
-        <hr class="my-6 sm:mx-auto border-black-700 lg:my-8" />
-
-        <div class="flex justify-center">
-        <span class="text-sm text-white" style="font-family: 'Arial Black', Arial, sans-serif;">© 2024 <a href="http://127.0.0.1:8000/" target="_blank" class="hover:underline">R3 Garage Car Rental</a>. All Rights Reserved.</span>
-
+    </div>
+    <div class="footer-main">
+        <div class="footer-section">
+            <h3>R3 Garage Car Rental</h3>
+            <p>Your journey begins with us. Reliable cars, unbeatable service, and a commitment to getting you there.</p>
+            </div>
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <ul>
+                <li><a href="{{route('terms_conditions')}}">Terms & Conditions</a></li>
+                <li><a href="{{route('privacy_policy')}}">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+    <h3>Contact</h3>
+    <ul>
+        <li>
+            <img src="/images/icons/pin.png" alt="Location">
+            <span>36 Friendship St. Friendly Village 1,<br>
+                Marikina City, Philippines<br>
+                Zip Code/Postal code: 1807</span>
+        </li>
+        <li>
+            <img src="/images/icons/phone.png" alt="Phone">
+            <span>+63-955-379-3727</span>
+        </li>
+        <li>
+            <img src="/images/icons/web.png" alt="Email">
+            <span>r3garage@gmail.com</span>
+        </li>
+    </ul>
 </div>
 
+    </div>
+    <div class="footer-bottom">
+        <p>© 2024 R3 Garage Car Rental. All Rights Reserved.</p>
     </div>
 </footer>
+
+<style>
+  .footer {
+    background-color: #2c2c2c;
+    color: white;
+    font-family: 'Century Gothic', Arial, sans-serif;
+    padding: 20px 0;
+    text-align: center; /* Center text and elements inside the footer */
+}
+
+.footer-top {
+    background-color: #3B9ABF; /* Changed the violet color to #3B9ABF */
+    text-align: center;
+    padding: 15px 0;
+}
+
+.footer-top p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.footer-top .social-icons {
+    margin-top: 10px;
+}
+
+.footer-top .social-icons a {
+    margin: 0 10px;
+    display: inline-block;
+}
+
+.footer-top .social-icons img {
+    width: 20px;
+    height: 20px;
+}
+
+.footer-main {
+    display: flex;
+    justify-content: center; /* Center the footer-main content */
+    flex-wrap: wrap;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    text-align: left; /* Align text left within each section */
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin: 20px;
+}
+
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center; /* Center the section titles */
+}
+
+.footer-section p {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    text-align: center; /* Center the list items */
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the content inside list items */
+}
+
+.footer-section ul li img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.footer-section ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: #d1ecff;
+}
+
+.footer-bottom {
+    background-color: #212121;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .footer-main {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-section {
+        margin: 10px 0;
+    }
+}
+
+
+
+
+</style>
+
 @endif
 
 </body>
