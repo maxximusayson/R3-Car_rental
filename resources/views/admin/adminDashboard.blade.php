@@ -296,56 +296,71 @@
 
 <!-- Users Section -->
 <div class="container mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <h2 class="px-6 py-4 text-xl font-semibold text-gray-800 dark:text-gray-300">Current Users</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <h2 class="px-6 py-4 text-2xl font-semibold text-gray-900 dark:text-white">Current Users</h2>
         
         <!-- Search Input -->
         <div class="px-6 py-4 flex items-center">
-            <div class="mr-3">
-                <i class="fas fa-search text-gray-400"></i>
+            <div class="relative w-full md:w-1/3">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fas fa-search text-gray-400"></i>
+                </span>
+                <input type="text" id="userFilter" placeholder="Search users..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:focus:ring-blue-400" onkeyup="filterUsers()">
             </div>
-            <input type="text" id="userFilter" placeholder="Search users..." class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full whitespace-nowrap">
-                <thead>
-                    <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
-                        <th class="px-6 py-3">Profile Picture</th>
-                        <th class="px-6 py-3">Name</th>
-                        <th class="px-6 py-3">Email</th>
-                        <th class="px-6 py-3">Status</th>
-                    </tr>
-                </thead>
-                <tbody id="userTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach ($currentUsers as $user)
-                    <tr class="text-gray-700 dark:text-gray-400">
-                        <!-- Profile Picture -->
-                        <td class="px-6 py-4">
-                            @if($user->profile_picture_url)
-                                <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-10 w-10 rounded-full object-cover">
-                            @else
-                                <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Picture" class="h-10 w-10 rounded-full object-cover">
-                            @endif
-                        </td>
-                        <td class="px-6 py-4">{{ $user->name }}</td>
-                        <td class="px-6 py-4">{{ $user->email }}</td>
-                        <td class="px-6 py-4 flex items-center">
-                            <div class="h-4 w-4 rounded-full mr-2 @if($user->active) bg-green-500 @else bg-red-500 @endif"></div>
-                            <span>@if($user->active) Active @else Not Active @endif</span>
-                        </td>
-                    </tr>
-                    @endforeach
-                    @if ($currentUsers->isEmpty())
-                    <tr class="text-gray-700 dark:text-gray-400" id="noUsersFound">
-                        <td colspan="4" class="text-center py-4">No current users found.</td>
-                    </tr>
-                    @endif
-                </tbody>
-            </table>
+        <div id="userCards" class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($currentUsers as $user)
+            <div class="user-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4 transition-transform transform hover:scale-105" data-name="{{ strtolower($user->name) }}" data-email="{{ strtolower($user->email) }}">
+                <div class="flex items-center space-x-4">
+                    <!-- Profile Picture -->
+                    <div>
+                        @if($user->profile_picture_url)
+                            <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-16 w-16 rounded-full object-cover ring-2 ring-blue-500">
+                        @else
+                            <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Picture" class="h-16 w-16 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600">
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $user->name }}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ $user->email }}</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <div class="h-4 w-4 rounded-full mr-2 @if($user->active) bg-green-500 @else bg-red-500 @endif"></div>
+                    <span class="text-sm font-medium @if($user->active) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif">
+                        @if($user->active) Active @else Not Active @endif
+                    </span>
+                </div>
+            </div>
+            @endforeach
+            @if ($currentUsers->isEmpty())
+            <div class="text-gray-800 dark:text-gray-300 col-span-full text-center py-6">
+                No current users found.
+            </div>
+            @endif
         </div>
     </div>
 </div>
+
+<script>
+function filterUsers() {
+    let input = document.getElementById('userFilter').value.toLowerCase();
+    let cards = document.getElementsByClassName('user-card');
+
+    for (let i = 0; i < cards.length; i++) {
+        let name = cards[i].getAttribute('data-name');
+        let email = cards[i].getAttribute('data-email');
+
+        if (name.includes(input) || email.includes(input)) {
+            cards[i].style.display = "block";
+        } else {
+            cards[i].style.display = "none";
+        }
+    }
+}
+</script>
+
 
 
 <!-- Reservation Table -->

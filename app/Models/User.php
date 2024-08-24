@@ -25,6 +25,8 @@ class User extends Authenticatable
         'profile_picture',
         'valid_id',
         'proof_of_billing',
+        'active', // Add this line
+
     ];
 
     /**
@@ -77,5 +79,6 @@ class User extends Authenticatable
 {
     return $this->hasMany(Alert::class);
 }
+
 
 }

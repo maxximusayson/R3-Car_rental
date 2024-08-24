@@ -11,7 +11,7 @@ use App\Models\Notification; // Ensure this line is present
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class AdminDashboardController extends Controller
+class adminDashboardController extends Controller
 {
     public function __invoke(Request $request)
     {

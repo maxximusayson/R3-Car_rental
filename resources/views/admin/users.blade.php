@@ -73,21 +73,21 @@
                                 {{ $client->created_at->format('Y-m-d') }}
                             </td>
                           <!-- Reservations -->
-<td class="px-6 py-4 text-sm">
-    @if ($client->reservations_count > 0)
-        {{ $client->reservations_count }}
-    @else
-        <span class="text-gray-500">No reservations</span>
-    @endif
-</td>
+                                <td class="px-6 py-4 text-sm">
+                                    @if ($client->reservations_count > 0)
+                                        {{ $client->reservations_count }}
+                                    @else
+                                        <span class="text-gray-500">No reservations</span>
+                                    @endif
+                                </td>
 
                             <!-- Actions -->
                             <td class="px-6 py-4">
                                 <div class="flex justify-center space-x-4">
-                                    <a href="{{ route('clients.edit', $client->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200">
+                                    <a href="" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200">
                                         Edit
                                     </a>
-                                    <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
+                                    <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200">
