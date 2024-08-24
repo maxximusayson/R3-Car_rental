@@ -70,25 +70,6 @@
                         @enderror
                     </div>
 
-                    <!-- Car Stars -->
-                    <!-- <div class="sm:col-span-3">
-                        <label for="stars" class="block text-sm font-medium text-gray-700">Car Stars</label>
-                        <div class="mt-2">
-                            <select id="stars" name="stars"
-                                class="block w-full rounded-lg border border-gray-300 py-2 px-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option disabled selected>⭐⭐⭐⭐⭐</option>
-                                <option value="1">1/5</option>
-                                <option value="2">2/5</option>
-                                <option value="3">3/5</option>
-                                <option value="4">4/5</option>
-                                <option value="5">5/5</option>
-                            </select>
-                        </div>
-                        @error('stars')
-                            <span class="text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div> -->
-
                     <!-- Cover Photos -->
                     <div class="col-span-full">
                         <label for="cover-photos" class="block text-sm font-medium text-gray-700">Cover Photos</label>
@@ -115,31 +96,6 @@
                         @enderror
                     </div>
 
-                    <!-- Video Upload -->
-                    <div class="col-span-full">
-                        <label for="videos" class="block text-sm font-medium text-gray-700">Upload Videos</label>
-                        <div class="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                            <div class="text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 7v4a1 1 0 001 1h16a1 1 0 001-1V7M5 10V5a1 1 0 011-1h12a1 1 0 011 1v5m-9 8v3m0 0H8m2 0h4m0 0v-3"></path>
-                                </svg>
-                                <div class="mt-4">
-                                    <label for="video-upload"
-                                        class="relative cursor-pointer rounded-md font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
-                                        <span>Upload videos</span>
-                                        <input id="video-upload" name="videos[]" type="file" multiple accept="video/*" class="sr-only">
-                                    </label>
-                                    <p class="pl-1">or drag and drop</p>
-                                </div>
-                                <p class="text-xs text-gray-500">MP4, AVI, MKV up to 50MB each</p>
-                            </div>
-                        </div>
-                        @error('videos')
-                            <span class="text-red-500">{{ $message }}</span>
-                        @enderror
-                    </div>
 
                     <!-- Description -->
                     <div class="sm:col-span-6">

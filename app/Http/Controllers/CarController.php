@@ -76,7 +76,6 @@ class CarController extends Controller
             'price_per_day' => 'required|numeric',
             'stars' => 'required|integer|min:1|max:5',
             'images.*' => 'nullable|mimes:jpg,jpeg,png,gif|max:10240',
-            'videos.*' => 'nullable|mimes:mp4|max:51200', // Validate MP4 video files
             'description' => 'nullable|string',
             'insurance_status' => 'required|string',
             'status' => 'required|string',
@@ -102,13 +101,6 @@ class CarController extends Controller
                 $car->images()->create(['path' => $path]);
             }
         }
-
-       // Handle Video Upload
-    if ($request->hasFile('video')) {
-        $video = $request->file('video');
-        $videoPath = $video->store('images', 'public');
-        $car->video_path = $videoPath;
-    }
 
         return redirect()->route('cars.index')->with('success', 'Car details created successfully.');
     }
@@ -145,7 +137,6 @@ class CarController extends Controller
             'branch' => 'required|string',
             'description' => 'nullable|string',
             'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:10240', // Validate multiple images
-            'video' => 'nullable|mimes:mp4|max:51200', // Validate video file
         ]);
 
         $car->update([
@@ -171,19 +162,6 @@ class CarController extends Controller
             }
         }
 
-        if ($request->hasFile('video')) {
-            // Delete old video
-            if ($car->video_path) {
-                Storage::disk('public')->delete($car->video_path);
-            }
-
-            $video = $request->file('video');
-            $videoName = $request->brand . '-' . $request->model . '-' . Str::random(10) . '.' . $video->extension();
-            $path = $video->storeAs('videos/cars', $videoName, 'public');
-
-            $car->video_path = $path;
-            $car->save();
-        }
 
         return redirect()->route('cars.index')->with('success', 'Car details updated successfully.');
     }
@@ -335,5 +313,3 @@ class CarController extends Controller
 
     //     return $branches[$location] ?? 'Default Branch';
     // }
-
-

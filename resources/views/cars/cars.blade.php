@@ -402,10 +402,9 @@
             data-branch="{{ $car->branch }}"
             data-price="{{ $car->price_per_day }}">
             
-            @if ($car->images->isNotEmpty() || $car->videos->isNotEmpty())
+            @if ($car->images->isNotEmpty())
                 <a class="relative mx-3 mt-3 flex h-100 overflow-hidden rounded-xl" href="#" 
                 data-images="{{ $car->images->pluck('image_path') }}" 
-                data-videos="{{ $car->videos->pluck('path') }}" 
                 data-brand="{{ addslashes($car->brand) }}" 
                 data-model="{{ addslashes($car->model) }}" 
                 data-engine="{{ addslashes($car->engine) }}" 
@@ -414,16 +413,9 @@
                 data-branch="{{ addslashes($car->branch) }}" 
                 onclick="showModal(event)">
                     
-                    @if ($car->videos->isNotEmpty())
-                        <video class="object-cover w-full h-full" autoplay muted loop>
-                            <source src="{{ asset($car->videos->first()->path) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    @else
-                        <img loading="lazy" class="object-cover w-full h-full" 
-                            src="{{ asset($car->images->first()->image_path) }}" 
-                            alt="Car image" />
-                    @endif
+                    <img loading="lazy" class="object-cover w-full h-full" 
+                        src="{{ asset($car->images->first()->image_path) }}" 
+                        alt="Car image" />
                     
                     <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
                         Click to view details
@@ -433,7 +425,6 @@
             @else
                 <a class="relative mx-3 mt-3 flex h-80 overflow-hidden rounded-xl" href="#" 
                 data-images="[]" 
-                data-videos="[]" 
                 data-brand="{{ addslashes($car->brand) }}" 
                 data-model="{{ addslashes($car->model) }}" 
                 data-engine="{{ addslashes($car->engine) }}" 

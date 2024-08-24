@@ -35,7 +35,6 @@
         <thead class="bg-gray-50">
             <tr>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Videos</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Engine</th>
@@ -67,39 +66,6 @@
                             @endif
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-    <div class="flex items-center space-x-2">
-        @if ($car->image_path)
-            <div class="flex-shrink-0 h-24 w-24">
-                <img loading="lazy" class="w-full h-24 object-cover object-center"
-                    src="{{ asset('storage/' . $car->image_path) }}"
-                    alt="{{ $car->brand }} {{ $car->model }}">
-            </div>
-        @else
-            <div class="flex-shrink-0 h-24 w-24">
-                <img class="h-24 w-24 object-cover rounded-md" loading="lazy" 
-                    src="{{ asset('path/to/default-image.jpg') }}" alt="default car image">
-            </div>
-        @endif
-    </div>
-</td>
-<td class="px-6 py-4 whitespace-nowrap">
-    <div class="flex items-center space-x-2">
-        @if ($car->video_path)
-            <div class="flex-shrink-0 h-24 w-24">
-                <video class="h-24 w-24 object-cover rounded-md" controls>
-                    <source src="{{ asset('storage/' . $car->video_path) }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        @else
-            <div class="flex-shrink-0 h-24 w-24">
-                <p>No videos available</p>
-            </div>
-        @endif
-    </div>
-</td>
-
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $car->brand }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->model }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->engine }}</td>
@@ -124,13 +90,12 @@
             <!-- Displayed when no cars match the search -->
             @if ($cars->isEmpty())
                 <tr>
-                    <td colspan="9" class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">No cars found.</td>
+                    <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">No cars found.</td>
                 </tr>
             @endif
         </tbody>
     </table>
 </div>
-
 
     <script>
         // JavaScript for filtering cars based on input and dropdown selection
@@ -146,9 +111,9 @@
 
             for (let i = 0; i < rows.length; i++) {
                 const cells = rows[i].getElementsByTagName('td');
-                const brand = cells[2].textContent.trim().toLowerCase();
-                const model = cells[3].textContent.trim().toLowerCase();
-                const engine = cells[4].textContent.trim().toLowerCase();
+                const brand = cells[1].textContent.trim().toLowerCase();
+                const model = cells[2].textContent.trim().toLowerCase();
+                const engine = cells[3].textContent.trim().toLowerCase();
 
                 const brandMatch = brandValue === '' || brand.includes(brandValue);
                 const searchMatch = model.includes(filterValue) || engine.includes(filterValue);
