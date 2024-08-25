@@ -200,7 +200,7 @@ let isEditMode = false;
 let currentEditId = null;
 
 // List of sensitive words
-const sensitiveWords = ["nigga", "fuck", "shit", "bitch", "cunt", "asshole", "faggot", "whore", "slut", "dick", "gago","putang ina", "bobo", "tanga", "pussy", "angtangamo","tangina"];
+const sensitiveWords = ["nigga", "fuck", "shit", "bitch", "cunt", "asshole", "faggot", "whore", "slut", "dick", "gago","putang ina", "bobo", "tanga", "pussy", "angtangamo","tangina",];
 
 // Function to check if a comment contains sensitive words
 function containsSensitiveWords(comment) {

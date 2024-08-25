@@ -73,6 +73,11 @@
                     @enderror
                 </div>
 
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+                    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
                 <!-- File Uploads -->
                 <div class="form-group mb-6">
                     <label for="driver_license">Upload Driver's License ID</label>
@@ -280,10 +285,12 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-<script>
-    
-$(document).ready(function() {
-    
+    <script>
+        
+        $(document).ready(function() {
+    // Array of already booked dates, passed from the backend
+    var bookedDates = @json($bookedDates);
+
     // Initialize Flatpickr on both fields
     function initializeFlatpickr() {
         var today = new Date();
@@ -293,6 +300,7 @@ $(document).ready(function() {
         flatpickr("#start_date", {
             minDate: minDate,
             dateFormat: "Y-m-d", // Set format to match backend expectations
+            disable: bookedDates, // Disable booked dates
             onChange: function(selectedDates) {
                 updateEndDate(selectedDates[0]);
                 $('#end_date').prop('disabled', false); // Enable end date input when start date is selected
@@ -301,10 +309,10 @@ $(document).ready(function() {
         });
 
         flatpickr("#end_date", {
-            minDate: minDate,
             dateFormat: "Y-m-d", // Set format to match backend expectations
+            disable: bookedDates, // Disable booked dates
             allowInput: true, // Allow manual input of dates
-            enable: false // Initially disable end date picker
+            onChange: calculateTotals // Recalculate totals on date change
         });
     }
 
@@ -313,8 +321,7 @@ $(document).ready(function() {
         if (startDate) {
             var minEndDate = new Date(startDate.getTime());
             minEndDate.setDate(startDate.getDate() + 1); // End date must be at least one day after start date
-
-            endPicker.set('minDate', minEndDate.toISOString().split('T')[0]);
+            endPicker.set('minDate', minEndDate);
         }
     }
 
@@ -324,7 +331,7 @@ $(document).ready(function() {
 
         if (startDate && endDate && startDate <= endDate) {
             var duration = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))); // Minimum 1 day
-            var pricePerDay = {{ $car->price_per_day }}; // 3000 PHP per day
+            var pricePerDay = {{ $car->price_per_day }}; // Price per day from the backend
             var totalPrice = duration * pricePerDay;
             var downpayment = 1000; // Fixed downpayment amount
             var grandTotal = totalPrice - downpayment; // Total amount due minus downpayment
@@ -357,11 +364,6 @@ $(document).ready(function() {
 
         $('#confirm-reservation').prop('disabled', !enableButton);
     }
-
-    // Handle form changes to calculate total price and duration
-    $('#start_date, #end_date').change(function() {
-        calculateTotals();
-    });
 
     // Handle payment method selection
     $('.payment-button').click(function() {
@@ -423,7 +425,6 @@ $(document).ready(function() {
         }
     });
 
-
     // Handle modal open and close
     $('#openModal').click(function() {
         $('#termsModal').removeClass('hidden');
@@ -440,15 +441,6 @@ $(document).ready(function() {
         }
     });
 
-    // Initialize Flatpickr
-    initializeFlatpickr();
-
-    // Validate form when terms checkbox changes
-    $('#agree').change(function() {
-        validateForm();
-    });
-
-    
     // Handle the cancel button click
     $('#cancel-reservation').click(function() {
         // Show the confirmation modal
@@ -472,17 +464,19 @@ $(document).ready(function() {
         if (event.target === this) {
             $(this).addClass('hidden');
         }
-    }); 
+    });
 
-    // Initialize Flatpickr
+    // Initialize Flatpickr and validate form
     initializeFlatpickr();
+    validateForm();
 
     // Validate form when terms checkbox changes
     $('#agree').change(function() {
         validateForm();
     });
 });
-</script>
+
+    </script>
 
 <style>
 .stepper-container {

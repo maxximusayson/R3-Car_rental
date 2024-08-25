@@ -62,13 +62,25 @@ class ReservationController extends Controller
     {
         $user = auth()->user();
         $car = Car::find($car_id);
-        return view('reservation.create', compact('car', 'user'));
+    
+        // Fetch all booked dates for this car
+        $bookedDates = Reservation::where('car_id', $car_id)
+            ->pluck('start_date', 'end_date')
+            ->flatMap(function($startDate, $endDate) {
+                $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+                return $period->toArray();
+            })->map(function($date) {
+                return $date->format('Y-m-d');
+            })->toArray();
+    
+        return view('reservation.create', compact('car', 'user', 'bookedDates'));
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $car_id)
+   public function store(Request $request, $car_id)
 {
     // Validate the request including the file uploads
     $request->validate([
@@ -83,6 +95,19 @@ class ReservationController extends Controller
 
     $start = Carbon::parse($request->start_date);
     $end = Carbon::parse($request->end_date);
+
+    // Check if the selected dates are already booked for this car
+    $isBooked = Reservation::where('car_id', $car_id)
+        ->where(function($query) use ($start, $end) {
+            $query->whereBetween('start_date', [$start, $end])
+                  ->orWhereBetween('end_date', [$start, $end])
+                  ->orWhereRaw('? BETWEEN start_date AND end_date', [$start])
+                  ->orWhereRaw('? BETWEEN start_date AND end_date', [$end]);
+        })->exists();
+
+    if ($isBooked) {
+        return redirect()->back()->withErrors(['date_error' => 'The selected dates are already booked. Please choose different dates.']);
+    }
 
     // Handle the file uploads and store them in the public/uploads directory
     $driverLicensePath = $request->file('driver_license')->move(public_path('uploads/driver_license'), $request->file('driver_license')->getClientOriginalName());
@@ -129,7 +154,6 @@ class ReservationController extends Controller
 
     return redirect()->route('reservation.thankyou');
 }
-
 
     
     
@@ -333,10 +357,21 @@ public function destroy($id)
 
     // Delete the uploaded files if necessary
     if ($reservation->driver_license) {
-        unlink(public_path($reservation->driver_license));
+        $driverLicensePath = public_path($reservation->driver_license);
+        if (file_exists($driverLicensePath)) {
+            unlink($driverLicensePath);
+        } else {
+            Log::error('Driver license file not found: ' . $driverLicensePath);
+        }
     }
+
     if ($reservation->valid_id) {
-        unlink(public_path($reservation->valid_id));
+        $validIdPath = public_path($reservation->valid_id);
+        if (file_exists($validIdPath)) {
+            unlink($validIdPath);
+        } else {
+            Log::error('Valid ID file not found: ' . $validIdPath);
+        }
     }
 
     // Delete the reservation
@@ -344,6 +379,7 @@ public function destroy($id)
 
     return redirect()->back()->with('success', 'Reservation deleted successfully.');
 }
+
 
 
 // Method to export notifications and bookings to CSV
@@ -429,6 +465,7 @@ public function importNotifications(Request $request)
 
     return redirect()->back()->with('error', 'Please upload a valid CSV file.');
 }
+
 
 
 }
