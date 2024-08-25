@@ -208,7 +208,7 @@
             <a href="" class="nav-link">
                 <i class="fas fa-map-marker-alt"></i> GPS TRACKING
             </a>
-            <a href="{{ route('cms') }}" class="nav-link">
+            <a href="" class="nav-link">
                 <i class="fas fa-cogs"></i> CMS
             </a>
 

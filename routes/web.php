@@ -37,6 +37,7 @@ use App\Http\Controllers\SuccessController;
 use App\Http\Controllers\TestFilterController;
 use Illuminate\Auth\Events\Failed;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CMSController;
 use App\Http\Controllers\RatingController;
 
 // ------------------- customer routes --------------------------------------- //
@@ -102,7 +103,6 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
     
 
-    Route::get('/cms', [App\Http\Controllers\CMSController::class, 'index'])->name('cms');
 
 // Define resourceful routes for posts
 Route::resource('posts', 'PostController');
@@ -374,6 +374,9 @@ Route::post('/request-otp', [OTPController::class, 'sendOtp'])->name('request.ot
 // search filter
 Route::get('/car/search', [CarController::class, 'search'])->name('car.search');
 
+// users
+Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+
 
 
 
@@ -434,8 +437,6 @@ Route::post('/notifications/import', [ReservationController::class, 'importNotif
 
 // ratings
 Route::resource('ratings', RatingController::class)->only(['store', 'update', 'destroy']);
-
-
 
 
 
