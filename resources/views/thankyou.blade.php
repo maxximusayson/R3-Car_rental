@@ -2,6 +2,107 @@
 
 @section('content')
 
+
+
+<div class="container">
+    <div class="stepper-container">
+        <div class="stepper-item" id="step-1">
+            <div class="step-counter">1</div>
+            <div class="step-name">Fill up Information and Payments</div>
+        </div>
+        <div class="stepper-item active" id="step-2">
+            <div class="step-counter">2</div>
+            <div class="step-name">Review</div>
+        </div>
+        <div class="stepper-item" id="step-3">
+            <div class="step-counter">3</div>
+            <div class="step-name">Done!</div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row bg-white rounded-md p-6" id="review-section">
+        <div class="md:w-2/3 md:border-r border-gray-800 pr-4 text-center">
+            <div class="w-32 mt-10 mx-auto">
+                <img loading="lazy" src="/images/logos/R3LOGO.jpg" alt="R3 Logo">
+            </div>
+            <h1 class="font-bold text-gray-900 text-4xl mt-4">Review Your Information and Payment Details.</h1>
+            <p class="text-gray-600 mt-2">Thank you for choosing and trusting our car company.</p>
+            <div class="summary-container">
+                <div class="summary-item">
+                    <label>Full Name:</label>
+                    <span>{{ $reservation['full_name'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Email:</label>
+                    <span>{{ $reservation['email'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Start Date:</label>
+                    <span>{{ $reservation['start_date'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>End Date:</label>
+                    <span>{{ $reservation['end_date'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Car:</label>
+                    <span>{{ $reservation['car_brand'] }} {{ $reservation['car_model'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>Price per Day:</label>
+                    <span>{{ $reservation['price_per_day'] }} ₱</span>
+                </div>
+                <div class="summary-item">
+                    <label>Mode of Payment:</label>
+                    <span>{{ $reservation['payment_method'] }}</span>
+                </div>
+                <div class="summary-item">
+    <label>Driver's License:</label>
+    @if(isset($reservation['driver_license']) && !empty($reservation['driver_license']))
+        <a href="{{ $reservation['driver_license'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+    @else
+        <span class="text-gray-600">Not provided</span>
+    @endif
+</div>
+<div class="summary-item">
+    <label>Valid ID:</label>
+    @if(isset($reservation['valid_id']) && !empty($reservation['valid_id']))
+        <a href="{{ $reservation['valid_id'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+    @else
+        <span class="text-gray-600">Not provided</span>
+    @endif
+</div>
+
+            </div>
+            <div class="button-container">
+                <button class="button button-confirm px-4 py-2 rounded-md" id="confirm-button">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="done-container" id="done-section" style="display: none;">
+        <h1>Reservation Confirmed!</h1>
+        <p>Thank you for your reservation. We will contact you soon with further details.</p>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('confirm-button').addEventListener('click', function() {
+        document.getElementById('review-section').style.display = 'none';
+        document.getElementById('done-section').style.display = 'block';
+
+        // Update stepper to mark "Done" as active
+        document.getElementById('step-2').classList.remove('active');
+        document.getElementById('step-3').classList.add('active');
+
+        // Optionally, you can make an AJAX request to update the reservation status or perform other actions
+        // Example:
+        // fetch('/reservation/confirm', { method: 'POST', body: JSON.stringify({ reservation_id: {} }) })
+        //     .then(response => response.json())
+        //     .then(data => console.log(data));
+    });
+</script>
 <style>
     .stepper-container {
         display: flex;
@@ -191,105 +292,4 @@
         color: #333;
     }
 </style>
-
-<div class="container">
-    <div class="stepper-container">
-        <div class="stepper-item" id="step-1">
-            <div class="step-counter">1</div>
-            <div class="step-name">Fill up Information and Payments</div>
-        </div>
-        <div class="stepper-item active" id="step-2">
-            <div class="step-counter">2</div>
-            <div class="step-name">Review</div>
-        </div>
-        <div class="stepper-item" id="step-3">
-            <div class="step-counter">3</div>
-            <div class="step-name">Done!</div>
-        </div>
-    </div>
-
-    <div class="flex flex-col md:flex-row bg-white rounded-md p-6" id="review-section">
-        <div class="md:w-2/3 md:border-r border-gray-800 pr-4 text-center">
-            <div class="w-32 mt-10 mx-auto">
-                <img loading="lazy" src="/images/logos/R3LOGO.jpg" alt="R3 Logo">
-            </div>
-            <h1 class="font-bold text-gray-900 text-4xl mt-4">Review Your Information and Payment Details.</h1>
-            <p class="text-gray-600 mt-2">Thank you for choosing and trusting our car company.</p>
-            <div class="summary-container">
-                <div class="summary-item">
-                    <label>Full Name:</label>
-                    <span>{{ $reservation['full_name'] }}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Email:</label>
-                    <span>{{ $reservation['email'] }}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Start Date:</label>
-                    <span>{{ $reservation['start_date'] }}</span>
-                </div>
-                <div class="summary-item">
-                    <label>End Date:</label>
-                    <span>{{ $reservation['end_date'] }}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Car:</label>
-                    <span>{{ $reservation['car_brand'] }} {{ $reservation['car_model'] }}</span>
-                </div>
-                <div class="summary-item">
-                    <label>Price per Day:</label>
-                    <span>{{ $reservation['price_per_day'] }} ₱</span>
-                </div>
-                <div class="summary-item">
-                    <label>Mode of Payment:</label>
-                    <span>{{ $reservation['payment_method'] }}</span>
-                </div>
-                <div class="summary-item">
-    <label>Driver's License:</label>
-    @if(isset($reservation['driver_license']) && !empty($reservation['driver_license']))
-        <a href="{{ $reservation['driver_license'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
-    @else
-        <span class="text-gray-600">Not provided</span>
-    @endif
-</div>
-<div class="summary-item">
-    <label>Valid ID:</label>
-    @if(isset($reservation['valid_id']) && !empty($reservation['valid_id']))
-        <a href="{{ $reservation['valid_id'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
-    @else
-        <span class="text-gray-600">Not provided</span>
-    @endif
-</div>
-
-            </div>
-            <div class="button-container">
-                <button class="button button-confirm px-4 py-2 rounded-md" id="confirm-button">Confirm</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="done-container" id="done-section" style="display: none;">
-        <h1>Reservation Confirmed!</h1>
-        <p>Thank you for your reservation. We will contact you soon with further details.</p>
-    </div>
-</div>
-
-
-<script>
-    document.getElementById('confirm-button').addEventListener('click', function() {
-        document.getElementById('review-section').style.display = 'none';
-        document.getElementById('done-section').style.display = 'block';
-
-        // Update stepper to mark "Done" as active
-        document.getElementById('step-2').classList.remove('active');
-        document.getElementById('step-3').classList.add('active');
-
-        // Optionally, you can make an AJAX request to update the reservation status or perform other actions
-        // Example:
-        // fetch('/reservation/confirm', { method: 'POST', body: JSON.stringify({ reservation_id: {} }) })
-        //     .then(response => response.json())
-        //     .then(data => console.log(data));
-    });
-</script>
-
 @endsection
