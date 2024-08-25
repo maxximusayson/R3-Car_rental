@@ -46,13 +46,14 @@
 
                 <div class="mb-6 flex items-center justify-between">
                     <div>
-                        <input id="remember" type="checkbox" name="remember" class="form-checkbox h-5 w-5 text-blue-600">
+                        <input id="remember" type="checkbox" name="remember" class="form-checkbox h-5 w-5 text-blue-600" {{ old('remember') ? 'checked' : '' }}>
                         <label for="remember" class="ml-2 text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Remember me</label>
                     </div>
                     <div class="text-sm">
                         <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline" style="font-family: 'Century Gothic', sans-serif;">Forgot Password?</a>
                     </div>
                 </div>
+
 
                 <div class="mb-6">
                     <div id="captcha" class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>

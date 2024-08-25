@@ -315,77 +315,316 @@
 
     
     <!---------------------------------------------------------------- chatbot ------------------------------------------------------------------->
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R3 Garage Car Rental Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-    <body>
+        #chatbot {
+            width: 400px;
+            height: 600px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
-<script>
-    var botmanWidget = {
-        title: 'R3 Garage Car Rental',
-        introMessage: "Hi! I'm here to help you with your car rental needs.",
-        mainColor: '#f7c605',
-        bubbleBackground: '#0e76a8',
-        aboutText: 'R3 Garage Car Rental Service',
-        placeholderText: 'Ask me something...',
-        displayMessageTime: true,
-    };
+        #chatbotHeader {
+            background-color: #0056b3;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    var floatingChat = document.getElementById('floating-chat');
-    var chatMessages = document.getElementById('chat-messages');
+        #chatbotHeader button {
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
 
-    var botmanWidgetInstance = new BotManChatWidget(botmanWidget);
+        #chatbotHeader button:hover {
+            color: #ddd;
+        }
 
-    function handleSuggestionClick(choice) {
-        botmanWidgetInstance.addMessage('You selected: ' + choice);
-        botmanWidgetInstance.sendMessage(choice);
-    }
+        #chatbotMessages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            scroll-behavior: smooth;
+        }
 
+        .message {
+            margin: 10px 0;
+            display: flex;
+            align-items: flex-start;
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-    botmanWidgetInstance.listen(function(message) {
-        var messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        messageElement.textContent = message.text;
-        chatMessages.appendChild(messageElement);
-    });
+        .messageBubble {
+            padding: 12px 20px;
+            border-radius: 25px;
+            max-width: 100%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: inline-block;
+            overflow-wrap: break-word;
+        }
 
+        .botMessage {
+            flex-direction: row;
+        }
 
-    function sendAutoPilotMessages() {
-        botmanWidgetInstance.addMessage('Hello! Welcome to R3 Garage Car Rental. How can I assist you today?');
-        
-        setTimeout(function() {
-            botmanWidgetInstance.sendMessage('How can I assist you today?');
-            botmanWidgetInstance.sendMessage({
-                text: 'Please select an option below:',
-                quick_replies: [
-                    {
-                        title: 'Browse cars',
-                        payload: 'browse cars',
-                    },
-                    {
-                        title: 'What\'s on sale?',
-                        payload: 'what\'s on sale?',
-                    },
-                    {
-                        title: 'Learn about us',
-                        payload: 'learn about us',
-                    },
-                    {
-                        title: 'Rental process',
-                        payload: 'rental process',
-                    },
-                    {
-                        title: 'Contact support',
-                        payload: 'contact support',
-                    }
-                ]
-            });
-        }, 1000); 
-    }
+        .botMessage img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
 
+        .botMessage .messageBubble {
+            background-color: #e1f5fe;
+            border: 1px solid #b3e5fc;
+            margin-left: 10px;
+        }
 
-    window.addEventListener('load', sendAutoPilotMessages);
-</script>
+        .userMessage {
+            justify-content: flex-end;
+            text-align: right;
+        }
+
+        .userMessage .messageBubble {
+            background-color: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+            margin-right: 10px;
+        }
+
+        .typing {
+            font-style: italic;
+            color: gray;
+        }
+
+        #chatbotInput {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quickReply {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 5px 5px 0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quickReply:hover {
+            background-color: #0056b3;
+        }
+
+        #chatbotTrigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 50px;
+            color: #007bff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        #chatbotTrigger:hover {
+            color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot">
+        <div id="chatbotHeader">
+            R3 Garage Car Rental
+            <button id="minimizeChat" title="Minimize"><i class="fas fa-minus"></i></button>
+            <button id="closeChat" title="Close"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="chatbotMessages"></div>
+        <div id="chatbotInput"></div>
+    </div>
+
+    <!-- Chatbot Trigger Icon -->
+    <button id="chatbotTrigger"><i class="fas fa-comments"></i></button>
+
+    <script>
+        const botProfileImage = '/images/icons/chatbot.png'; // Image URL for bot's profile
+
+        // Show the chatbot when the trigger icon is clicked
+        document.getElementById('chatbotTrigger').addEventListener('click', function () {
+            document.getElementById('chatbot').style.display = 'flex';
+            document.getElementById('chatbotTrigger').style.display = 'none';
+
+            // Automatically respond with greeting and options
+            const chatbotMessages = document.getElementById('chatbotMessages');
+
+            // Add greeting message with typing effect
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotMessage('Hi there! Welcome to R3 Car Rental Garage. Please let us know how we can help you.');
+
+                // Add quick reply buttons
+                appendQuickReplies();
+            }, 3000); // 3-second typing delay
+        });
+
+        // Minimize the chatbot
+        document.getElementById('minimizeChat').addEventListener('click', function () {
+            document.getElementById('chatbot').style.display = 'none';
+            document.getElementById('chatbotTrigger').style.display = 'block';
+        });
+
+        // Close the chatbot and clear messages
+        document.getElementById('closeChat').addEventListener('click', function () {
+            document.getElementById('chatbot').style.display = 'none';
+            document.getElementById('chatbotTrigger').style.display = 'block';
+            document.getElementById('chatbotMessages').innerHTML = ''; // Clear messages
+        });
+
+        function selectOption(option) {
+            const chatbotMessages = document.getElementById('chatbotMessages');
+
+            // Add user's selection to the chat
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'userMessage');
+            userMessage.innerHTML = `<div class="messageBubble">${option}</div>`;
+            chatbotMessages.appendChild(userMessage);
+
+            // Show typing indicator and then respond based on the selected option
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                const botResponse = document.createElement('div');
+                botResponse.classList.add('message', 'botMessage');
+                botResponse.innerHTML = `<img src="${botProfileImage}" alt="Bot"><div class="messageBubble">`;
+
+                if (option === 'Rental Rates') {
+                    botResponse.innerHTML += 'Economy Cars: $25/day<br>SUVs: $50/day<br>Luxury Cars: $100/day<br>Note: Rentals outside Metro Manila will incur an additional charge of ₱500 - ₱1000.';
+                } else if (option === 'Rental Policies') {
+                    botResponse.innerHTML += 'Customers must leave one valid ID for the duration of the rental period. Only drivers listed in the rental agreement are authorized to operate the rented vehicle.';
+                } else if (option === 'Book a Car') {
+                    botResponse.innerHTML += 'Please visit our Car Listing page to choose and book your car.';
+                } else if (option === 'Contact Us') {
+                    botResponse.innerHTML += 'Phone: +1 234 567 890<br>Email: support@r3garage.com<br>Address: 123 Main St, Metro Manila';
+                } else if (option === 'FAQs – Frequently Asked Questions') {
+                    botResponse.innerHTML += 'FAQs: Payment Options (Gcash and Cash only) and Late Returns (subject to an additional hourly rate).';
+                }
+
+                botResponse.innerHTML += '</div>'; // Closing the message bubble div
+                chatbotMessages.appendChild(botResponse);
+
+                // Scroll to the bottom of the chat
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                // Re-append quick reply buttons after the bot response
+                appendQuickReplies();
+            }, 3000); // 3-second response delay
+        }
+
+        function showTypingIndicator() {
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typingIndicator';
+            typingIndicator.classList.add('message', 'typing');
+            typingIndicator.textContent = 'Typing...';
+            chatbotMessages.appendChild(typingIndicator);
+
+            // Scroll to the bottom of the chat
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function addBotMessage(message) {
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('message', 'botMessage');
+            botMessage.innerHTML = `<img src="${botProfileImage}" alt="Bot"><div class="messageBubble">${message}</div>`;
+            chatbotMessages.appendChild(botMessage);
+        }
+
+        function appendQuickReplies() {
+            const chatbotMessages = document.getElementById('chatbotMessages');
+
+            const quickReplies = document.createElement('div');
+            quickReplies.style.display = 'flex';
+            quickReplies.style.flexWrap = 'wrap';
+            quickReplies.style.justifyContent = 'flex-start';
+            quickReplies.innerHTML = `
+                <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
+                <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
+                <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
+                <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
+                <button class="quickReply" onclick="selectOption('FAQs – Frequently Asked Questions')">FAQs</button>
+            `;
+            chatbotMessages.appendChild(quickReplies);
+
+            // Scroll to the bottom of the chat
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+    </script>
+
 </body>
+
+
 
 
 

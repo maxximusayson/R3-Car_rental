@@ -80,7 +80,10 @@ class LoginController extends Controller
             ])->withInput($request->only('email'));
         }
 
-        if (Auth::attempt($request->only('email', 'password'))) {
+        // Check if the "Remember Me" checkbox is checked
+        $remember = $request->has('remember');
+
+        if (Auth::attempt($request->only('email', 'password'), $remember)) {
             // Update active status
             Auth::user()->update(['active' => true]);
 
