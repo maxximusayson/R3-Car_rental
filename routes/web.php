@@ -371,6 +371,8 @@ Route::post('/request-otp', [OTPController::class, 'sendOtp'])->name('request.ot
 
 
 
+// search filter
+Route::get('/car/search', [CarController::class, 'search'])->name('car.search');
 
 
 

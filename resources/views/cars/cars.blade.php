@@ -2,26 +2,6 @@
 
 @section('content')
 
-<!-- Filter Controls -->
-<div class="search-bar">
-    <select id="carBranch" class="search-select">
-        <option value="">Select Branch</option>
-        <option value="marikina">Marikina</option>
-        <option value="isabela">Isabela</option>
-        <!-- Add more branches as needed -->
-    </select>
-
-    <select id="carBrand" class="search-select">
-        <option value="">Select Brand</option>
-        <option value="toyota">Toyota</option>
-        <option value="mitsubishi">Mitsubishi</option>
-        <option value="nissan">Nissan</option>
-        <option value="mg">MG</option>
-        <!-- Add more brands as needed -->
-    </select>
-
-    <input type="text" id="searchInput" class="search-input" placeholder="Search by model...">
-</div>
 
 
 <!-- Car Section -->
@@ -526,40 +506,10 @@ function closeReviewsModal(carId) {
         });
     });
 
-    document.getElementById('searchInput').addEventListener('input', filterCars);
-    document.getElementById('priceRange').addEventListener('change', filterCars);
-    document.getElementById('carBranch').addEventListener('change', filterCars);
+   
 
-    function filterCars() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const priceRange = document.getElementById('priceRange').value;
-        const carBranch = document.getElementById('carBranch').value;
 
-        document.querySelectorAll('.car-row').forEach(car => {
-            const brand = car.getAttribute('data-brand').toLowerCase();
-            const branch = car.getAttribute('data-branch');
-            const price = parseInt(car.getAttribute('data-price'));
 
-            let priceMin = 0;
-            let priceMax = Infinity;
-
-            if (priceRange) {
-                const [min, max] = priceRange.split('-').map(Number);
-                priceMin = min;
-                priceMax = max;
-            }
-
-            const matchesSearch = !searchInput || brand.includes(searchInput);
-            const matchesPrice = price >= priceMin && price <= priceMax;
-            const matchesBranch = !carBranch || branch === carBranch;
-
-            if (matchesSearch && matchesPrice && matchesBranch) {
-                car.style.display = 'block';
-            } else {
-                car.style.display = 'none';
-            }
-        });
-    }
 
     document.querySelectorAll('.reserve-button').forEach(button => {
         button.addEventListener('click', function(event) {

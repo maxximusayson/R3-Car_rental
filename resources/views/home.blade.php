@@ -202,7 +202,6 @@ body {
 .card {
     border-radius: 10px;
     overflow: hidden;
-    border: none;
     transition: transform 0.3s ease;
 }
 
@@ -254,7 +253,6 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0,0,0,0.8);
     text-align: center;
 }
@@ -264,11 +262,10 @@ body {
     max-width: 30%;
     max-height: 100vh;
     margin: auto;
-    display: inline-block; /* Centers the image horizontally */
-    vertical-align: middle; /* Centers the image vertically */
+    display: inline-block;
+    vertical-align: middle;
 }
 
-/* Modal Image */
 .modal-content img {
     max-width: 100%;
     max-height: 100%;
@@ -291,20 +288,21 @@ body {
     cursor: pointer;
     position: absolute;
     top: 50%;
-    width: auto;
     padding: 16px;
-    margin-top: -50px;
     color: #fff;
     font-weight: bold;
     font-size: 20px;
     transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
     user-select: none;
 }
 
 .next {
     right: 0;
     border-radius: 3px 0 0 3px;
+}
+
+.prev {
+    border-radius: 0 3px 3px 0;
 }
 
 .prev:hover, .next:hover {
@@ -330,12 +328,14 @@ body {
         margin-bottom: 1rem;
     }
 }
+
 .carousel-inner img {
-    width: 500%;
+    width: 100%;
     height: auto; /* Maintain aspect ratio */
     max-height: 500px; /* Adjust this value as needed */
     object-fit: cover; /* Ensure the image covers the container */
 }
+
 </style>
 
 @endsection
