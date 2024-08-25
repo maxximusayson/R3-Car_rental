@@ -2,6 +2,7 @@
 
 @section('content')
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 
 <!-- Car Section -->
@@ -53,14 +54,9 @@
                         </a>
                     @endif
 
-                    <!-- Display a badge if the car is currently reserved -->
-                    @if ($car->reservations()->where('start_date', '<=', now())->where('end_date', '>=', now())->count() > 0)
-                        <div class="absolute top-0 right-0 mt-3 mr-3 bg-red-500 text-white text-sm font-semibold px-2 py-1 rounded-full badge">
-                            Reserved
-                        </div>
-                    @endif
                 </div>
             </div>
+
 
             <!-- Car Details Section -->
             <div class="mt-4 px-5 pb-5">
@@ -71,29 +67,41 @@
                     <span class="text-3xl font-bold text-black">₱{{ number_format($car->price_per_day, 2) }}</span>
                 </div>
 
-                <div class="flex justify-between mt-4">
+                <div class="flex flex-col space-y-3 mt-4">
+                <div class="flex justify-between space-x-3">
                     <a href="{{ route('car.reservation', ['car' => $car->id]) }}" 
-                       class="reserve-button flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
-                       style="font-family: 'Century Gothic', sans-serif;">
+                    class="reserve-button flex-grow flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
+                    style="font-family: 'Century Gothic', sans-serif;">
                         Rent Now
                     </a>
 
-                    <!-- Rate Button -->
-                    @auth
-                        <button 
-                            onclick="showRatingModal({{ $car->id }})"
-                            class="rate-button flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
-                            style="font-family: 'Century Gothic', sans-serif;">
-                            Rate this Car
-                        </button>
-                    @else
-                        <a href="{{ route('login') }}" 
-                           class="rate-button flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
-                           style="font-family: 'Century Gothic', sans-serif;">
-                            Rate this Car
-                        </a>
-                    @endauth
-                </div>
+        <!-- Rate Button -->
+        @auth
+            <button 
+                onclick="showRatingModal({{ $car->id }})"
+                class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
+                style="font-family: 'Century Gothic', sans-serif;">
+                Rate this Car
+            </button>
+        @else
+            <a href="{{ route('login') }}" 
+               class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
+               style="font-family: 'Century Gothic', sans-serif;">
+                Rate this Car
+            </a>
+        @endauth
+    </div>
+
+    <!-- See Reviews Button -->
+    <div class="flex justify-center">
+        <button onclick="showReviewsModal({{ $car->id }})" 
+                class="see-reviews-button flex-grow max-w-xs flex items-center justify-center rounded-lg bg-blue-500 text-white px-6 py-3 text-base font-bold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg transition-all duration-300 ease-in-out"
+                style="font-family: 'Century Gothic', sans-serif;">
+            See Reviews
+        </button>
+    </div>
+</div>
+
 
                 <!-- Availability Section -->
                 <div class="mt-4">
@@ -112,11 +120,7 @@
                     @endif
                 </div>
 
-                <!-- See Reviews Button -->
-                <button onclick="showReviewsModal({{ $car->id }})" 
-                        class="see-reviews-button mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg">
-                    See Reviews
-                </button>
+             
 
                 <!-- Reviews Modal (Initially Hidden) -->
                 <div id="reviewsModal-{{ $car->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
@@ -776,6 +780,7 @@ function closeReviewsModal(carId) {
     .carousel-control.next {
         right: 10px;
     }
+    
 </style>
 
     @endsection
