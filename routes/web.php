@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\addNewAdminController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -443,8 +444,20 @@ Route::resource('ratings', RatingController::class)->only(['store', 'update', 'd
 // settings admin
 
 Route::get('/settings', [SettingsController::class, 'setting'])->name('settings');
+Route::post('/settings/add-admin', [SettingsController::class, 'addAdmin'])->name('settings.addAdmin');
 
 
 // gps
 Route::get('/gps-tracking', [GpsTrackingController::class, 'track'])->name('gps.tracking');
 
+// notif
+Route::get('/notifications/latest', function () {
+    $user = Auth::user();
+    $notifications = $user->notifications()->latest()->take(10)->get(); // Adjust the number as needed
+    $upcomingBookings = $user->upcomingBookings()->take(10)->get(); // Adjust as needed
+
+    return response()->json([
+        'notifications' => $notifications,
+        'upcomingBookings' => $upcomingBookings,
+    ]);
+})->name('notifications.fetchLatest');

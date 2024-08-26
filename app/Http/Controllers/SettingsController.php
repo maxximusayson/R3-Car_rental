@@ -1,10 +1,9 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\AddNewAdminController;
 
 class SettingsController extends Controller
 {
@@ -15,7 +14,19 @@ class SettingsController extends Controller
      */
     public function setting()
     {
-        // You can pass any data to the view here if needed
         return view('settings.setting');
+    }
+
+    /**
+     * Handle the form submission to add a new admin by using AddNewAdminController.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addAdmin(Request $request)
+    {
+        // Instantiate AddNewAdminController and call its register method
+        $adminController = new AddNewAdminController();
+        return $adminController->register($request);
     }
 }

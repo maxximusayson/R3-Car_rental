@@ -212,7 +212,7 @@
                 <i class="fas fa-cogs"></i> CMS
             </a>
             <a href="{{ route('settings') }}" class="nav-link">
-                <i class="fas fa-cogs"></i> SETTINGS
+                <i class="fas fa-cogs"></i> ADD NEW ADMIN
             </a>
 
             <a href="{{ route('logout') }}" class="nav-link"
