@@ -64,40 +64,42 @@ class LoginController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+    
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+    
         $key = Str::lower($request->input('email')) . '|' . $request->ip();
         $maxAttempts = 5;
         $decayMinutes = 15;
-
+    
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
             return back()->withErrors([
                 'email' => "Too many login attempts. Please try again in " . ceil($seconds / 60) . " minutes."
             ])->withInput($request->only('email'));
         }
-
-        // Check if the "Remember Me" checkbox is checked
+    
+        // Check if the "Remember Me" option was selected
         $remember = $request->has('remember');
-
+    
         if (Auth::attempt($request->only('email', 'password'), $remember)) {
             // Update active status
             Auth::user()->update(['active' => true]);
-
+    
             RateLimiter::clear($key); // Clear the rate limiter if login is successful
             return redirect()->intended($this->redirectPath());
         } else {
             // Increment rate limiter if login fails
             RateLimiter::hit($key, $decayMinutes * 60);
         }
-
+    
         return back()->withInput($request->only('email'))->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
+    
+    
 
     public function logout(Request $request)
     {

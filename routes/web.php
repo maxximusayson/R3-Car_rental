@@ -38,7 +38,9 @@ use App\Http\Controllers\TestFilterController;
 use Illuminate\Auth\Events\Failed;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CMSController;
+use App\Http\Controllers\GpsTrackingController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\SettingsController;
 
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
@@ -438,6 +440,11 @@ Route::post('/notifications/import', [ReservationController::class, 'importNotif
 // ratings
 Route::resource('ratings', RatingController::class)->only(['store', 'update', 'destroy']);
 
+// settings admin
+
+Route::get('/settings', [SettingsController::class, 'setting'])->name('settings');
 
 
+// gps
+Route::get('/gps-tracking', [GpsTrackingController::class, 'track'])->name('gps.tracking');
 

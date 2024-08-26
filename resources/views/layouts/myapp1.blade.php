@@ -205,11 +205,14 @@
             <a href="{{ route('auditTrail') }}" class="nav-link">
                 <i class="fas fa-file-alt"></i> AUDIT TRAIL
             </a>
-            <a href="" class="nav-link">
+            <a href="{{ route('gps.tracking') }}" class="nav-link">
                 <i class="fas fa-map-marker-alt"></i> GPS TRACKING
             </a>
             <a href="" class="nav-link">
                 <i class="fas fa-cogs"></i> CMS
+            </a>
+            <a href="{{ route('settings') }}" class="nav-link">
+                <i class="fas fa-cogs"></i> SETTINGS
             </a>
 
             <a href="{{ route('logout') }}" class="nav-link"

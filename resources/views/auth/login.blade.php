@@ -127,5 +127,60 @@
             `; // Change icon back to "eye"
         }
     });
+
+    // Remember Me functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the email and password from cookies if available
+        const email = getCookie('remembered_email');
+        const password = getCookie('remembered_password');
+
+        // If the cookies exist, fill in the fields and refresh the cookies
+        if (email && password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = atob(password); // Decode the password
+            document.getElementById('remember').checked = true;
+            // Refresh the cookies to extend the expiration time
+            setCookie('remembered_email', email, 10);
+            setCookie('remembered_password', password, 10); // Re-encode to base64 for security
+        }
+
+        // On form submit, set the cookies if "Remember Me" is checked
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            if (document.getElementById('remember').checked) {
+                setCookie('remembered_email', document.getElementById('email').value, 10);
+                setCookie('remembered_password', btoa(document.getElementById('password').value), 10); // Encode the password
+            } else {
+                // Clear cookies if "Remember Me" is unchecked
+                deleteCookie('remembered_email');
+                deleteCookie('remembered_password');
+            }
+        });
+    });
+
+    // Function to set a cookie
+    function setCookie(name, value, minutes) {
+        const date = new Date();
+        date.setTime(date.getTime() + (minutes * 60 * 1000));
+        const expires = "; expires=" + date.toUTCString();
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i=0; i<ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    // Function to delete a cookie
+    function deleteCookie(name) {
+        document.cookie = name + "=; Max-Age=-99999999;";
+    }
 </script>
+
 @endsection
