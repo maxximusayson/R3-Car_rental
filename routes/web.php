@@ -463,3 +463,4 @@ Route::get('/notifications/latest', function () {
         'upcomingBookings' => $upcomingBookings,
     ]);
 })->name('notifications.fetchLatest');
+

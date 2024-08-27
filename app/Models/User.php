@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Traits\UploadTrait; 
+use App\Traits\UploadTrait;
 
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
-    
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +24,8 @@ class User extends Authenticatable
         'profile_picture',
         'valid_id',
         'proof_of_billing',
-        'active', // Add this line
-
+        'active',
+        'two_factor_code', // Add this line for 2FA code
     ];
 
     /**
@@ -46,6 +45,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the alerts for the user.
+     */
+    public function alerts()
+    {
+        return $this->hasMany(Alert::class);
+    }
+
+    /**
      * Check if the user is an admin.
      *
      * @return bool
@@ -56,6 +63,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Reset the two-factor authentication code.
+     */
+    public function resetTwoFactorCode()
+    {
+        $this->two_factor_code = null;
+        $this->save();
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
@@ -63,6 +79,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_code', // Hide the 2FA code in serialization
     ];
 
     /**
@@ -74,11 +91,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function alerts()
-{
-    return $this->hasMany(Alert::class);
-}
-
-
 }
