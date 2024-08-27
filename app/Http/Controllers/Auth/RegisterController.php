@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Services\SmsService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
@@ -51,56 +52,68 @@ class RegisterController extends Controller
     public function requestOtp(Request $request)
     {
         $data = $request->all();
-
+    
         // Validate user input
         $validator = $this->validator($data);
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+    
         // Save user data temporarily in session
         Session::put('register_data', $data);
-
+    
         // Generate OTP
         $otp = rand(100000, 999999);
         Session::put('otp', $otp);
-
+    
         try {
             // Use the sendOtp method from SmsService
             $response = $this->smsService->sendOtp($data['phone'], $otp);
-        
+            
             // Optionally store the phone number in the session for verification
             session(['phone' => $data['phone']]);
-        
-            return response()->json([
+    
+            // Pass the response and any other data to the view
+            return view('verify-otp', [
                 'message' => 'OTP sent successfully.',
                 'semaphore_response' => $response,
             ]);
         } catch (Exception $e) {
             // Handle exceptions during the SMS sending process
-            return response()->json([
+            return view('verify-otp', [
                 'error' => 'Failed to send OTP: ' . $e->getMessage(),
-            ], 500);
+            ]);
         }
     }
+    
 
     public function verifyOtp(Request $request)
     {
-        $request->validate([
-            'otp' => 'required|numeric',
-        ]);
-
-        $inputOtp = $request->input('otp');
+        $otp = $request->input('otp');
         $sessionOtp = Session::get('otp');
-        $registerData = Session::get('register_data');
-
-        if ($inputOtp == $sessionOtp) {
-            // Create user
-            $this->create($registerData);
-            Session::forget(['otp', 'register_data']);
-            return redirect($this->redirectPath())->with('success', 'Registration successful!');
+        $data = Session::get('register_data');
+    
+        if ($otp == $sessionOtp) {
+            // Create user account
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'password' => Hash::make($data['password']),
+            ]);
+    
+            // Automatically log the user in
+            Auth::login($user);
+    
+            // Clear the session data
+            Session::forget('otp');
+            Session::forget('register_data');
+    
+            // Redirect to a success page or dashboard
+            return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully.');
         } else {
-            return back()->withErrors(['otp' => 'Invalid OTP. Please try again.']);
+            // Handle OTP mismatch
+            return back()->withErrors(['otp' => 'The OTP entered is incorrect.'])->withInput();
         }
     }
 }

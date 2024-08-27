@@ -402,6 +402,8 @@ Route::get('register', [RegisterController::class, 'showRegistrationForm'])->nam
 Route::post('/send-otp', [OTPController::class, 'sendOtp'])->name('send.otp');
 // Route to handle OTP verification (display OTP form and verify OTP)
 Route::post('/verify-otp', [OTPController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/register/verify-otp', [OTPController::class, 'verifyOtp'])->name('register.verify-otp');
+
 
 
 Route::get('/verify-otp', function () {
