@@ -111,10 +111,6 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 Route::resource('posts', 'PostController');
     
 
-  
-    
-
-
 Route::get('/updateReservation/{reservation}', [ReservationController::class, 'editStatus'])->name('editStatus');
 # Edit status
 Route::put('/updateReservation/{reservation}', [ReservationController::class, 'updateStatus'])->name('updateStatus');
