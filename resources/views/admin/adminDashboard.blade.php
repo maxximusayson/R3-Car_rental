@@ -127,9 +127,9 @@
                             <td class="px-6 py-4">{{ $notification->created_at->format('Y-m-d H:i:s') }}</td>
                         </tr>
                         @empty
-                        <tr class="text-gray-700 dark:text-gray-400">
+                        <!-- <tr class="text-gray-700 dark:text-gray-400">
                             <td colspan="2" class="text-center py-4">No notifications found.</td>
-                        </tr>
+                        </tr> -->
                         @endforelse
                         @forelse($upcomingBookings as $booking)
                         <tr class="text-gray-700 dark:text-gray-400 notification-row" data-id="{{ $booking->id }}">
@@ -160,18 +160,18 @@
         Reservations Distribution
     </h2>
     <div class="w-full p-6 bg-white rounded-lg shadow-lg">
-        <canvas id="reservationsPieChart" width="600" height="300"></canvas>
+        <canvas id="reservationsBarChart" width="600" height="300"></canvas>
     </div>
 </div>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('reservationsPieChart').getContext('2d');
+    var ctx = document.getElementById('reservationsBarChart').getContext('2d');
     var reservationsData = {!! json_encode($reservationsData) !!};
 
-    var reservationsPieChart = new Chart(ctx, {
-        type: 'pie',
+    var reservationsBarChart = new Chart(ctx, {
+        type: 'bar',
         data: {
             labels: reservationsData.labels,
             datasets: [{
@@ -185,22 +185,41 @@
                     'rgba(153, 102, 255, 0.8)',
                     'rgba(255, 159, 64, 0.8)'
                 ],
-                borderColor: '#ffffff', // White border for clean separation between segments
+                borderColor: '#ffffff', // White border for clean separation between bars
                 borderWidth: 2
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right', // Position the legend to the right
-                    labels: {
-                        color: '#6b7280', // Modern gray color for legend labels
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#6b7280', // Modern gray color for axis labels
                         font: {
                             size: 14
                         }
+                    },
+                    grid: {
+                        color: 'rgba(229, 231, 235, 0.3)' // Light gray grid lines
                     }
+                },
+                x: {
+                    ticks: {
+                        color: '#6b7280', // Modern gray color for axis labels
+                        font: {
+                            size: 14
+                        }
+                    },
+                    grid: {
+                        display: false // No grid lines for the x-axis
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // Hide the legend
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background for tooltips
@@ -222,6 +241,7 @@
         }
     });
 </script>
+
 
 
 <!-- Booking History -->

@@ -460,3 +460,14 @@ Route::get('/notifications/latest', function () {
     ]);
 })->name('notifications.fetchLatest');
 
+// password reset
+
+
+Route::get('/password/forgot', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/password/forgot', [ForgotPasswordController::class, 'sendResetCode'])->name('password.email');
+Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
+
+Route::get('/password/verify-code', [ForgotPasswordController::class, 'showVerifyCodeForm'])->name('password.verify');
+Route::post('/password/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('password.verify.code');
+Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
