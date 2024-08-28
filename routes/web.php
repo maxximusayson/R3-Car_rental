@@ -471,3 +471,11 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/password/verify-code', [ForgotPasswordController::class, 'showVerifyCodeForm'])->name('password.verify');
 Route::post('/password/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('password.verify.code');
 Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
+
+
+// 2fa
+Route::get('/2fa/verify', [LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
+Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify');
+
+Route::get('/2fa/verify', [LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
+Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify');
