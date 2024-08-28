@@ -8,10 +8,10 @@
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
             <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" value="{{ old('username') }}" required autofocus
                     class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                @error('email')
+                @error('username')
                 <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                 @enderror
             </div>

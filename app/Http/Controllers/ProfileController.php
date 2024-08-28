@@ -17,7 +17,7 @@ class ProfileController extends Controller
         $oldProfilePicture = $user->profile_picture_url;
 
         $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        $user->username = $request->input('username');
         $user->phone_number = $request->input('phone_number');
 
         if ($request->hasFile('profile_picture')) {

@@ -463,13 +463,22 @@ Route::get('/notifications/latest', function () {
 // password reset
 
 
+// Route to show the form where users can input their phone number
 Route::get('/password/forgot', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
-Route::post('/password/forgot', [ForgotPasswordController::class, 'sendResetCode'])->name('password.email');
-Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
-Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
+// Route to handle the submission of the phone number and send the reset code
+Route::post('/password/forgot', [ForgotPasswordController::class, 'sendResetCode'])->name('password.email');
+
+// Route to show the form where users can input the verification code
 Route::get('/password/verify-code', [ForgotPasswordController::class, 'showVerifyCodeForm'])->name('password.verify');
+
+// Route to handle the submission of the verification code
 Route::post('/password/verify-code', [ForgotPasswordController::class, 'verifyCode'])->name('password.verify.code');
+
+// Route to show the reset password form with the token
+Route::get('/password/reset/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
+
+// Route to handle the reset password form submission
 Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 

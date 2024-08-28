@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 use App\Services\SmsService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
@@ -29,21 +28,20 @@ class RegisterController extends Controller
     }
 
     protected function validator(array $data)
-{
-    return Validator::make($data, [
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255'],
-        'phone' => ['required', 'string', 'regex:/^[9]\d{9}$/'], // Validate 10 digits starting with 9
-        'password' => ['required', 'string', 'min:8', 'confirmed']
-    ]);
-}
-
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'phone' => ['required', 'string', 'regex:/^[9]\d{9}$/'], // Validate 10 digits starting with 9
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
 
     protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'username' => $data['username'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
@@ -86,7 +84,6 @@ class RegisterController extends Controller
         }
     }
     
-
     public function verifyOtp(Request $request)
     {
         $otp = $request->input('otp');
@@ -97,7 +94,7 @@ class RegisterController extends Controller
             // Create user account
             $user = User::create([
                 'name' => $data['name'],
-                'email' => $data['email'],
+                'username' => $data['username'],
                 'phone' => $data['phone'],
                 'password' => Hash::make($data['password']),
             ]);

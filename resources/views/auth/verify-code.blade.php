@@ -10,10 +10,10 @@
         <form method="POST" action="{{ route('password.verify.code') }}">
             @csrf
             <div class="mb-4">
-            <!-- <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
             <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required autofocus
             class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            </div> -->
+            </div>
             <div class="mb-4">
                 <label for="reset_code" class="block text-sm font-medium text-gray-700">Verification Code</label>
                 <input type="text" id="reset_code" name="reset_code" placeholder="Enter the code you received"

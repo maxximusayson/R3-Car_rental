@@ -68,7 +68,7 @@ class OTPController extends Controller
             // Create the user account
             $user = User::create([
                 'name' => $registerData['name'],
-                'email' => $registerData['email'],
+               'username' => $registerData['username'],
                 'phone' => $registerData['phone'],
                 'password' => Hash::make($registerData['password']),
             ]);

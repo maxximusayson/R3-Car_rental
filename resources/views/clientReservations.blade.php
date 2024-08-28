@@ -40,9 +40,10 @@
                             <input type="text" id="name" name="name" value="{{ Auth::user()->name }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div class="mt-4">
-                            <label for="email" class="block text-left text-gray-700 font-medium">Email:</label>
-                            <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
+    <label for="username" class="block text-left text-gray-700 font-medium">Username:</label>
+    <input type="text" id="username" name="username" value="{{ Auth::user()->username }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">
+</div>
+
                         <div class="mt-4">
                             <label for="phone_number" class="block text-left text-gray-700 font-medium">Phone Number:</label>
                             <input type="text" id="phone_number" name="phone_number" value="{{ Auth::user()->phone_number }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500">

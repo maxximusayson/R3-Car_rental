@@ -19,11 +19,11 @@
                 @csrf
 
                 <div class="mb-6">
-                    <label for="email" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Email Address</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email"
+                    <label for="username" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Username</label>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Enter your username"
                         class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         style="font-family: 'Century Gothic', sans-serif;">
-                    @error('email')
+                    @error('username')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
@@ -130,28 +130,28 @@
 
     // Remember Me functionality
     document.addEventListener('DOMContentLoaded', function() {
-        // Get the email and password from cookies if available
-        const email = getCookie('remembered_email');
+        // Get the username and password from cookies if available
+        const username = getCookie('remembered_username');
         const password = getCookie('remembered_password');
 
         // If the cookies exist, fill in the fields and refresh the cookies
-        if (email && password) {
-            document.getElementById('email').value = email;
+        if (username && password) {
+            document.getElementById('username').value = username;
             document.getElementById('password').value = atob(password); // Decode the password
             document.getElementById('remember').checked = true;
             // Refresh the cookies to extend the expiration time
-            setCookie('remembered_email', email, 10);
+            setCookie('remembered_username', username, 10);
             setCookie('remembered_password', password, 10); // Re-encode to base64 for security
         }
 
         // On form submit, set the cookies if "Remember Me" is checked
         document.getElementById('loginForm').addEventListener('submit', function() {
             if (document.getElementById('remember').checked) {
-                setCookie('remembered_email', document.getElementById('email').value, 10);
+                setCookie('remembered_username', document.getElementById('username').value, 10);
                 setCookie('remembered_password', btoa(document.getElementById('password').value), 10); // Encode the password
             } else {
                 // Clear cookies if "Remember Me" is unchecked
-                deleteCookie('remembered_email');
+                deleteCookie('remembered_username');
                 deleteCookie('remembered_password');
             }
         });

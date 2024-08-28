@@ -29,11 +29,11 @@
                 </div>
 
                 <div class="mb-6">
-                    <label for="email" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Email Address</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}"
+                    <label for="username" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Username</label>
+                    <input type="text" id="username" name="username" value="{{ old('username') }}"
                         class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         style="font-family: 'Century Gothic', sans-serif;">
-                    @error('email')
+                    @error('username')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
@@ -177,3 +177,4 @@
     });
 </script>
 @endsection
+

@@ -64,7 +64,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'username' => 'required|string',
             'password' => 'required',
         ]);
     
@@ -72,20 +72,20 @@ class LoginController extends Controller
             return back()->withErrors($validator)->withInput();
         }
     
-        $key = Str::lower($request->input('email')) . '|' . $request->ip();
+        $key = Str::lower($request->input('username')) . '|' . $request->ip();
         $maxAttempts = 5;
         $decayMinutes = 15;
     
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
             return back()->withErrors([
-                'email' => "Too many login attempts. Please try again in " . ceil($seconds / 60) . " minutes."
-            ])->withInput($request->only('email'));
+                'username' => "Too many login attempts. Please try again in " . ceil($seconds / 60) . " minutes."
+            ])->withInput($request->only('username'));
         }
     
         $remember = $request->has('remember');
     
-        if (Auth::attempt($request->only('email', 'password'), $remember)) {
+        if (Auth::attempt($request->only('username', 'password'), $remember)) {
             $user = Auth::user();
 
             // Check if the user is an admin and bypass 2FA if required
@@ -113,8 +113,8 @@ class LoginController extends Controller
             RateLimiter::hit($key, $decayMinutes * 60);
         }
     
-        return back()->withInput($request->only('email'))->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+        return back()->withInput($request->only('username'))->withErrors([
+            'username' => 'The provided credentials do not match our records.',
         ]);
     }
 
@@ -133,7 +133,7 @@ class LoginController extends Controller
         $user = User::find($userId);
     
         if (!$user) {
-            return redirect()->route('login')->withErrors(['email' => 'Invalid session. Please login again.']);
+            return redirect()->route('login')->withErrors(['username' => 'Invalid session. Please login again.']);
         }
     
         if ($user->two_factor_code === $request->two_factor_code && now()->lessThan($user->two_factor_expires_at)) {
