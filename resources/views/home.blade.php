@@ -121,9 +121,24 @@
     <div class="container text-center">
         <h3 class="section-title mb-4">Gallery</h3>
         <div class="row">
-            @foreach(range(1, 10) as $i)
+            @foreach(range(1, 11) as $i) <!-- Loop for images -->
             <div class="col-md-4 mb-3">
-                <img src="{{ asset('images/gallery/' . $i . '.png') }}" alt="Gallery Image {{ $i }}" class="img-fluid rounded shadow-sm gallery-img" onclick="openModal({{ $i-1 }})">
+                @php
+                    $imagePath = 'images/gallery/' . $i . '.png';
+                @endphp
+                <img src="{{ asset($imagePath) }}" alt="Gallery Image {{ $i }}" class="img-fluid rounded shadow-sm gallery-img" onclick="openModal({{ $i-1 }}, 'image')">
+            </div>
+            @endforeach
+
+            @foreach([5 => 'montage.mp4', 11 => 'montage2.mp4'] as $i => $video)
+            <div class="col-md-4 mb-3">
+                @php
+                    $videoPath = 'images/gallery/' . $video;
+                @endphp
+                <video controls autoplay muted loop class="img-fluid rounded shadow-sm gallery-img" onclick="openModal({{ $i-1 }}, 'video')">
+                    <source src="{{ asset($videoPath) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
             @endforeach
         </div>
@@ -133,42 +148,75 @@
 <!-- Modal Structure -->
 <div id="myModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImage">
+    <div class="modal-content-container">
+        <img class="modal-content" id="modalImage" style="display: none;">
+        <video class="modal-content" id="modalVideo" controls style="display: none;">
+            <source id="videoSource" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
     <div id="caption"></div>
-    <a class="prev" onclick="changeImage(-1)">&#10094;</a>
-    <a class="next" onclick="changeImage(1)">&#10095;</a>
+    <a class="prev" onclick="changeMedia(-1)">&#10094;</a>
+    <a class="next" onclick="changeMedia(1)">&#10095;</a>
 </div>
 
 <script>
-var currentImageIndex = 0;
-var images = document.querySelectorAll('.gallery-img');
+var currentMediaIndex = 0;
+var mediaElements = document.querySelectorAll('.gallery-img');
 
-function openModal(index) {
-    currentImageIndex = index;
+function openModal(index, type) {
+    currentMediaIndex = index;
     var modal = document.getElementById("myModal");
     var modalImg = document.getElementById("modalImage");
+    var modalVideo = document.getElementById("modalVideo");
+    var videoSource = document.getElementById("videoSource");
     var captionText = document.getElementById("caption");
 
     modal.style.display = "block";
-    modalImg.src = images[currentImageIndex].src;
-    captionText.innerHTML = images[currentImageIndex].alt;
+
+    if (type === 'image') {
+        modalImg.src = mediaElements[currentMediaIndex].src;
+        modalImg.style.display = "block";
+        modalVideo.style.display = "none";
+        captionText.innerHTML = mediaElements[currentMediaIndex].alt;
+    } else if (type === 'video') {
+        videoSource.src = mediaElements[currentMediaIndex].querySelector('source').src;
+        modalVideo.load();
+        modalVideo.style.display = "block";
+        modalImg.style.display = "none";
+        captionText.innerHTML = mediaElements[currentMediaIndex].alt;
+    }
 }
 
 function closeModal() {
     document.getElementById("myModal").style.display = "none";
 }
 
-function changeImage(direction) {
-    currentImageIndex += direction;
-    if (currentImageIndex >= images.length) {
-        currentImageIndex = 0;
-    } else if (currentImageIndex < 0) {
-        currentImageIndex = images.length - 1;
+function changeMedia(direction) {
+    currentMediaIndex += direction;
+    if (currentMediaIndex >= mediaElements.length) {
+        currentMediaIndex = 0;
+    } else if (currentMediaIndex < 0) {
+        currentMediaIndex = mediaElements.length - 1;
     }
+
     var modalImg = document.getElementById("modalImage");
+    var modalVideo = document.getElementById("modalVideo");
+    var videoSource = document.getElementById("videoSource");
     var captionText = document.getElementById("caption");
-    modalImg.src = images[currentImageIndex].src;
-    captionText.innerHTML = images[currentImageIndex].alt;
+
+    if (mediaElements[currentMediaIndex].tagName.toLowerCase() === 'img') {
+        modalImg.src = mediaElements[currentMediaIndex].src;
+        modalImg.style.display = "block";
+        modalVideo.style.display = "none";
+        captionText.innerHTML = mediaElements[currentMediaIndex].alt;
+    } else if (mediaElements[currentMediaIndex].tagName.toLowerCase() === 'video') {
+        videoSource.src = mediaElements[currentMediaIndex].querySelector('source').src;
+        modalVideo.load();
+        modalVideo.style.display = "block";
+        modalImg.style.display = "none";
+        captionText.innerHTML = mediaElements[currentMediaIndex].alt;
+    }
 }
 </script>
 
@@ -238,6 +286,11 @@ body {
 .gallery-img {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    height: auto;
+    max-height: 470px; /* Adjust this value based on the desired height */
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .gallery-img:hover {
@@ -249,23 +302,26 @@ body {
 .modal {
     display: none;
     position: fixed;
-    z-index: 999;
+    z-index: 1000;
+    padding-top: 60px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-    text-align: center;
+    background-color: rgba(0,0,0,0.9);
 }
 
 /* Modal Content */
+.modal-content-container {
+    text-align: center;
+}
+
 .modal-content {
-    max-width: 30%;
-    max-height: 100vh;
     margin: auto;
-    display: inline-block; /* Centers the image horizontally */
-    vertical-align: middle; /* Centers the image vertically */
+    display: block;
+    width: 80%;
+    max-width: 700px;
 }
 
 /* Modal Image */
@@ -278,11 +334,18 @@ body {
 /* Close Button */
 .close {
     position: absolute;
-    top: 10px;
-    right: 25px;
-    color: #fff;
-    font-size: 35px;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
     font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -293,8 +356,8 @@ body {
     top: 50%;
     width: auto;
     padding: 16px;
-    margin-top: -50px;
-    color: #fff;
+    margin-top: -22px;
+    color: white;
     font-weight: bold;
     font-size: 20px;
     transition: 0.6s ease;

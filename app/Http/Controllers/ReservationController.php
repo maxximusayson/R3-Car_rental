@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alert;
 use App\Models\Audit;
 use App\Models\Car;
 use App\Models\Reservation;
@@ -466,6 +467,28 @@ public function importNotifications(Request $request)
     return redirect()->back()->with('error', 'Please upload a valid CSV file.');
 }
 
+public function approve($id)
+{
+    $reservation = Reservation::findOrFail($id);
+    $reservation->status = 'Confirmed';
+    $reservation->save();
 
+    // Create an alert for the user
+    Alert::create([
+        'user_id' => $reservation->user_id,
+        'message' => "Your reservation for " . $reservation->car->brand . " " . $reservation->car->model . " has been approved.",
+    ]);
+
+    return redirect()->back()->with('success', 'Reservation approved successfully.');
+}
+
+public function reject($id)
+{
+    $reservation = Reservation::findOrFail($id);
+    $reservation->status = 'Rejected';
+    $reservation->save();
+
+    return redirect()->back()->with('success', 'Reservation rejected successfully.');
+}
 
 }

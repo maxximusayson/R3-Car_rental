@@ -488,3 +488,10 @@ Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.ver
 
 Route::get('/2fa/verify', [LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
 Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify');
+
+
+// notif approved
+Route::put('/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('reservations.approve');
+Route::put('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
+
+

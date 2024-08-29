@@ -76,32 +76,37 @@
 
         <!-- Main Content Section -->
         <div class="lg:w-2/3 space-y-8">
-            <!-- Notifications Section -->
-            <div class="bg-white rounded-xl shadow-md p-6 h-80 overflow-y-auto border-t-4 border-blue-500">
-                <h2 class="text-2xl md:text-3xl font-semibold text-blue-600 mb-4">Notifications</h2>
-                @if(Auth::user()->alerts->isEmpty())
-                    <div class="text-center py-20 text-gray-500">
-                        <p class="text-lg">No alerts available.</p>
-                    </div>
-                @else
-                    <table class="w-full text-left border-separate border-spacing-2 md:border-spacing-4">
-                        <thead>
-                            <tr>
-                                <th class="pb-3 text-left text-gray-600">Message</th>
-                                <th class="pb-3 text-left text-gray-600">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(Auth::user()->alerts as $alert)
-                                <tr class="border-t">
-                                    <td class="py-2 md:py-3 text-gray-700">{{ $alert->message }}</td>
-                                    <td class="py-2 md:py-3 text-gray-700">{{ $alert->created_at->format('Y-m-d H:i:s') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            </div>
+       <!-- Notifications Section -->
+<div class="bg-white rounded-xl shadow-md p-6 h-80 overflow-y-auto border-t-4 border-blue-500">
+    <h2 class="text-2xl md:text-3xl font-semibold text-blue-600 mb-4">Notifications</h2>
+    @if(Auth::user()->alerts->isEmpty())
+        <div class="text-center py-20 text-gray-500">
+            <p class="text-lg">No alerts available.</p>
+        </div>
+    @else
+        <table class="w-full text-left border-separate border-spacing-2 md:border-spacing-4">
+            <thead>
+                <tr>
+                    <th class="pb-3 text-left text-gray-600">Message</th>
+                    <th class="pb-3 text-left text-gray-600">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(Auth::user()->alerts()->orderBy('created_at', 'desc')->get() as $alert)
+                    <tr class="border-t">
+                        <td class="py-2 md:py-3 text-gray-700 flex items-center">
+                            <span class="inline-block w-2 h-2 mr-2 bg-blue-500 rounded-full"></span>
+                            {{ $alert->message }}
+                        </td>
+                        <td class="py-2 md:py-3 text-gray-700">{{ $alert->created_at->format('Y-m-d H:i:s') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+
+
 
             <!-- My Recent Bookings -->
             <div class="bg-white rounded-xl shadow-md p-6 h-80 overflow-y-auto border-t-4 border-blue-500">

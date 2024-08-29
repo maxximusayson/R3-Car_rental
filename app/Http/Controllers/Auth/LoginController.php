@@ -172,21 +172,19 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        if (Auth::check()) {
-            // Update active status to false
-            Auth::user()->update(['active' => false]);
+        $user = Auth::user();
 
-            // Log the user out of the application
-            Auth::logout();
+        // Update the last_activity to null or a very old date
+        $user->last_activity = null; // Or you can use something like Carbon::create(1970, 1, 1)
+        $user->save();
 
-            // Invalidate the session
-            $request->session()->invalidate();
+        Auth::logout();
 
-            // Regenerate the session token
-            $request->session()->regenerateToken();
-        }
+        $request->session()->invalidate();
 
-        // Redirect to the home page or login page
+        $request->session()->regenerateToken();
+
         return redirect('/');
     }
+    
 }

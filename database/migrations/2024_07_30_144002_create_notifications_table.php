@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); // Type of notification
-            $table->morphs('notifiable'); // Notifiable entity (e.g., User, Admin)
-            $table->text('data'); // Notification data
-            $table->timestamp('read_at')->nullable(); // Timestamp when notification was read
-            $table->timestamps(); // Created at and Updated at timestamps
+            $table->string('type'); // Type of notification (e.g., 'ReservationApproved', 'ReservationRejected')
+            $table->morphs('notifiable'); // Polymorphic relationship fields: notifiable_id, notifiable_type
+            $table->text('data'); // JSON data related to the notification
+            $table->timestamp('read_at')->nullable(); // Timestamp for when the notification was read
+            $table->timestamps(); // Created at and updated at timestamps
         });
     }
 
