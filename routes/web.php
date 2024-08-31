@@ -495,3 +495,29 @@ Route::put('/reservations/{id}/approve', [ReservationController::class, 'approve
 Route::put('/reservations/{id}/reject', [ReservationController::class, 'reject'])->name('reservations.reject');
 
 
+Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+
+
+
+// cms
+
+
+Route::get('/cms', [CMSController::class, 'index'])->name('cms.index');
+Route::get('/cms/manage', [HomeController::class, 'manage'])->name('cms.manage');
+Route::put('/cms/update/{Content}', [HomeController::class, 'update'])->name('cms.update');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route to manage sections (shows list or edit form based on parameters)
+Route::get('/cms/{section_name?}', [CMSController::class, 'index'])->name('cms.index');
+
+// Route to edit a section
+Route::get('/cms/edit/{section_name}', [CMSController::class, 'edit'])->name('cms.edit');
+
+// Route to update section content
+Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name('cms.update');
+
+// Route to add a new section
+Route::post('/cms/add', [CMSController::class, 'add'])->name('cms.add');
+Route::get('/cms/edit/{Welcome}', [CMSController::class, 'edit'])->name('cms.edit');
+Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name('cms.update');

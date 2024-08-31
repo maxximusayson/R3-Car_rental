@@ -39,8 +39,20 @@ class Reservation extends Model
         'payment_method',
         'driver_license',  // Ensure this is included
         'valid_id',        // Ensure this is included
+        'remaining_balance', // Ensure this is included
+        'amount_paid',
         // other fields...
     ];
 
+    public function getRemainingBalanceAttribute()
+{
+    $totalPaid = $this->payments()->sum('amount_paid');
+    return $this->total_price - $totalPaid;
+}
+
+public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
     
 }

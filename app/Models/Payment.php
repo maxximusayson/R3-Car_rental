@@ -20,6 +20,9 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
     // Define other relationships if necessary
 }

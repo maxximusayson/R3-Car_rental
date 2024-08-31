@@ -47,30 +47,37 @@
         </div>
         @endif
 
-        <!-- Display the uploaded IDs -->
-        <div class="mt-8">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Uploaded Documents</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <p class="text-md text-gray-700 dark:text-gray-300 font-medium">Driver's License:</p>
-                    @if($reservation->driver_license)
-                        <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="w-full h-auto max-w-xs border border-gray-300 dark:border-gray-700 rounded-lg shadow-md transition-transform transform hover:scale-105 cursor-pointer" onclick="openModal('{{ asset($reservation->driver_license) }}')">
-                    @else
-                        <p class="text-gray-500 dark:text-gray-400">No driver's license uploaded.</p>
-                    @endif
-                </div>
-                <div>
-                    <p class="text-md text-gray-700 dark:text-gray-300 font-medium">Valid ID:</p>
-                    @if($reservation->valid_id)
-                        <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="w-full h-auto max-w-xs border border-gray-300 dark:border-gray-700 rounded-lg shadow-md transition-transform transform hover:scale-105 cursor-pointer" onclick="openModal('{{ asset($reservation->valid_id) }}')">
-                    @else
-                        <p class="text-gray-500 dark:text-gray-400">No valid ID uploaded.</p>
-                    @endif
-                </div>
+         <!-- Display uploaded IDs -->
+         <div class="flex gap-4 mt-4">
+            <div>
+                <p class="font-medium text-gray-700 dark:text-gray-300">Driver's License:</p>
+                @if($reservation->driver_license)
+                    <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="w-48 h-auto border border-gray-300 rounded-md shadow-sm cursor-pointer" onclick="showImageModal(this)">
+                @else
+                    <p class="text-gray-500">No driver's license uploaded.</p>
+                @endif
+            </div>
+            <div>
+                <p class="font-medium text-gray-700 dark:text-gray-300">Valid ID:</p>
+                @if($reservation->valid_id)
+                    <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="w-48 h-auto border border-gray-300 rounded-md shadow-sm cursor-pointer" onclick="showImageModal(this)">
+                @else
+                    <p class="text-gray-500">No valid ID uploaded.</p>
+                @endif
             </div>
         </div>
+
+        <!-- Reject Reservation Button -->
+        <div class="mt-6 flex justify-end">
+            <form action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this reservation?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                    Reject
+                </button>
+            </form>
+        </div>
     </div>
-</div>
 
 <!-- Modal for Full-Screen Image -->
 <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center transition-opacity duration-300">

@@ -348,7 +348,7 @@
                 </div>
                 <div class="mt-4 flex items-center">
                     @php
-$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(1)); // Reduced to 1 minute                    @endphp
+$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8)); // Reduced to 1 minute                    @endphp
                     <div class="h-4 w-4 rounded-full mr-2 @if($isOnline) bg-green-500 @else bg-red-500 @endif"></div>
                     <span class="text-sm font-medium @if($isOnline) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif">
                         @if($isOnline) Online @else Offline @endif

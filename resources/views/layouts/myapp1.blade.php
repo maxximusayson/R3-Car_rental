@@ -208,9 +208,11 @@
             <a href="{{ route('gps.tracking') }}" class="nav-link">
                 <i class="fas fa-map-marker-alt"></i> GPS TRACKING
             </a>
-            <a href="" class="nav-link">
-                <i class="fas fa-cogs"></i> CMS
-            </a>
+            <a href="{{ route('cms.manage') }}" class="nav-link {{ request()->routeIs('cms.manage') ? 'active' : '' }}" aria-label="Content Management System">
+    <i class="fas fa-cogs"></i> CMS
+</a>
+
+
             <a href="{{ route('settings') }}" class="nav-link">
                 <i class="fas fa-cogs"></i> ADD NEW ADMIN
             </a>

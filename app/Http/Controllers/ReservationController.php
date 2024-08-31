@@ -81,81 +81,85 @@ class ReservationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request, $car_id)
-{
-    // Validate the request including the file uploads
-    $request->validate([
-        'start_date' => 'required|date|after_or_equal:today',
-        'end_date' => 'required|date|after:start_date',
-        'driver_license' => 'required|file|mimes:jpg,png,pdf|max:2048',
-        'valid_id' => 'required|file|mimes:jpg,png,pdf|max:2048',
-    ]);
-
-    $car = Car::findOrFail($car_id);
-    $user = auth()->user();
-
-    $start = Carbon::parse($request->start_date);
-    $end = Carbon::parse($request->end_date);
-
-    // Check if the selected dates are already booked for this car
-    $isBooked = Reservation::where('car_id', $car_id)
-        ->where(function($query) use ($start, $end) {
-            $query->whereBetween('start_date', [$start, $end])
-                  ->orWhereBetween('end_date', [$start, $end])
-                  ->orWhereRaw('? BETWEEN start_date AND end_date', [$start])
-                  ->orWhereRaw('? BETWEEN start_date AND end_date', [$end]);
-        })->exists();
-
-    if ($isBooked) {
-        return redirect()->back()->withErrors(['date_error' => 'The selected dates are already booked. Please choose different dates.']);
+    public function store(Request $request, $car_id)
+    {
+        // Validate the request including the file uploads
+        $request->validate([
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+            'driver_license' => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'valid_id' => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'cash_amount' => 'nullable|numeric|min:0', // Validate cash amount
+        ]);
+    
+        // Fetch the car and user data
+        $car = Car::findOrFail($car_id);
+        $user = auth()->user();
+    
+        // Parse the start and end dates
+        $start = Carbon::parse($request->start_date);
+        $end = Carbon::parse($request->end_date);
+    
+        // Calculate total price based on the rental period
+        $totalDays = $start->diffInDays($end) + 1; // Include the last day
+        $pricePerDay = $car->price_per_day;
+        $totalPrice = $totalDays * $pricePerDay;
+    
+        // Get the amount paid by the user
+        $cashPaid = $request->input('cash_amount', 0); // Default to 0 if not provided
+    
+        // Calculate the remaining balance
+        $remainingBalance = $totalPrice - $cashPaid;
+    
+        // Store the driver's license in public/uploads/docu/driver_license
+        $driverLicensePath = $request->file('driver_license')->move(public_path('uploads/docu/driver_license'), $request->file('driver_license')->getClientOriginalName());
+    
+        // Store the valid ID in public/uploads/docu/valid_id
+        $validIdPath = $request->file('valid_id')->move(public_path('uploads/docu/valid_id'), $request->file('valid_id')->getClientOriginalName());
+    
+        // Create the reservation
+        $reservation = new Reservation();
+        $reservation->user_id = $user->id;
+        $reservation->car_id = $car->id;
+        $reservation->start_date = $start;
+        $reservation->end_date = $end;
+        $reservation->days = $totalDays;
+        $reservation->price_per_day = $pricePerDay;
+        $reservation->total_price = $totalPrice;
+        $reservation->amount_paid = $cashPaid;
+        $reservation->remaining_balance = $remainingBalance;
+        $reservation->status = 'Pending';
+        $reservation->payment_method = 'Cash';
+        $reservation->payment_status = ($remainingBalance > 0) ? 'Partial' : 'Paid';
+        $reservation->driver_license = 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName();
+        $reservation->valid_id = 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName();
+    
+        $reservation->save();
+    
+        // Store reservation details in session
+        $request->session()->put('reservation', [
+            'full_name' => $user->name,
+            'email' => $user->email,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'car_brand' => $car->brand,
+            'car_model' => $car->model,
+            'price_per_day' => $car->price_per_day,
+            'payment_method' => 'Cash',
+            'amount_paid' => $cashPaid,
+            'remaining_balance' => $remainingBalance,
+            'car_id' => $car->id,
+            'driver_license' => 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName(),
+            'valid_id' => 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName(),
+        ]);
+    
+        // Redirect to the thank-you page
+        return redirect()->route('reservation.thankyou');
     }
+    
+    
 
-    // Handle the file uploads and store them in the public/uploads directory
-    $driverLicensePath = $request->file('driver_license')->move(public_path('uploads/driver_license'), $request->file('driver_license')->getClientOriginalName());
-    $validIdPath = $request->file('valid_id')->move(public_path('uploads/valid_id'), $request->file('valid_id')->getClientOriginalName());
-
-    // Create the reservation
-    $reservation = new Reservation();
-    $reservation->user_id = $user->id;
-    $reservation->car_id = $car->id;
-    $reservation->start_date = $start;
-    $reservation->end_date = $end;
-    $reservation->days = $start->diffInDays($end) + 1; // Assuming you want to include the last day
-    $reservation->price_per_day = $car->price_per_day;
-    $reservation->total_price = $reservation->days * $reservation->price_per_day;
-    $reservation->status = 'Pending';
-    $reservation->payment_method = 'Cash';
-    $reservation->payment_status = 'Pending';
-    $reservation->driver_license = 'uploads/driver_license/' . $request->file('driver_license')->getClientOriginalName(); // Save the relative path
-    $reservation->valid_id = 'uploads/valid_id/' . $request->file('valid_id')->getClientOriginalName(); // Save the relative path
-    $reservation->save();
-
-    // Track creation in the audit trail
-    Audit::create([
-        'user_id' => $user->id,
-        'action' => 'Created reservation',
-        'details' => 'Created a reservation for car ' . $car->model,
-        'reservation_id' => $reservation->id,
-    ]);
-
-    // Store reservation details in session
-    $request->session()->put('reservation', [
-        'full_name' => $user->name,
-        'email' => $user->email,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'car_brand' => $car->brand,
-        'car_model' => $car->model,
-        'price_per_day' => $car->price_per_day,
-        'payment_method' => 'Cash',
-        'car_id' => $car->id,
-        'driver_license' => 'uploads/driver_license/' . $request->file('driver_license')->getClientOriginalName(),
-        'valid_id' => 'uploads/valid_id/' . $request->file('valid_id')->getClientOriginalName(),
-    ]);
-
-    return redirect()->route('reservation.thankyou');
-}
-
+    
     
     
 
@@ -166,6 +170,8 @@ class ReservationController extends Controller
      */
     public function showReservation($id)
     {
+        $reservations = Reservation::with('car')->get(); // Adjust the query to your needs
+
         $reservation = Reservation::findOrFail($id);
         return view('edit-payment-method', compact('reservation'));
     }
@@ -308,9 +314,16 @@ class ReservationController extends Controller
     }
     public function show($id)
 {
-    $reservation = \App\Models\Reservation::findOrFail($id);
-    return view('reservation.show', compact('reservation'));
-}    
+    // Fetch the reservation based on the given ID
+    $reservation = Reservation::findOrFail($id);
+
+    // Retrieve the remaining balance from the reservation
+    $totalPaid = $reservation->payments()->sum('amount_paid');
+    $remainingBalance = $reservation->total_price - $totalPaid;
+
+    // Pass the reservation and remaining balance to the view
+    return view('reservation.show', compact('reservation', 'remainingBalance'));
+}
 
 protected function getAvailableDates($car)
 {
@@ -378,7 +391,7 @@ public function destroy($id)
     // Delete the reservation
     $reservation->delete();
 
-    return redirect()->back()->with('success', 'Reservation deleted successfully.');
+    return redirect()->route('reservations.index')->with('success', 'Reservation rejected and deleted successfully.');
 }
 
 
@@ -490,5 +503,7 @@ public function reject($id)
 
     return redirect()->back()->with('success', 'Reservation rejected successfully.');
 }
+
+
 
 }

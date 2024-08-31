@@ -49,12 +49,13 @@
                 </div>
 
                 <div class="form-group mb-6">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="form-input" required>
-                    @error('email')
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" value="{{ old('username', $user->username) }}" class="form-input" required>
+                    @error('username')
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
+
 
                 <!-- Date start-end -->
                 <div class="form-group mb-6">
@@ -109,34 +110,39 @@
                 </div>
 
                 <!-- Note Section -->
-                <div class="note mb-6">
-                    <p class="note-title font-bold">Note:</p>
-                    <ul class="list-disc ml-6">
-                        <li class="note-item"><strong>First Payment:</strong> Pay the downpayment of 1k.</li>
-                        <li class="note-item"><strong>On the Day of the Rent:</strong> Pay the remaining balance.</li>
-                        <li class="note-item"><strong>Additional Charges:</strong> If the car goes outside of Metro Manila, there is an additional charge of 500 - 1000.</li>
-                    </ul>
-                </div>
+<div class="note mb-6">
+    <p class="note-title font-bold">Note:</p>
+    <ul class="list-disc ml-6">
+        <li class="note-item"><strong>First Payment:</strong> Pay the downpayment of 1k per day.</li>
+        <li class="note-item"><strong>On the Day of the Rent:</strong> Pay the remaining balance.</li>
+        <li class="note-item"><strong>Additional Charges:</strong> If the car goes outside of Metro Manila, there is an additional charge of 500 - 1000.</li>
+    </ul>
+</div>
 
-                <!-- Price Summary Section -->
-                <div class="mt-4 p-4 border rounded-md w-full">
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold">Duration:</p>
-                        <p id="duration"><span></span></p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold">Total Price:</p>
-                        <p id="total-price"><span></span></p>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <p class="font-bold">Downpayment:</p>
-                        <p id="downpayment"><span>₱1000</span></p>
-                    </div>
-                    <div class="flex justify-between items-center font-bold">
-                        <p class="font-bold">Grand Total:</p>
-                        <p id="grand-total"><span></span></p>
-                    </div>
-                </div>
+
+
+
+
+               <!-- Price Summary Section -->
+<div class="mt-4 p-4 border rounded-md w-full">
+    <div class="flex justify-between items-center">
+        <p class="font-bold">Duration:</p>
+        <p id="duration"><span></span> days</p>
+    </div>
+    <div class="flex justify-between items-center">
+        <p class="font-bold">Total Price:</p>
+        <p id="total-price"><span></span> PHP</p>
+    </div>
+    <div class="flex justify-between items-center">
+        <p class="font-bold">Downpayment:</p>
+        <p id="downpayment"><span></span> PHP</p>
+    </div>
+    <div class="flex justify-between items-center font-bold">
+        <p class="font-bold">Grand Total:</p>
+        <p id="grand-total"><span></span> PHP</p>
+    </div>
+</div>
+
 
                 <!-- Payment Details -->
                 <div id="payment-details" class="mt-6">
@@ -157,7 +163,7 @@
                     <!-- Cash Amount Input -->
                     <div id="cash-details" class="hidden">
                         <div class="form-group mb-6">
-                            <label for="cash-amount">Amount in PHP</label>
+                            <label for="cash-amount">Enter amount of Downpayment</label>
                             <input type="number" name="cash_amount" id="cash-amount" class="form-input" placeholder="Enter amount" min="0" step="0.01">
                             @error('cash_amount')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -285,9 +291,8 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    <script>
-        
-        $(document).ready(function() {
+<script>
+$(document).ready(function() {
     // Array of already booked dates, passed from the backend
     var bookedDates = @json($bookedDates);
 
@@ -326,44 +331,76 @@
     }
 
     function calculateTotals() {
-        var startDate = new Date($('#start_date').val());
-        var endDate = new Date($('#end_date').val());
+    var startDate = new Date($('#start_date').val());
+    var endDate = new Date($('#end_date').val());
 
-        if (startDate && endDate && startDate <= endDate) {
-            var duration = Math.max(1, Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24))); // Minimum 1 day
-            var pricePerDay = {{ $car->price_per_day }}; // Price per day from the backend
-            var totalPrice = duration * pricePerDay;
-            var downpayment = 1000; // Fixed downpayment amount
-            var grandTotal = totalPrice - downpayment; // Total amount due minus downpayment
+    if (startDate && endDate && startDate <= endDate) {
+        // Normalize the time to midnight to ensure accurate day calculation
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
 
-            $('#duration span').text(duration + ' days');
-            $('#total-price span').text(totalPrice + ' ₱');
-            $('#downpayment span').text(downpayment + ' ₱');
-            $('#grand-total span').text(grandTotal + ' ₱');
+        // Calculate the number of days (including both start and end date)
+        var duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (duration < 1) duration = 1; // Ensure at least 1 day is counted
+
+        var pricePerDay = 3000; // Price per day is 3,000 PHP
+        var totalPrice = duration * pricePerDay; // Total price for the duration
+
+        var downpaymentPerDay = 1000; // Fixed downpayment per day
+        var totalDownpayment = duration * downpaymentPerDay; // Total downpayment for the duration
+
+        var cashPaid = parseFloat($('#cash-amount').val()) || 0; // Get the amount of cash paid by the user
+
+        var remainingBalance = Math.max(0, totalPrice - totalDownpayment - cashPaid); // Calculate remaining balance after downpayment and cash paid
+
+        // Update the display with calculated values
+        // $('#total-price span').text(totalPrice.toFixed(2) + ' PHP');
+        $('#downpayment span').text(totalDownpayment.toFixed(2) + ' PHP');
+        $('#remaining-balance').text(remainingBalance.toFixed(1) + ' PHP');
+
+        // Update the remaining balance in the HTML
+        $('#remaining-balance').text(remainingBalance.toFixed(2) + ' PHP');
+
+        // Add a note if there's a remaining balance
+        if (remainingBalance > 0) {
+            $('#balance-note').text('May natitirang balanse ka na ' + remainingBalance.toFixed(2) + ' ₱.');
         } else {
-            $('#duration span').text('days');
-            $('#total-price span').text('₱');
-            $('#downpayment span').text('₱');
-            $('#grand-total span').text('₱');
+            $('#balance-note').text(''); // Clear note if no balance
         }
-
-        validateForm();
+    } else {
+        // Reset to default state if dates are not properly selected
+        $('#total-price span').text('₱');
+        $('#downpayment span').text('₱');
+        $('#grand-total span').text('₱');
+        $('#remaining-balance').text('0.00 PHP');
     }
+
+    validateForm(); // Check if the form is ready for submission
+}
+
 
     function validateForm() {
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
         var paymentMethod = $('.payment-button.active').data('method');
-        var cashAmount = $('#cash-amount').val();
+        var cashAmount = parseFloat($('#cash-amount').val()) || 0;
+        var totalPrice = parseFloat($('#total-price span').text()) || 0;
         var isTermsChecked = $('#agree').is(':checked'); // Check if terms are agreed
 
         // Check if start date, end date, payment method, and terms are agreed
         var isValidDates = startDate && endDate;
-        var isValidPayment = paymentMethod && (paymentMethod === 'cash' ? cashAmount > 0 : true);
+        var isValidPayment = paymentMethod && (paymentMethod === 'cash' ? cashAmount >= 0 : true); // Allow partial payment
         var enableButton = isValidDates && isValidPayment && isTermsChecked;
 
         $('#confirm-reservation').prop('disabled', !enableButton);
     }
+
+    // Call `calculateTotals` whenever relevant inputs change
+    $('#start_date, #end_date, #cash-amount').on('input', calculateTotals);
+
+    // Initialize the form with the current values
+    $(document).ready(calculateTotals);
 
     // Handle payment method selection
     $('.payment-button').click(function() {
@@ -382,6 +419,16 @@
         // Update hidden field for GCash status based on selected payment method
         $('#gcash-status').val(paymentMethod === 'cash' ? 'paid' : 'pending');
 
+        calculateTotals();
+    });
+
+    // Calculate totals when cash amount changes
+    $('#cash-amount').on('input', function() {
+        calculateTotals();
+    });
+
+    // Calculate totals when dates are selected
+    $('#start_date, #end_date').on('change', function() {
         calculateTotals();
     });
 
@@ -476,7 +523,9 @@
     });
 });
 
-    </script>
+
+</script>
+
 
 <style>
 .stepper-container {

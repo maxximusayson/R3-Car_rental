@@ -161,25 +161,48 @@
             <h3 class="text-xl font-semibold">{{ $reservation->car->brand }} {{ $reservation->car->model }}</h3>
             <p class="text-gray-600">Reservation Date: {{ $reservation->start_date }} to {{ $reservation->end_date }}</p>
             
-            <!-- Display the uploaded IDs -->
-            <div class="flex gap-4 mt-4">
-                <div>
-                    <p class="font-medium text-gray-700">Driver's License:</p>
-                    @if($reservation->driver_license)
-                        <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="w-48 h-auto border border-gray-300 rounded-md shadow-sm cursor-pointer" onclick="showImageModal(this)">
-                    @else
-                        <p class="text-gray-500">No driver's license uploaded.</p>
-                    @endif
-                </div>
-                <div>
-                    <p class="font-medium text-gray-700">Valid ID:</p>
-                    @if($reservation->valid_id)
-                        <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="w-48 h-auto border border-gray-300 rounded-md shadow-sm cursor-pointer" onclick="showImageModal(this)">
-                    @else
-                        <p class="text-gray-500">No valid ID uploaded.</p>
-                    @endif
-                </div>
-            </div>
+          <!-- Display the uploaded IDs -->
+<div class="mt-4">
+    <div class="flex gap-6 mb-6">
+        <!-- Driver's License -->
+        <div class="flex-1">
+            <p class="font-medium text-gray-700 mb-2">Driver's License:</p>
+            @if($reservation->driver_license)
+            <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License">
+            @else
+                <p class="text-gray-500">No driver's license uploaded.</p>
+            @endif
+        </div>
+        
+        <!-- Valid ID -->
+        <div class="flex-1">
+            <p class="font-medium text-gray-700 mb-2">Valid ID:</p>
+            @if($reservation->valid_id)
+            <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID">
+            @else
+                <p class="text-gray-500">No valid ID uploaded.</p>
+            @endif
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Display remaining balance -->
+<div class="bg-gray-50 p-4 rounded-md border border-gray-200 shadow-sm">
+    <p class="font-medium text-gray-700">Remaining Balance:</p>
+    <p class="text-gray-800 text-lg" id="remaining-balance">
+        {{ number_format($reservation->remaining_balance, 1) }} PHP
+    </p>
+</div>
+
+
+
+
+
+
+</div>
+
 
             <!-- Delete Button -->
             <div class="mt-4">

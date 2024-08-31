@@ -88,5 +88,17 @@ class adminDashboardController extends Controller
     
         return view('dashboard', compact('notifications', 'upcomingBookings'));
     }
+
+    public function approveDownpayment($id)
+{
+    $reservation = Reservation::findOrFail($id);
+
+    // Update the downpayment status to 'Paid'
+    $reservation->dp_status = 'Paid';
+    $reservation->save();
+
+    return redirect()->back()->with('success', 'Downpayment approved. Remaining balance is now due.');
+}
+
     
 }

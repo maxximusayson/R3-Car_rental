@@ -216,27 +216,57 @@ class CarController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
-
+    
         $car = Car::find($request->car_id);
-
+    
         // Check for existing reservations
         $existingReservation = $car->reservations()
             ->where('end_date', '>=', $request->start_date)
             ->where('start_date', '<=', $request->end_date)
             ->exists();
-
+    
         if ($existingReservation) {
             return back()->withErrors(['The car is already reserved for these dates.']);
         }
-
+    
+        // Calculate payment details
+        $start = Carbon::parse($request->start_date);
+        $end = Carbon::parse($request->end_date);
+        $days = $start->diffInDays($end) + 1; // Including the last day
+    
+        $totalRent = $days * $car->price_per_day; // Total rent based on the number of days
+        $dpPerDay = 1000; // Downpayment per day is fixed at 1k
+        $totalDownpayment = $days * $dpPerDay; // Total downpayment (e.g., 2 days = 2,000 PHP)
+        $remainingBalance = $totalRent - $totalDownpayment; // Remaining balance after downpayment
+    
+        // Create the reservation
         $reservation = new Reservation();
         $reservation->car_id = $request->car_id;
+        $reservation->user_id = auth()->user()->id; // Ensure to assign the user making the reservation
         $reservation->start_date = $request->start_date;
         $reservation->end_date = $request->end_date;
+        $reservation->total_price = $totalRent;
+        $reservation->downpayment = $totalDownpayment;
+        $reservation->remaining_balance = $remainingBalance;
         $reservation->save();
+    
+        // Pass payment details to the session for the thank you page
+        $request->session()->put('reservation', [
+            'car_brand' => $car->brand,
+            'car_model' => $car->model,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'total_price' => $totalRent,
+            'downpayment' => $totalDownpayment,
+            'remaining_balance' => $remainingBalance,
+        ]);
 
+        
+    
         return redirect()->route('reservations.index')->with('success', 'Reservation created successfully.');
     }
+    
+    
 
     /**
      * Show the rating form for a car.
