@@ -18,8 +18,8 @@ class TrackLastActivity
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $user->last_activity = now();
-            $user->save();
+            $user->last_activity = now(); // Update the last_activity column with the current timestamp
+            $user->save(); // Save the updated user model
         }
 
         return $next($request);

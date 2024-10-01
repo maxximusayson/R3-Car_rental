@@ -81,81 +81,88 @@ class ReservationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $car_id)
-    {
-        // Validate the request including the file uploads
-        $request->validate([
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
-            'driver_license' => 'required|file|mimes:jpg,png,pdf|max:2048',
-            'valid_id' => 'required|file|mimes:jpg,png,pdf|max:2048',
-            'cash_amount' => 'nullable|numeric|min:0', // Validate cash amount
-        ]);
-    
-        // Fetch the car and user data
-        $car = Car::findOrFail($car_id);
-        $user = auth()->user();
-    
-        // Parse the start and end dates
-        $start = Carbon::parse($request->start_date);
-        $end = Carbon::parse($request->end_date);
-    
-        // Calculate total price based on the rental period
-        $totalDays = $start->diffInDays($end) + 1; // Include the last day
-        $pricePerDay = $car->price_per_day;
-        $totalPrice = $totalDays * $pricePerDay;
-    
-        // Get the amount paid by the user
-        $cashPaid = $request->input('cash_amount', 0); // Default to 0 if not provided
-    
-        // Calculate the remaining balance
-        $remainingBalance = $totalPrice - $cashPaid;
-    
-        // Store the driver's license in public/uploads/docu/driver_license
-        $driverLicensePath = $request->file('driver_license')->move(public_path('uploads/docu/driver_license'), $request->file('driver_license')->getClientOriginalName());
-    
-        // Store the valid ID in public/uploads/docu/valid_id
-        $validIdPath = $request->file('valid_id')->move(public_path('uploads/docu/valid_id'), $request->file('valid_id')->getClientOriginalName());
-    
-        // Create the reservation
-        $reservation = new Reservation();
-        $reservation->user_id = $user->id;
-        $reservation->car_id = $car->id;
-        $reservation->start_date = $start;
-        $reservation->end_date = $end;
-        $reservation->days = $totalDays;
-        $reservation->price_per_day = $pricePerDay;
-        $reservation->total_price = $totalPrice;
-        $reservation->amount_paid = $cashPaid;
-        $reservation->remaining_balance = $remainingBalance;
-        $reservation->status = 'Pending';
-        $reservation->payment_method = 'Cash';
-        $reservation->payment_status = ($remainingBalance > 0) ? 'Partial' : 'Paid';
-        $reservation->driver_license = 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName();
-        $reservation->valid_id = 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName();
-    
-        $reservation->save();
-    
-        // Store reservation details in session
-        $request->session()->put('reservation', [
-            'full_name' => $user->name,
-            'email' => $user->email,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'car_brand' => $car->brand,
-            'car_model' => $car->model,
-            'price_per_day' => $car->price_per_day,
-            'payment_method' => 'Cash',
-            'amount_paid' => $cashPaid,
-            'remaining_balance' => $remainingBalance,
-            'car_id' => $car->id,
-            'driver_license' => 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName(),
-            'valid_id' => 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName(),
-        ]);
-    
-        // Redirect to the thank-you page
-        return redirect()->route('reservation.thankyou');
-    }
+public function store(Request $request, $car_id)
+{
+    // Validate the request including the file uploads and the time fields
+    $request->validate([
+        'start_date' => 'required|date|after_or_equal:today',
+        'start_time' => 'required|date_format:H:i', // Validate start time
+        'end_date' => 'required|date|after:start_date',
+        'end_time' => 'required|date_format:H:i', // Validate end time
+        'driver_license' => 'required|file|mimes:jpg,png,pdf|max:2048',
+        'valid_id' => 'required|file|mimes:jpg,png,pdf|max:2048',
+        'cash_amount' => 'nullable|numeric|min:0', // Validate cash amount
+    ]);
+
+    // Fetch the car and user data
+    $car = Car::findOrFail($car_id);
+    $user = auth()->user();
+
+    // Parse the start and end dates and times
+    $start = Carbon::parse($request->start_date . ' ' . $request->start_time);
+    $end = Carbon::parse($request->end_date . ' ' . $request->end_time);
+
+    // Calculate total price based on the rental period
+    $totalDays = $start->diffInDays($end) + 1; // Include the last day
+    $pricePerDay = $car->price_per_day;
+    $totalPrice = $totalDays * $pricePerDay;
+
+    // Get the amount paid by the user
+    $cashPaid = $request->input('cash_amount', 0); // Default to 0 if not provided
+
+    // Calculate the remaining balance
+    $remainingBalance = $totalPrice - $cashPaid;
+
+    // Store the driver's license in public/uploads/docu/driver_license
+    $driverLicensePath = $request->file('driver_license')->move(public_path('uploads/docu/driver_license'), $request->file('driver_license')->getClientOriginalName());
+
+    // Store the valid ID in public/uploads/docu/valid_id
+    $validIdPath = $request->file('valid_id')->move(public_path('uploads/docu/valid_id'), $request->file('valid_id')->getClientOriginalName());
+
+    // Create the reservation
+    $reservation = new Reservation();
+    $reservation->user_id = $user->id;
+    $reservation->car_id = $car->id;
+    $reservation->start_date = $start;
+    $reservation->end_date = $end;
+    $reservation->start_time = $request->start_time; // Save start time
+    $reservation->end_time = $request->end_time; // Save end time
+    $reservation->days = $totalDays;
+    $reservation->price_per_day = $pricePerDay;
+    $reservation->total_price = $totalPrice;
+    $reservation->amount_paid = $cashPaid;
+    $reservation->remaining_balance = $remainingBalance;
+    $reservation->status = 'Pending';
+    $reservation->payment_method = 'Cash';
+    $reservation->payment_status = ($remainingBalance > 0) ? 'Partial' : 'Paid';
+    $reservation->driver_license = 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName();
+    $reservation->valid_id = 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName();
+
+    $reservation->save();
+
+    // Store reservation details in session
+    $request->session()->put('reservation', [
+        'full_name' => $user->name,
+        'email' => $user->email,
+        'start_date' => $request->start_date,
+        'start_time' => $request->start_time, // Store start time in session
+        'end_date' => $request->end_date,
+        'end_time' => $request->end_time, // Store end time in session
+        'car_brand' => $car->brand,
+        'car_model' => $car->model,
+        'price_per_day' => $car->price_per_day,
+        'payment_method' => 'Cash',
+        'amount_paid' => $cashPaid,
+        'remaining_balance' => $remainingBalance,
+        'car_id' => $car->id,
+        'driver_license' => 'uploads/docu/driver_license/' . $request->file('driver_license')->getClientOriginalName(),
+        'valid_id' => 'uploads/docu/valid_id/' . $request->file('valid_id')->getClientOriginalName(),
+    ]);
+
+    // Redirect to the thank-you page
+    return redirect()->route('reservation.thankyou');
+}
+
     
     
 

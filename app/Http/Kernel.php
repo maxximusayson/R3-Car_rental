@@ -74,6 +74,8 @@ class Kernel extends HttpKernel
         // Other middleware
         'log.activity' => \App\Http\Middleware\LogActivity::class,
         'auth.admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'trackLastActivity' => \App\Http\Middleware\TrackLastActivity::class,
+
 
     ];
     

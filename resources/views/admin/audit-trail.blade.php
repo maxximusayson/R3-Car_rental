@@ -75,7 +75,65 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $audits->links() }}
+           <!-- Pagination links -->
+<div class="pagination">
+    @if ($audits->onFirstPage())
+        <span class="disabled">« Previous</span>
+    @else
+        <a href="{{ $audits->previousPageUrl() }}">« Previous</a>
+    @endif
+
+    @foreach ($audits->getUrlRange(1, $audits->lastPage()) as $page => $url)
+        @if ($page == $audits->currentPage())
+            <span class="active">{{ $page }}</span>
+        @else
+            <a href="{{ $url }}">{{ $page }}</a>
+        @endif
+    @endforeach
+
+    @if ($audits->hasMorePages())
+        <a href="{{ $audits->nextPageUrl() }}">Next »</a>
+    @else
+        <span class="disabled">Next »</span>
+    @endif
+</div>
+<style>
+    /* Pagination Container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a, .pagination span {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 4px;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+}
+
+.pagination a:hover, .pagination a:focus {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+}
+
+.pagination .active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.pagination .disabled {
+    color: #ccc;
+    border-color: #ddd;
+}
+
+</style>
         @endif
     </div>
 </div>

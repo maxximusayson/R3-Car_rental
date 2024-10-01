@@ -3,331 +3,565 @@
 
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-
+    <title>@yield('title', 'Default Title')</title>
 
     <title>R3 Garage Car Rental</title>
-    @vite('resources/css/app.css')
     <link rel="icon" type="image/x-icon" href="/images/logos/r3.jpg"> {{-- tab icon --}}
-    @vite('node_modules/flowbite/dist/flowbite.min.js')
     
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        .bg-custom-orange {
-        background-color: #3B9ABF   ;
-    }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Vite for resources -->
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
+
+
 </head>
 
 <body style="background-color: #f5f5f5;">
 
-    {{-- -------------------------------------------------------------- Header -------------------------------------------------------------- --}}
+    {{-- Header --}}
     @guest
-    
         <header>
-        <nav class="bg-custom-orange border-black-100 px-4 lg:px-6 py-4 text-white" style="font-family: 'Century Gothic', sans-serif;">
+           <style>
+    .no-underline {
+        text-decoration: none; /* No underline by default */
+    }
+    .no-underline:hover {
+        text-decoration: none; /* No underline on hover */
+    }
+    
+    .btn {
+        background-color: #4a4a4a; /* Darker background color */
+        color: white; /* Text color */
+        padding: 0.75rem 1.5rem; /* Padding for larger click area */
+        border-radius: 0.375rem; /* Rounded corners */
+        text-transform: uppercase; /* Uppercase text for emphasis */
+        transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+    }
 
-  <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+    .btn:hover {
+        background-color: #6b6b6b; /* Lighter background color on hover */
+        transform: translateY(-2px); /* Slight lift effect on hover */
+    }
 
-  
-               {{-- LOGO --}}
-               <a href="{{ route('home') }}" class="flex items-center">
-    <img loading="lazy" src="/images/logos/R3Logo.png" class="mr-1 h-20" />
+    .btn:active {
+        transform: translateY(0); /* Reset lift effect on click */
+    }
+
+    .btn-full {
+        width: 100%; /* Full width for mobile buttons */
+    }
+</style>
+
+<nav class="bg-custom-orange px-4 lg:px-8 py-2 text-white shadow-lg" style="font-family: 'Century Gothic', sans-serif;">
+    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+        {{-- Logo --}}
+        <a href="{{ route('home') }}" class="flex items-center">
+            <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
         </a>
 
-            {{-- login & Register buttons --}}
-            <div class="flex items-center lg:order-2">
-    <a href="{{ route('login') }}">
-        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded">         
+        {{-- Desktop Navigation with No Underline on Hover --}}
+        <div class="hidden lg:flex lg:space-x-16 flex-grow justify-center">
+    <!-- Home Link with Hover Effect -->
+    <a href="/" class="text-white no-underline custom-font group relative hover:text-gray-300 transition duration-300 ease-in-out px-4">
+        HOME
+        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </a>
+
+    <!-- Cars Link with Hover Effect -->
+    <a href="{{ route('cars') }}" class="text-white no-underline custom-font group relative hover:text-gray-300 transition duration-300 ease-in-out px-4">
+        CARS
+        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </a>
+
+    <!-- Locations Link with Hover Effect -->
+    <a href="/location" class="text-white no-underline custom-font group relative hover:text-gray-300 transition duration-300 ease-in-out px-4">
+        LOCATIONS
+        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </a>
+
+    <!-- Contact Us Link with Hover Effect -->
+    <a href="/contact_us" class="text-white no-underline custom-font group relative hover:text-gray-300 transition duration-300 ease-in-out px-4">
+        CONTACT US
+        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+    </a>
+</div>
+
+
+        {{-- Mobile Hamburger Menu --}}
+        <div class="lg:hidden">
+            <button class="text-white" id="mobile-menu-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        {{-- Mobile Menu --}}
+        <div id="mobile-menu" class="hidden lg:hidden flex">
+            <ul class="flex flex-col items-center space-y-4 py-4">
+                <li><a href="/" class="text-white custom-font no-underline">Home</a></li>
+                <li><a href="{{ route('cars') }}" class="text-white custom-font no-underline">Cars</a></li>
+                <li><a href="/location" class="text-white custom-font no-underline">Location</a></li>
+                <li><a href="/contact_us" class="text-white custom-font no-underline">Contact</a></li>
+            </ul>
+            <div class="mobile-menu-buttons space-y-4 py-4 flex flex-col items-center w-full">
+    <!-- Login Button with Enhanced UI -->
+    <a href="{{ route('login') }}" class="w-full max-w-xs">
+        <button class="btn btn-full w-full px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 transition-all duration-300 ease-in-out rounded-lg shadow-lg transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2">
             LOGIN
         </button>
     </a>
-    <a href="{{ route('register') }}">
-        <button class="flex items-center px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-white bg-black hover:bg-gray-800 font-medium text-sm rounded">
+
+    <!-- Register Button with Enhanced UI -->
+    <a href="{{ route('register') }}" class="w-full max-w-xs">
+        <button class="btn btn-full w-full px-6 py-3 text-white bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 transition-all duration-300 ease-in-out rounded-lg shadow-lg transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-offset-2">
             REGISTER
         </button>
     </a>
 </div>
 
+        </div>
 
+        {{-- Desktop Login/Register Buttons --}}
+        <div class="hidden lg:flex space-x-4">
+    <!-- Login Button with Same Gradient -->
+    <a href="{{ route('login') }}">
+        <button class="px-6 py-2 text-white font-semibold rounded-lg shadow-md transition ease-in-out duration-200 hover:opacity-90"
+            style="background: linear-gradient(to right, #36d1dc, #5b86e5); /* Same gradient for both buttons */
+                   border-radius: 8px;
+                   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+            LOGIN
+        </button>
+    </a>
 
-            
-
-<div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-    <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-        <li>
-            <a href="/" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer custom-font">Home</span>
-                <div class="block invisible bg-pr-400 w-12 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('cars') }}" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer custom-font">Cars</span>
-                <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
-            </a>
-        </li>
-        <li>
-            <a href="/location" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer custom-font">Location</span>
-                <div class="block invisible bg-pr-400 w-16 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
-            </a>
-        </li>
-        <li>
-            <a href="/contact_us" class="text-white flex items-center">
-                <span class="group text-center group-hover:cursor-pointer custom-font">Contact</span>
-                <div class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible"></div>
-            </a>
-        </li>
-    </ul>
+    <!-- Register Button with Same Gradient -->
+    <a href="{{ route('register') }}">
+        <button class="px-6 py-2 text-white font-semibold rounded-lg shadow-md transition ease-in-out duration-200 hover:opacity-90"
+            style="background: linear-gradient(to right, #36d1dc, #5b86e5); /* Same gradient for both buttons */
+                   border-radius: 8px;
+                   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+            SIGN UP
+        </button>
+    </a>
 </div>
 
-<style>
-    /* Add custom font styling */
-    .custom-font {
-        font-family: 'Century Gothic', sans-serif;
-        font-size: 18px; /* Adjust font size as needed */
-        font-weight: normal; /* Adjust font weight as needed */
-    }
-</style>
+    </div>
+</nav>
 
 
+<!-- Add padding to prevent content from overlapping the navbar -->
+<div class="pt-16">
+    <!-- Your page content here -->
+</div>
 
-
-            </nav>
         </header>
     @else
-
-                    {{-- user when login --}}
-                        <header>
-                        <nav class="custom-nav border-blue-200 px-4 lg:px-6 py-4 dark:bg-blue-700 ">
-                <style>
-                    .custom-nav {
-                    background-color: #3B9ABF;
-                    border-color: #3B8CBF; /* Adjust border color if needed */
-                }
-
-                .dark-mode .custom-nav {
-                    background-color: #3B8CBF; /* Darker shade for dark mode */
-                }
-                </style>
-
-                <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-
-
-                    {{-- LOGO --}}
-                    <a href="{{ route('home') }}" class="flex items-center">
-                        <img src="/images/logos/R3Logo.png" class="mr-3 h-16" alt="Flowbite Logo" />
-                    </a>
-
-                    {{-- admin navbar --}}
-
-
-                    @if (Auth::user()->role == 'admin')
-                        <div class="hidden justify-between mb-6 items-center w-full lg:flex lg:w-auto" id="mobile-menu-2">
-                            <ul class="flex flex-col  font-medium lg:flex-row lg:space-x-8 lg:mt-0 ">
-                                <li>
-                                    <a href='{{ route('adminDashboard') }}'>
-                                        <div class="group text-center">
-                                            <div class="group-hover:cursor-pointer">Dashboard</div>
-                                            <div
-                                                class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible">
-                                            </div>
-                                    </a>
-
-                                </li>
-
-                                <li class=' '>
-                                    <a href="{{ route('cars.index') }}">
-                                        <div class="group text-center">
-                                            <div class="group-hover:cursor-pointer ">Cars</div>
-                                            <div
-                                                class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible">
-                                            </div>
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="{{ route('users') }}">
-                                        <div class="group text-center">
-                                            <div class="group-hover:cursor-pointer">Users</div>
-                                            <div
-                                                class="block invisible bg-pr-400 w-10 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible">
-                                            </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('insurances.index') }}">
-                                        <div class="group text-center">
-                                            <div class="group-hover:cursor-pointer">Insurances</div>
-                                            <div
-                                                class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:visible">
-                                            </div>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                            class="text-black bg-pr-900 hover:bg-pr-100 font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center "
-                            type="button">
-                            <img loading="lazy" src="/images/user.png" width="24" alt="user icon" class="mr-3">
-                            <p> Admin ( {{ Auth::user()->name }} ) </p>
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </button>
-
-                        <div id="dropdown"
-                            class="z-10 hidden bg-white divide-y divide-blue-100 rounded-lg shadow w-44 dark:bg-blue-700">
-                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropdownDefaultButton">
-                                <li>
-                                    <a href="{{ route('adminDashboard') }}"
-                                        class="block px-4 py-2 hover:bg-pr-200 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a class="block px-4 py-2 hover:bg-pr-200 " href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                        class="hidden">
-                                        @csrf
-                                    </form>
-
-                                </li>
-                            </ul>
-                        </div>
-                    @else
-
-          <!-- Customer login POV -->
-<div class="hidden justify-between items-center w-full lg:flex lg:w-auto" id="mobile-menu-2">
-    <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-        <li>
-            <a href="/" class="text-white custom-font">
-                <div class="group text-center">
-                    <div class="group-hover:cursor-pointer">Home</div>
-                    <div class="block invisible bg-pr-400 w-12 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                    </div>
-                </div>
+        {{-- Logged-in User Header --}}
+    <header>
+    <nav class="bg-custom-orange px-6 py-4 text-white" style="font-family: 'Century Gothic', sans-serif;">
+        <div class="flex justify-between items-center">
+            <!-- Logo -->
+            <a href="{{ route('home') }}" class="flex items-center">
+                <img src="/images/logos/R3Logo.png" class="h-16" alt="R3 Logo" />
             </a>
-        </li>
-        <li>
-            <a href="{{ route('cars') }}" class="text-white custom-font">
-                <div class="group text-center">
-                    <div class="group-hover:cursor-pointer">Cars</div>
-                    <div class="block invisible bg-pr-400 w-8 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                    </div>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden lg:flex space-x-6">
+                <a href="/" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Home</a>
+                <a href="{{ route('cars') }}" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Cars</a>
+                <a href="/location" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Location</a>
+                <a href="/contact_us" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Contact</a>
+                @if (Auth::user()->role == 'admin')
+                    <a href="{{ route('adminDashboard') }}" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Dashboard</a>
+                    <a href="{{ route('users') }}" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Users</a>
+                    <a href="{{ route('insurances.index') }}" class="text-white font-medium hover:text-yellow-400 transition duration-300 px-4 py-2 rounded-md">Insurances</a>
+                @endif
+            </div>
+
+            <!-- Mobile Hamburger Menu -->
+            <div class="lg:hidden flex items-center">
+                <button class="text-white" id="mobile-menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- User Dropdown -->
+            <div class="relative hidden lg:flex">
+                <button class="bg-dark text-white px-4 py-2 rounded-md flex items-center space-x-2 transition duration-300" id="userDropdownButton">
+                    <span>{{ Auth::user()->name }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="dropdown" class="z-20 hidden bg-white divide-y divide-gray-200 rounded-lg shadow-lg w-48 absolute right-0 mt-2">
+                    <ul class="py-2 text-sm text-gray-700">
+                        <li><a href="{{ route('clientReservation') }}" class="block px-4 py-2 hover:bg-gray-100">My Account</a></li>
+                        <li>
+                            <a href="{{ route('logout') }}" class="block px-4 py-2 hover:bg-gray-100" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
+                        </li>
+                    </ul>
                 </div>
-            </a>
-        </li>
-        <li>
-            <a href="/location" class="text-white custom-font">
-                <div class="group text-center">
-                    <div class="group-hover:cursor-pointer">Location</div>
-                    <div class="block invisible bg-pr-400 w-16 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                    </div>
-                </div>
-            </a>
-        </li>
-        <li>
-            <a href="/contact_us" class="text-white custom-font">
-                <div class="group text-center">
-                    <div class="group-hover:cursor-pointer">Contact</div>
-                    <div class="block invisible bg-pr-400 w-20 h-1 rounded-md text-center -bottom-1 mx-auto relative group-hover:not visible">
-                    </div>
-                </div>
-            </a>
-        </li>
-    </ul>
-</div>
-<style>
-    .custom-font {
-        font-family: 'Century Gothic', Arial, sans-serif;
-        font-size: 18px; /* Adjust as needed */
-    }
-</style>
+            </div>
+        </div>
 
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-white z-30 transform -translate-x-full transition-transform">
+            <div class="flex justify-end p-4">
+                <button class="text-gray-600" id="close-menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <ul class="flex flex-col items-center space-y-4 py-4">
+                <li><a href="/" class="text-gray-800 font-medium">Home</a></li>
+                <li><a href="{{ route('cars') }}" class="text-gray-800 font-medium">Cars</a></li>
+                <li><a href="/location" class="text-gray-800 font-medium">Location</a></li>
+                <li><a href="/contact_us" class="text-gray-800 font-medium">Contact</a></li>
+                @if (Auth::user()->role == 'admin')
+                    <li><a href="{{ route('adminDashboard') }}" class="text-gray-800 font-medium">Dashboard</a></li>
+                    <li><a href="{{ route('users') }}" class="text-gray-800 font-medium">Users</a></li>
+                    <li><a href="{{ route('insurances.index') }}" class="text-gray-800 font-medium">Insurances</a></li>
+                @endif
+            </ul>
+            <div class="space-y-4 py-4 px-4">
+                <a href="{{ route('login') }}"><button class="bg-dark text-white px-4 py-2 rounded-md w-full">LOGIN</button></a>
+                <a href="{{ route('register') }}"><button class="bg-dark text-white px-4 py-2 rounded-md w-full">REGISTER</button></a>
+            </div>
+        </div>
+    </nav>
+</header>
 
-                        <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                                class="text-white bg-black hover:bg-gray-900 font-medium rounded-lg text-sm px-3 py-2.5 text-center inline-flex items-center"
-                                type="button">
-                            {{ Auth::user()->name }}
-                            <svg class="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                        </button>
+<script>
+    // Toggle mobile menu
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('translate-x-0');
+    });
 
+    // Close mobile menu
+    document.getElementById('close-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.add('-translate-x-full');
+    });
 
-                        <!-- Dropdown menu -->
-                        <div id="dropdown"
-                            class="z-10 hidden bg-white divide-y divide-blue-900 rounded-lg shadow w-44 dark:bg-blue-700">
-                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropdownDefaultButton">
+    // Close mobile menu when clicking outside
+    window.addEventListener('click', function(event) {
+        var mobileMenu = document.getElementById('mobile-menu');
+        var button = document.getElementById('mobile-menu-button');
+        if (!button.contains(event.target) && !mobileMenu.contains(event.target)) {
+            mobileMenu.classList.add('-translate-x-full');
+        }
+    });
 
-                                <li>
-                                    <a href="{{ route('clientReservation') }}"
-                                        class="block px-4 py-2 hover:bg-pr-200 ">My Account</a>
-                                </li>
+    // Toggle user dropdown
+    document.getElementById('userDropdownButton').addEventListener('click', function() {
+        var dropdown = document.getElementById('dropdown');
+        dropdown.classList.toggle('hidden');
+    });
 
-                              
+    // Close user dropdown when clicking outside
+    window.addEventListener('click', function(event) {
+        var dropdown = document.getElementById('dropdown');
+        var button = document.getElementById('userDropdownButton');
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+</script>
 
-                                <li>
-                                    <a class="block px-4 py-2 hover:bg-pr-200 " href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
+    @endif
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                        class="hidden">
-                                        @csrf
-                                    </form>
-
-                                </li>
-                            </ul>
-                        </div>
-                    @endif
-                  
-                </div>
-            </nav>
-        </header>
-    @endguest
-
-    {{-- --------------------------------------------------------------- Main  --------------------------------------------------------------- --}}
+    {{-- Main Content --}}
     <main>
         @yield('content')
     </main>
-
-
     
-    <!---------------------------------------------------------------- chatbot ------------------------------------------------------------------->
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R3 Garage Car Rental Chatbot</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+       <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+            var mobileMenu = document.getElementById('mobile-menu');
+            var body = document.querySelector('body');
+            if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') {
+                mobileMenu.style.display = 'flex'; // Show menu
+                body.classList.add('no-scroll'); // Disable scrolling
+            } else {
+                mobileMenu.style.display = 'none'; // Hide menu
+                body.classList.remove('no-scroll'); // Enable scrolling
+            }
+        });
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
+    <!-- Chatbot Functionality -->
+    <div id="chatbot">
+        <div id="chatbotHeader">
+            R3 Garage Car Rental
+            <button id="minimizeChat" title="Minimize"><i class="fas fa-minus"></i></button>
+            <button id="closeChat" title="Close"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="chatbotMessages"></div>
+        <div id="chatbotInput"></div>
+    </div>
+
+    <button id="chatbotTrigger"><i class="fas fa-comments"></i></button>
+
+ <script>
+    const botProfileImage = '/images/icons/chatbot.png';
+
+    // Function to open the chatbot
+    document.getElementById('chatbotTrigger').addEventListener('click', function () {
+        const chatbot = document.getElementById('chatbot');
+        chatbot.style.display = 'flex'; // Show the chatbot
+        chatbot.classList.add('show');  // Add show class for animations
+        document.getElementById('chatbotTrigger').style.display = 'none'; // Hide the trigger button
+
+        // Only display the welcome message if it's the first time opening (chat history is empty)
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        if (chatbotMessages.innerHTML.trim() === '') {
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotMessage('Hi there! Welcome to R3 Car Rental Garage. How can we assist you today?');
+                appendQuickReplies();
+            }, 3000);
+        }
+    });
+
+    // Function to handle user option selection
+    function selectOption(option) {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        addUserMessage(option); // Display user-selected option
+        showTypingIndicator(); // Show typing indicator for bot response
+        setTimeout(() => {
+            hideTypingIndicator();
+            handleBotResponse(option); // Handle bot response
+            appendQuickReplies(); // Show quick replies again after bot response
+        }, 3000);
+    }
+
+    // Function to handle bot responses based on user selection
+    function handleBotResponse(option) {
+        if (option === 'Rental Rates') {
+            addBotMessage('Toyota Innova: ₱2,500/day, Toyota Vios: ₱2,000/day, Toyota Fortuner: ₱3,000/day, Nissan Navara: ₱2,500/day, Mitsubishi Mirage: ₱2,000/day, Mitsubishi Montero: ₱3,000/day, MG: ₱2,500/day, Toyota Grandia: ₱3,500/day. Rentals outside Metro Manila will incur an additional charge.');
+        } else if (option === 'Rental Policies') {
+            addBotMessage('Customers must leave one valid ID. Only drivers listed in the rental agreement may drive the vehicle.');
+        } else if (option === 'Book a Car') {
+            addBotMessage('Please visit our <a href="https://r3garagecarrental.online/cars" target="_blank" style="color: #007bff; text-decoration: underline;">Car Listing page</a> to choose and book your car.');
+        } else if (option === 'Contact Us') {
+            addBotMessage('Phone: +1 234 567 890, Email: support@r3garage.com, Address: 123 Main St, Metro Manila');
+        } else if (option === 'FAQs') {
+            addBotMessage('FAQs: Payment Options (Gcash, Cash only), Late Returns (additional hourly rate applies).');
+        }
+    }
+
+    // Function to add user message to chat
+    function addUserMessage(message) {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const userMessage = `<div class="message userMessage"><div class="messageBubble">${message}</div></div>`;
+        chatbotMessages.insertAdjacentHTML('beforeend', userMessage);
+    }
+
+    // Function to add bot message to chat
+    function addBotMessage(message) {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const botMessage = `<div class="message botMessage"><img src="${botProfileImage}" alt="Bot"><div class="messageBubble">${message}</div></div>`;
+        chatbotMessages.insertAdjacentHTML('beforeend', botMessage);
+    }
+
+    // Function to show typing indicator
+    function showTypingIndicator() {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const typingIndicator = `<div id="typingIndicator" class="message typing">Typing...</div>`;
+        chatbotMessages.insertAdjacentHTML('beforeend', typingIndicator);
+    }
+
+    // Function to hide typing indicator
+    function hideTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) typingIndicator.remove();
+    }
+
+    // Function to show quick reply buttons
+    function appendQuickReplies() {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const quickReplies = `
+            <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
+                <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
+                <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
+                <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
+                <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
+                <button class="quickReply" onclick="selectOption('FAQs')">FAQs</button>
+            </div>
+        `;
+        chatbotMessages.insertAdjacentHTML('beforeend', quickReplies);
+    }
+
+    // Function to clear chat messages
+    function clearChatMessages() {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        chatbotMessages.innerHTML = ''; // Clear all messages
+    }
+
+    // Minimize chatbot without closing completely, preserving chat history
+    document.getElementById('minimizeChat').addEventListener('click', function () {
+        const chatbot = document.getElementById('chatbot');
+        chatbot.style.display = 'none';  // Hide chatbot
+        document.getElementById('chatbotTrigger').style.display = 'block'; // Show the trigger button again
+    });
+
+    // Close chatbot if clicking outside of it
+    window.addEventListener('click', function (event) {
+        const chatbot = document.getElementById('chatbot');
+        const trigger = document.getElementById('chatbotTrigger');
+        const isClickInside = chatbot.contains(event.target) || trigger.contains(event.target);
+
+        if (!isClickInside) {
+            chatbot.style.display = 'none';  // Hide chatbot if clicking outside
+            document.getElementById('chatbotTrigger').style.display = 'block'; // Show the trigger button again
+        }
+    });
+
+    // Close the chatbot and reset the chat
+    document.getElementById('closeChat').addEventListener('click', function () {
+        const chatbot = document.getElementById('chatbot');
+        clearChatMessages(); // Clear all chat messages when closed
+        chatbot.classList.remove('show'); // Remove the 'show' class to start hiding animation
+        setTimeout(() => {
+            chatbot.style.display = 'none'; // Hide chatbot after animation completes
+            document.getElementById('chatbotTrigger').style.display = 'block'; // Show the trigger button again
+        }, 300); // Delay to allow transition to complete before hiding
+    });
+</script>
+
+
+
+    {{-- Footer --}}
+    @if (!Auth::check() || Auth::user()->role != 'admin')
+       <!-- Footer -->
+<footer class="footer mt-auto">
+    <!-- Top Footer Section with Social Links -->
+    <div class="footer-top bg-gray-900 text-white py-6">
+        <p class="text-center text-lg font-medium mb-4">Stay connected with us on social media:</p>
+        <div class="flex justify-center space-x-6">
+            <a href="https://www.facebook.com/r3carrental" class="hover:text-gray-400 transition duration-300">
+                <i class="fab fa-facebook-f text-2xl"></i>
+            </a>
+            <a href="#" class="hover:text-gray-400 transition duration-300">
+                <i class="fab fa-google text-2xl"></i>
+            </a>
+            <a href="https://github.com/iceon25" class="hover:text-gray-400 transition duration-300">
+                <i class="fab fa-github text-2xl"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Middle Footer Section with Main Links and Contact Info -->
+    <div class="footer-main bg-gray-800 text-white py-8">
+        <div class="container mx-auto flex flex-col lg:flex-row justify-between space-y-8 lg:space-y-0">
+            <!-- Company Info Section -->
+            <div class="footer-section lg:w-1/3 text-center lg:text-left">
+                <h3 class="text-2xl font-semibold mb-4">R3 Garage Car Rental</h3>
+                <p class="text-gray-400">Your journey begins with us. Reliable cars, unbeatable service, and a commitment to getting you there.</p>
+            </div>
+
+            <!-- Legal Section -->
+            <div class="footer-section lg:w-1/3 text-center lg:text-left">
+                <h3 class="text-2xl font-semibold mb-4">Legal</h3>
+                <ul class="space-y-2">
+                    <li><a href="{{route('terms_conditions')}}" class="text-gray-400 hover:text-white transition duration-300">Terms & Conditions</a></li>
+                    <li><a href="{{route('privacy_policy')}}" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info Section -->
+            <div class="footer-section lg:w-1/3 text-center lg:text-left">
+                <h3 class="text-2xl font-semibold mb-4">Contact Us</h3>
+                <ul class="space-y-2">
+
+                    <li class="flex justify-center lg:justify-start items-center">
+                        <i class="fas fa-phone mr-3"></i>
+                        <span>+63-955-379-3727</span>
+                    </li>
+                    <li class="flex justify-center lg:justify-start items-center">
+                        <i class="fas fa-envelope mr-3"></i>
+                        <span>r3garage@gmail.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Footer Section with Copyright Info -->
+    <div class="footer-bottom bg-gray-900 text-center text-gray-400 py-4">
+        <p>© 2024 R3 Garage Car Rental. All Rights Reserved.</p>
+    </div>
+</footer>
+
+    @endif
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Custom Styles -->
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+    
+        html {
+            scroll-behavior: smooth;
         }
 
+        .bg-custom-orange {
+            background-color: #3B9ABF;
+        }
+
+        /* Hide hamburger icon on larger screens */
+        @media (min-width: 1024px) {
+            #mobile-menu-button {
+                display: none !important;
+            }
+        }
+
+        /* Fullscreen mobile menu */
+        #mobile-menu {
+            background-color: #3B9ABF;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Disable body scroll when menu is open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* Mobile menu button spacing */
+        .mobile-menu-buttons {
+            margin-top: 20px;
+        }
+
+        /* Chatbot styles */
         #chatbot {
             width: 400px;
             height: 600px;
@@ -350,25 +584,11 @@
             padding: 15px;
             text-align: center;
             font-weight: bold;
-            position: relative;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        #chatbotHeader button {
-            color: white;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            transition: color 0.3s ease;
-        }
-
-        #chatbotHeader button:hover {
-            color: #ddd;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
         }
 
         #chatbotMessages {
@@ -376,14 +596,101 @@
             padding: 20px;
             overflow-y: auto;
             background-color: #f9f9f9;
-            scroll-behavior: smooth;
+        }
+
+        /* Quick reply button styles */
+        .quickReply {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Chatbot trigger icon */
+        #chatbotTrigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 50px;
+            color: #007bff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #chatbot {
+                width: 100%; /* Full width on mobile */
+                height: 100vh; /* Full height on mobile */
+                bottom: 0;
+                right: 0;
+                border-radius: 0; /* Remove rounded corners */
+            }
+
+            #chatbotHeader {
+                font-size: 16px; /* Smaller font for mobile */
+                padding: 10px;
+            }
+
+            #chatbotMessages {
+                padding: 15px;
+                font-size: 14px; /* Adjust font size for smaller screens */
+            }
+
+            .quickReply {
+                padding: 8px 16px; /* Smaller padding for mobile */
+                font-size: 12px; /* Smaller font size */
+            }
+
+            #chatbotTrigger {
+                font-size: 40px; /* Smaller chatbot trigger icon */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #chatbotMessages {
+                padding: 10px;
+                font-size: 12px; /* Even smaller font size for very small screens */
+            }
+
+            .quickReply {
+                padding: 6px 12px; /* Even smaller padding */
+                font-size: 11px; /* Even smaller font */
+            }
+
+            #chatbotHeader {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            #chatbotTrigger {
+                font-size: 35px; /* Adjust chatbot trigger for very small screens */
+            }
+        }
+
+        #chatbotTrigger:hover {
+            color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
 
         .message {
             margin: 10px 0;
             display: flex;
             align-items: flex-start;
-            animation: fadeIn 0.3s ease-in-out;
         }
 
         .messageBubble {
@@ -427,384 +734,6 @@
             border: 1px solid #007bff;
             margin-right: 10px;
         }
-
-        .typing {
-            font-style: italic;
-            color: gray;
-        }
-
-        #chatbotInput {
-            padding: 15px;
-            border-top: 1px solid #ddd;
-            background-color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .quickReply {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px 5px 5px 0;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .quickReply:hover {
-            background-color: #0056b3;
-        }
-
-        #chatbotTrigger {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 50px;
-            color: #007bff;
-            cursor: pointer;
-            background: none;
-            border: none;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        #chatbotTrigger:hover {
-            color: #0056b3;
-            transform: scale(1.1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
-</head>
-
-<body>
-
-    <!-- Chatbot Widget -->
-    <div id="chatbot">
-        <div id="chatbotHeader">
-            R3 Garage Car Rental
-            <button id="minimizeChat" title="Minimize"><i class="fas fa-minus"></i></button>
-            <button id="closeChat" title="Close"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="chatbotMessages"></div>
-        <div id="chatbotInput"></div>
-    </div>
-
-    <!-- Chatbot Trigger Icon -->
-    <button id="chatbotTrigger"><i class="fas fa-comments"></i></button>
-
-    <script>
-        const botProfileImage = '/images/icons/chatbot.png'; // Image URL for bot's profile
-
-        // Show the chatbot when the trigger icon is clicked
-        document.getElementById('chatbotTrigger').addEventListener('click', function () {
-            document.getElementById('chatbot').style.display = 'flex';
-            document.getElementById('chatbotTrigger').style.display = 'none';
-
-            // Automatically respond with greeting and options
-            const chatbotMessages = document.getElementById('chatbotMessages');
-
-            // Add greeting message with typing effect
-            showTypingIndicator();
-            setTimeout(() => {
-                hideTypingIndicator();
-                addBotMessage('Hi there! Welcome to R3 Car Rental Garage. Please let us know how we can help you.');
-
-                // Add quick reply buttons
-                appendQuickReplies();
-            }, 3000); // 3-second typing delay
-        });
-
-        // Minimize the chatbot
-        document.getElementById('minimizeChat').addEventListener('click', function () {
-            document.getElementById('chatbot').style.display = 'none';
-            document.getElementById('chatbotTrigger').style.display = 'block';
-        });
-
-        // Close the chatbot and clear messages
-        document.getElementById('closeChat').addEventListener('click', function () {
-            document.getElementById('chatbot').style.display = 'none';
-            document.getElementById('chatbotTrigger').style.display = 'block';
-            document.getElementById('chatbotMessages').innerHTML = ''; // Clear messages
-        });
-
-        function selectOption(option) {
-            const chatbotMessages = document.getElementById('chatbotMessages');
-
-            // Add user's selection to the chat
-            const userMessage = document.createElement('div');
-            userMessage.classList.add('message', 'userMessage');
-            userMessage.innerHTML = `<div class="messageBubble">${option}</div>`;
-            chatbotMessages.appendChild(userMessage);
-
-            // Show typing indicator and then respond based on the selected option
-            showTypingIndicator();
-            setTimeout(() => {
-                hideTypingIndicator();
-                const botResponse = document.createElement('div');
-                botResponse.classList.add('message', 'botMessage');
-                botResponse.innerHTML = `<img src="${botProfileImage}" alt="Bot"><div class="messageBubble">`;
-
-                if (option === 'Rental Rates') {
-                    botResponse.innerHTML += 'Economy Cars: $25/day<br>SUVs: $50/day<br>Luxury Cars: $100/day<br>Note: Rentals outside Metro Manila will incur an additional charge of ₱500 - ₱1000.';
-                } else if (option === 'Rental Policies') {
-                    botResponse.innerHTML += 'Customers must leave one valid ID for the duration of the rental period. Only drivers listed in the rental agreement are authorized to operate the rented vehicle.';
-                } else if (option === 'Book a Car') {
-                    botResponse.innerHTML += 'Please visit our Car Listing page to choose and book your car.';
-                } else if (option === 'Contact Us') {
-                    botResponse.innerHTML += 'Phone: +1 234 567 890<br>Email: support@r3garage.com<br>Address: 123 Main St, Metro Manila';
-                } else if (option === 'FAQs – Frequently Asked Questions') {
-                    botResponse.innerHTML += 'FAQs: Payment Options (Gcash and Cash only) and Late Returns (subject to an additional hourly rate).';
-                }
-
-                botResponse.innerHTML += '</div>'; // Closing the message bubble div
-                chatbotMessages.appendChild(botResponse);
-
-                // Scroll to the bottom of the chat
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-
-                // Re-append quick reply buttons after the bot response
-                appendQuickReplies();
-            }, 3000); // 3-second response delay
-        }
-
-        function showTypingIndicator() {
-            const chatbotMessages = document.getElementById('chatbotMessages');
-            const typingIndicator = document.createElement('div');
-            typingIndicator.id = 'typingIndicator';
-            typingIndicator.classList.add('message', 'typing');
-            typingIndicator.textContent = 'Typing...';
-            chatbotMessages.appendChild(typingIndicator);
-
-            // Scroll to the bottom of the chat
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-
-        function hideTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        function addBotMessage(message) {
-            const chatbotMessages = document.getElementById('chatbotMessages');
-            const botMessage = document.createElement('div');
-            botMessage.classList.add('message', 'botMessage');
-            botMessage.innerHTML = `<img src="${botProfileImage}" alt="Bot"><div class="messageBubble">${message}</div>`;
-            chatbotMessages.appendChild(botMessage);
-        }
-
-        function appendQuickReplies() {
-            const chatbotMessages = document.getElementById('chatbotMessages');
-
-            const quickReplies = document.createElement('div');
-            quickReplies.style.display = 'flex';
-            quickReplies.style.flexWrap = 'wrap';
-            quickReplies.style.justifyContent = 'flex-start';
-            quickReplies.innerHTML = `
-                <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
-                <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
-                <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
-                <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
-                <button class="quickReply" onclick="selectOption('FAQs – Frequently Asked Questions')">FAQs</button>
-            `;
-            chatbotMessages.appendChild(quickReplies);
-
-            // Scroll to the bottom of the chat
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-    </script>
-
-</body>
-
-
-
-
-
-
-
-<!-- -------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
-    {{-- --------------------------------------------------------------- Footer  --------------------------------------------------------------- --}}
-@if (Auth::check() && Auth::user()->role == 'admin')
-
-@else
-<footer class="footer">
-    <div class="footer-top">
-        <p>Get connected with us on social networks:</p>
-        <div class="social-icons">
-            <a href="https://www.facebook.com/r3carrental"><img src="/images/icons/Facebook_icon.svg" alt="Facebook"></a>
-            <a href="#"><img src="/images/icons/google.svg" alt="Google"></a>
-            <a href="https://github.com/iceon25"><img src="/images/icons/github.svg" alt="GitHub"></a>
-        </div>
-    </div>
-    <div class="footer-main">
-        <div class="footer-section">
-            <h3>R3 Garage Car Rental</h3>
-            <p>Your journey begins with us. Reliable cars, unbeatable service, and a commitment to getting you there.</p>
-            </div>
-        <div class="footer-section">
-            <h3>Legal</h3>
-            <ul>
-                <li><a href="{{route('terms_conditions')}}">Terms & Conditions</a></li>
-                <li><a href="{{route('privacy_policy')}}">Privacy Policy</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-    <h3>Contact</h3>
-    <ul>
-        <li>
-            <img src="/images/icons/pin.png" alt="Location">
-            <span>36 Friendship St. Friendly Village 1,<br>
-                Marikina City, Philippines<br>
-                Zip Code/Postal code: 1807</span>
-        </li>
-        <li>
-            <img src="/images/icons/phone.png" alt="Phone">
-            <span>+63-955-379-3727</span>
-        </li>
-        <li>
-            <img src="/images/icons/web.png" alt="Email">
-            <span>r3garage@gmail.com</span>
-        </li>
-    </ul>
-</div>
-
-    </div>
-    <div class="footer-bottom">
-        <p>© 2024 R3 Garage Car Rental. All Rights Reserved.</p>
-    </div>
-</footer>
-
-<style>
-  .footer {
-    background-color: #2c2c2c;
-    color: white;
-    font-family: 'Century Gothic', Arial, sans-serif;
-    padding: 20px 0;
-    text-align: center; /* Center text and elements inside the footer */
-}
-
-.footer-top {
-    background-color: #3B9ABF; /* Changed the violet color to #3B9ABF */
-    text-align: center;
-    padding: 15px 0;
-}
-
-.footer-top p {
-    margin: 0;
-    font-size: 14px;
-}
-
-.footer-top .social-icons {
-    margin-top: 10px;
-}
-
-.footer-top .social-icons a {
-    margin: 0 10px;
-    display: inline-block;
-}
-
-.footer-top .social-icons img {
-    width: 20px;
-    height: 20px;
-}
-
-.footer-main {
-    display: flex;
-    justify-content: center; /* Center the footer-main content */
-    flex-wrap: wrap;
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
-    text-align: left; /* Align text left within each section */
-}
-
-.footer-section {
-    flex: 1;
-    min-width: 200px;
-    margin: 20px;
-}
-
-.footer-section h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center; /* Center the section titles */
-}
-
-.footer-section p {
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.footer-section ul {
-    list-style: none;
-    padding: 0;
-    text-align: center; /* Center the list items */
-}
-
-.footer-section ul li {
-    margin-bottom: 10px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center the content inside list items */
-}
-
-.footer-section ul li img {
-    margin-right: 10px;
-    width: 20px;
-    height: 20px;
-}
-
-.footer-section ul li a {
-    color: white;
-    text-decoration: none;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.footer-section ul li a:hover {
-    color: #d1ecff;
-}
-
-.footer-bottom {
-    background-color: #212121;
-    text-align: center;
-    padding: 10px 0;
-}
-
-.footer-bottom p {
-    margin: 0;
-    font-size: 12px;
-}
-
-@media (max-width: 768px) {
-    .footer-main {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-section {
-        margin: 10px 0;
-    }
-}
-
-
-
-
-</style>
-
-@endif
-
 </body>
 </html>

@@ -33,6 +33,8 @@ class Reservation extends Model
         'email',
         'start_date',
         'end_date',
+        'start_time',    // Add start_time
+        'end_time',      // Add end_time
         'car_brand',
         'car_model',
         'price_per_day',

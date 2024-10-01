@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
 <div class="container">
     <div class="stepper-container">
         <div class="stepper-item" id="step-1">
@@ -27,6 +25,7 @@
             </div>
             <h1 class="font-bold text-gray-900 text-4xl mt-4">Review Your Information and Payment Details.</h1>
             <p class="text-gray-600 mt-2">Thank you for choosing and trusting our car company.</p>
+
             <div class="summary-container">
                 <div class="summary-item">
                     <label>Full Name:</label>
@@ -45,6 +44,14 @@
                     <span>{{ $reservation['end_date'] }}</span>
                 </div>
                 <div class="summary-item">
+                    <label>Start Time:</label>
+                    <span>{{ $reservation['start_time'] }}</span>
+                </div>
+                <div class="summary-item">
+                    <label>End Time:</label>
+                    <span>{{ $reservation['end_time'] }}</span>
+                </div>
+                <div class="summary-item">
                     <label>Car:</label>
                     <span>{{ $reservation['car_brand'] }} {{ $reservation['car_model'] }}</span>
                 </div>
@@ -57,31 +64,39 @@
                     <span>{{ $reservation['payment_method'] }}</span>
                 </div>
                 <div class="summary-item">
-    <label>Driver's License:</label>
-    @if(isset($reservation['driver_license']) && !empty($reservation['driver_license']))
-        <a href="{{ $reservation['driver_license'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
-    @else
-        <span class="text-gray-600">Not provided</span>
-    @endif
-</div>
-<div class="summary-item">
-    <label>Valid ID:</label>
-    @if(isset($reservation['valid_id']) && !empty($reservation['valid_id']))
-        <a href="{{ $reservation['valid_id'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
-    @else
-        <span class="text-gray-600">Not provided</span>
-    @endif
-</div>
-
+                    <label>Remaining Balance to Pay:</label>
+                    <span>{{ $reservation['remaining_balance'] }} ₱</span>
+                </div>
+                <div class="summary-item">
+                    <label>Driver's License:</label>
+                    @if(isset($reservation['driver_license']) && !empty($reservation['driver_license']))
+                        <a href="{{ $reservation['driver_license'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+                    @else
+                        <span class="text-gray-600">Not provided</span>
+                    @endif
+                </div>
+                <div class="summary-item">
+                    <label>Valid ID:</label>
+                    @if(isset($reservation['valid_id']) && !empty($reservation['valid_id']))
+                        <a href="{{ $reservation['valid_id'] }}" target="_blank" class="text-blue-600 hover:underline">View Document</a>
+                    @else
+                        <span class="text-gray-600">Not provided</span>
+                    @endif
+                </div>
             </div>
+
             <div class="button-container">
+                <!-- Confirm Button -->
                 <button class="button button-confirm px-4 py-2 rounded-md" id="confirm-button">Confirm</button>
+                
+                <!-- Edit Button - Redirect to create.blade.php with car_id -->
+                <a href="{{ route('reservation.create', ['car_id' => $reservation['car_id']]) }}" class="button button-edit px-4 py-2 rounded-md">Edit</a>
             </div>
         </div>
     </div>
 
     <div class="done-container" id="done-section" style="display: none;">
-        <h1>Reservation Confirmed!</h1>
+        <h1>Pending Reservation!</h1>
         <p>Thank you for your reservation. We will contact you soon with further details.</p>
     </div>
 </div>

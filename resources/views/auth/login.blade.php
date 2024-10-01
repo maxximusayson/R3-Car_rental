@@ -1,15 +1,16 @@
 @extends('layouts.myapp3')
+@section('title', 'R3 Garage Car Rental | Login')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gray-200">
-    <div class="flex bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl w-full">
+    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl w-full">
         <!-- Left Side with Image -->
-        <div class="bg-blue-100 p-8 w-1/2 flex items-center justify-center">
+        <div class="bg-blue-100 p-8 md:w-1/2 flex items-center justify-center">
             <img src="/images/logos/r3.jpg" alt="Illustration" class="max-w-full">
         </div>
 
         <!-- Right Side with Form -->
-        <div class="p-8 w-1/2">
+        <div class="p-8 w-full md:w-1/2">
             <div class="flex justify-center mb-6">
                 <!-- <img src="/images/logos/R3Logo.png" alt="Logo" class="h-24"> -->
             </div>
@@ -53,7 +54,6 @@
                         <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline" style="font-family: 'Century Gothic', sans-serif;">Forgot Password?</a>
                     </div>
                 </div>
-
 
                 <div class="mb-6">
                     <div id="captcha" class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>

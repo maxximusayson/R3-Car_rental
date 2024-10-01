@@ -1,4 +1,5 @@
 @extends('layouts.myapp')
+@section('title', 'R3 Garage Car Rental | Contact')
 @section('content')
 
 <!-- Contact Form -->

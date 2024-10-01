@@ -58,4 +58,5 @@ class usersController extends Controller
     return redirect()->back()->with('success', 'Profile picture updated successfully!');
 }
 
+
 }

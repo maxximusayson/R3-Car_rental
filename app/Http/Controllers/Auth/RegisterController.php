@@ -31,8 +31,9 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string', 'regex:/^[9]\d{9}$/'], // Validate 10 digits starting with 9
+            'phone_number' => ['required', 'string', 'regex:/^(\+63)?9\d{9}$/'], // Adjust regex for phone number
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -41,46 +42,32 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'email' => $data['email'],
             'username' => $data['username'],
-            'phone' => $data['phone'],
+            'phone_number' => $data['phone_number'],
             'password' => Hash::make($data['password']),
         ]);
     }
 
     public function requestOtp(Request $request)
     {
-        $data = $request->all();
-    
-        // Validate user input
-        $validator = $this->validator($data);
+        $validator = $this->validator($request->all());
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-    
-        // Save user data temporarily in session
-        Session::put('register_data', $data);
-    
-        // Generate OTP
+        
+        Session::put('register_data', $request->all());
         $otp = rand(100000, 999999);
         Session::put('otp', $otp);
-    
+        
         try {
-            // Use the sendOtp method from SmsService
-            $response = $this->smsService->sendOtp($data['phone'], $otp);
-            
-            // Optionally store the phone number in the session for verification
-            session(['phone' => $data['phone']]);
-    
-            // Pass the response and any other data to the view
+            $response = $this->smsService->sendOtp($request->phone_number, $otp);
             return view('verify-otp', [
                 'message' => 'OTP sent successfully.',
                 'semaphore_response' => $response,
             ]);
         } catch (Exception $e) {
-            // Handle exceptions during the SMS sending process
-            return view('verify-otp', [
-                'error' => 'Failed to send OTP: ' . $e->getMessage(),
-            ]);
+            return back()->withErrors(['otp' => 'Failed to send OTP: ' . $e->getMessage()])->withInput();
         }
     }
     
@@ -89,27 +76,15 @@ class RegisterController extends Controller
         $otp = $request->input('otp');
         $sessionOtp = Session::get('otp');
         $data = Session::get('register_data');
-    
+
         if ($otp == $sessionOtp) {
-            // Create user account
-            $user = User::create([
-                'name' => $data['name'],
-                'username' => $data['username'],
-                'phone' => $data['phone'],
-                'password' => Hash::make($data['password']),
-            ]);
-    
-            // Automatically log the user in
+            $user = $this->create($data);
             Auth::login($user);
-    
-            // Clear the session data
             Session::forget('otp');
             Session::forget('register_data');
-    
-            // Redirect to a success page or dashboard
+
             return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully.');
         } else {
-            // Handle OTP mismatch
             return back()->withErrors(['otp' => 'The OTP entered is incorrect.'])->withInput();
         }
     }

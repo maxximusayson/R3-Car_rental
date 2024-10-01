@@ -338,7 +338,7 @@
                         @if($user->profile_picture_url)
                             <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-16 w-16 rounded-full object-cover ring-2 ring-blue-500">
                         @else
-                            <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Picture" class="h-16 w-16 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600">
+                            <img src="{{ asset('images/icons/default.jpg') }}" alt="Default Profile Picture" class="h-16 w-16 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600">
                         @endif
                     </div>
                     <div class="flex-1">
@@ -348,7 +348,8 @@
                 </div>
                 <div class="mt-4 flex items-center">
                     @php
-$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8)); // Reduced to 1 minute                    @endphp
+$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8)); // Reduced to 1 minute
+                    @endphp
                     <div class="h-4 w-4 rounded-full mr-2 @if($isOnline) bg-green-500 @else bg-red-500 @endif"></div>
                     <span class="text-sm font-medium @if($isOnline) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif">
                         @if($isOnline) Online @else Offline @endif
@@ -364,6 +365,7 @@ $isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8
         </div>
     </div>
 </div>
+
 
 
 <script>

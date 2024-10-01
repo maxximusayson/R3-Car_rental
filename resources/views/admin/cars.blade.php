@@ -1,14 +1,21 @@
 @extends('layouts.myapp1')
 
 @section('content')
-    <!-- Clock -->
-    <div id="clock" class="text-gray-900 dark:text-gray-300 text-lg font-semibold absolute top-4 right-4">
-        <span id="time"></span>
-    </div>
+<!-- Header -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-4">
+    <h1 class="text-4xl font-extrabold text-shadow">Welcome, Admin!</h1>
+    <p class="mt-2 text-lg">Here’s an overview of your current activities and statistics.</p>
+</div>
 
-    <div class="my-10 flex justify-end mx-auto max-w-screen-xl">
-        <a href="{{ route('cars.create') }}" class="text-white bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded-md shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 inline mr-2">
+<!-- Clock -->
+<div id="clock" class="text-white text-lg font-semibold position-absolute top-4 end-0 bg-gradient-to-r from-blue-500 to-indigo-600 py-2 px-4 rounded-lg shadow-lg">
+    <span id="date"></span>, <span id="time"></span>
+</div>
+
+
+    <div class="my-3 d-flex justify-content-end">
+        <a href="{{ route('cars.create') }}" class="btn btn-primary shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 inline me-2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
             Add New Car
@@ -16,100 +23,127 @@
     </div>
 
     <!-- Search Input and Dropdown -->
-    <div class="my-4 mx-auto max-w-screen-xl flex items-center space-x-4">
-        <div class="relative">
-            <input type="text" id="searchInput" placeholder="Search cars..." class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-500">
-        </div>
-        <div class="relative">
-            <select id="carBrand" class="w-48 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-500">
-                <option value="">Select Brand</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Nissan">Nissan</option>
-                <option value="Mitsubishi">Mitsubishi</option>
-            </select>
-        </div>
+    <div class="my-4 mx-auto d-flex flex-column flex-sm-row align-items-center gap-3">
+        <input type="text" id="searchInput" placeholder="Search cars..." class="form-control flex-grow-1" style="max-width: 250px;">
+        <select id="carBrand" class="form-select flex-shrink-1" style="min-width: 150px;">
+            <option value="">Select Brand</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Mitsubishi">Mitsubishi</option>
+        </select>
     </div>
 
-    <div class="overflow-x-auto bg-white shadow sm:rounded-lg mx-auto max-w-screen-xl">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images/Videos</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Engine</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price per Day</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reserved</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                </tr>
-            </thead>
-            <tbody id="carTableBody" class="bg-white divide-y divide-gray-200">
-                @foreach ($cars as $car)
-                    <tr class="hover:bg-gray-100 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center space-x-2">
-                                @if ($car->images && $car->images->count() > 0)
-                                    @foreach ($car->images as $image)
-                                        <div class="flex-shrink-0 h-24 w-24 relative group">
-                                        <img class="w-full h-24 object-cover rounded-md" 
-                                            src="{{ asset($image->image_path) }}" 
-                                            alt="{{ $car->brand }} {{ $car->model }}">
+    <div class="container my-5">
+        <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header" style="background-color: #343a40; color: #f8f9fa;">
+    <h5 class="mb-0" style="font-size: 1.5rem; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">Car List</h5>
+</div>
 
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Images/Videos</th>
+                                <th>Brand</th>
+                                <th>Model</th>
+                                <th>Engine</th>
+                                <th>Price per Day</th>
+                                <th>Quantity</th>
+                                <th>Reserved</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carTableBody">
+                            @foreach ($cars as $car)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            @if ($car->images && $car->images->count() > 0)
+                                                @foreach ($car->images as $image)
+                                                    <div class="me-2">
+                                                        <img class="img-fluid rounded" src="{{ asset($image->image_path) }}" alt="{{ $car->brand }} {{ $car->model }}" style="width: 80px; height: 80px;">
+                                                    </div>
+                                                @endforeach
+                                            @else
+                                                <img class="img-fluid me-2 rounded" src="{{ asset('path/to/default-image.jpg') }}" alt="default car image" style="width: 80px; height: 80px;">
+                                            @endif
+
+                                            @if($car->video_path)
+                                                <video controls class="me-2 rounded" style="width: 80px; height: 80px;">
+                                                    <source src="{{ asset('storage/' . $car->video_path) }}" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @endif
                                         </div>
-                                    @endforeach
-                                @else
-                                    <div class="flex-shrink-0 h-24 w-24">
-                                        <img class="h-24 w-24 object-cover rounded-md" 
-                                             src="{{ asset('path/to/default-image.jpg') }}" 
-                                             alt="default car image">
-                                    </div>
-                                @endif
+                                    </td>
+                                    <td class="text-muted">{{ $car->brand }}</td>
+                                    <td class="text-muted">{{ $car->model }}</td>
+                                    <td class="text-muted">{{ $car->engine }}</td>
+                                    <td>₱{{ number_format($car->price_per_day, 2) }}</td>
+                                    <td>{{ $car->quantity }}</td>
+                                    <td>
+                                        <span class="badge {{ $car->status == 'Reserved' ? 'bg-danger' : 'bg-success' }}">
+                                            {{ $car->status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('cars.edit', ['car' => $car->id]) }}" class="btn btn-outline-info btn-sm">Edit</a>
+                                        <form action="{{ route('cars.destroy', ['car' => $car->id]) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
 
-                                <!-- Display the video if available -->
-                                @if($car->video_path)
-                                    <div class="flex-shrink-0 h-24 w-24 relative group mt-2">
-                                        <video controls class="w-full h-full rounded-md">
-                                            <source src="{{ asset('storage/' . $car->video_path) }}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                @endif
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $car->brand }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->model }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->engine }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₱{{ number_format($car->price_per_day, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $car->quantity }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $car->status == 'Reserved' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
-                                {{ $car->status }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="{{ route('cars.edit', ['car' => $car->id]) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
-                            <form action="{{ route('cars.destroy', ['car' => $car->id]) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Remove</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-
-                <!-- Displayed when no cars match the search -->
-                @if ($cars->isEmpty())
-                    <tr>
-                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">No cars found.</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
+                            @if ($cars->isEmpty())
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">No cars found.</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <style>
+        .bg-gradient {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+        }
+        .table-light th {
+            color: #333;
+            font-weight: 600;
+        }
+        .table-light td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .btn-outline-info, .btn-outline-danger {
+            transition: all 0.3s ease;
+        }
+        .btn-outline-info:hover, .btn-outline-danger:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
 
     <script>
-        // JavaScript for filtering cars based on input and dropdown selection
+        function updateClock() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString(undefined, options);
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('date').textContent = dateString;
+            document.getElementById('time').textContent = timeString;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+        
         const searchInput = document.getElementById('searchInput');
         const carBrandSelect = document.getElementById('carBrand');
         const carTableBody = document.getElementById('carTableBody');
@@ -117,7 +151,6 @@
         function filterCars() {
             const filterValue = searchInput.value.trim().toLowerCase();
             const brandValue = carBrandSelect.value.trim().toLowerCase();
-
             const rows = carTableBody.getElementsByTagName('tr');
 
             for (let i = 0; i < rows.length; i++) {

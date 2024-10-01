@@ -57,22 +57,70 @@
                 </div>
 
 
-                <!-- Date start-end -->
-                <div class="form-group mb-6">
-                    <label for="start_date">Start at</label>
-                    <input type="text" name="start_date" id="start_date" class="form-input custom-date-input" required>
-                    @error('start_date')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
-                </div>
+             <!-- Date and Time Section -->
+<div class="form-group mb-6">
+    <label for="start_date">Start Date</label>
+    <input type="text" name="start_date" id="start_date" class="form-input custom-date-input" required>
+    @error('start_date')
+        <span class="text-red-500 text-sm">{{ $message }}</span>
+    @enderror
+</div>
 
-                <div class="form-group mb-6">
-                    <label for="end_date">End at</label>
-                    <input type="text" name="end_date" id="end_date" class="form-input custom-date-input" required>
-                    @error('end_date')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
-                </div>
+<div class="form-group mb-6">
+    <label for="start_time">Start Time</label>
+    <input type="time" name="start_time" id="start_time" class="form-input" required>
+    @error('start_time')
+        <span class="text-red-500 text-sm">{{ $message }}</span>
+    @enderror
+</div>
+
+<div class="form-group mb-6">
+    <label for="end_date">End Date</label>
+    <input type="text" name="end_date" id="end_date" class="form-input custom-date-input" required disabled>
+    @error('end_date')
+        <span class="text-red-500 text-sm">{{ $message }}</span>
+    @enderror
+</div>
+
+<div class="form-group mb-6">
+    <label for="end_time">End Time</label>
+    <input type="time" name="end_time" id="end_time" class="form-input" required>
+    @error('end_time')
+        <span class="text-red-500 text-sm">{{ $message }}</span>
+    @enderror
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const startTimeInput = document.getElementById('start_time');
+        const endTimeInput = document.getElementById('end_time');
+
+        startTimeInput.addEventListener('click', function() {
+            // Clear end time when start time is clicked
+            endTimeInput.value = '';
+        });
+
+        startTimeInput.addEventListener('change', function() {
+            const startTime = startTimeInput.value;
+            if (startTime) {
+                // Convert the start time to a Date object
+                const start = new Date();
+                const [hours, minutes] = startTime.split(':').map(Number);
+                start.setHours(hours, minutes, 0, 0);
+
+                // Add 24 hours to the start time
+                const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+                const endHours = String(end.getHours()).padStart(2, '0');
+                const endMinutes = String(end.getMinutes()).padStart(2, '0');
+
+                // Set the end time in 24-hour format
+                endTimeInput.value = `${endHours}:${endMinutes}`;
+            }
+        });
+    });
+</script>
+
+
 
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -156,7 +204,7 @@
                             <li>Enter the amount and confirm the payment.</li>
                         </ol>
                         <p class="text-gray-700 mb-4">Once the payment is made, you will be redirected to the PayMongo dashboard to complete the reservation.</p>
-                        <img src="{{ asset('images/gcash-qrcode.png') }}" alt="GCash QR Code" class="w-1/2 mt-2 mx-auto">
+                       
                         <button id="proceed-to-paymongo" class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" type="button">Proceed to PayMongo</button>
                     </div>
 
@@ -291,6 +339,12 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+
+
+
+
+
+
 <script>
 $(document).ready(function() {
     // Array of already booked dates, passed from the backend
@@ -321,6 +375,7 @@ $(document).ready(function() {
         });
     }
 
+    // Set the minimum end date to one day after the selected start date
     function updateEndDate(startDate) {
         var endPicker = flatpickr("#end_date");
         if (startDate) {
@@ -330,66 +385,96 @@ $(document).ready(function() {
         }
     }
 
-    function calculateTotals() {
+    // Calculate the totals based on the selected dates and times
+  function calculateTotals() {
     var startDate = new Date($('#start_date').val());
     var endDate = new Date($('#end_date').val());
+    var startTime = $('#start_time').val();
+    var endTime = $('#end_time').val();
 
-    if (startDate && endDate && startDate <= endDate) {
-        // Normalize the time to midnight to ensure accurate day calculation
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
+    if (startDate && endDate && startTime && endTime && startDate <= endDate) {
+        // Ensure the end date is treated as the same day if start and end are 1 day apart
+        var durationInDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+        
+        // If start and end date are the same, consider it 1 full day
+        if (durationInDays < 1) {
+            durationInDays = 1;
+        }
+        
+        // Display the duration in the duration field
+        $('#duration span').text(durationInDays + ' days');
 
-        // Calculate the number of days (including both start and end date)
-        var duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        var pricePerDay = parseFloat('{{ $car->price_per_day }}');
+        var totalPrice = durationInDays * pricePerDay;
 
-        if (duration < 1) duration = 1; // Ensure at least 1 day is counted
+        // Downpayment is fixed 1000 PHP per day
+        var downpaymentPerDay = 1000;
+        var totalDownpayment = durationInDays * downpaymentPerDay;
 
-        var pricePerDay = 3000; // Price per day is 3,000 PHP
-        var totalPrice = duration * pricePerDay; // Total price for the duration
+        var cashPaid = parseFloat($('#cash-amount').val()) || 0;
+        var remainingBalance = Math.max(0, totalPrice - totalDownpayment - cashPaid);
 
-        var downpaymentPerDay = 1000; // Fixed downpayment per day
-        var totalDownpayment = duration * downpaymentPerDay; // Total downpayment for the duration
+        // Calculate Grand Total
+        var grandTotal = totalPrice - totalDownpayment;
 
-        var cashPaid = parseFloat($('#cash-amount').val()) || 0; // Get the amount of cash paid by the user
-
-        var remainingBalance = Math.max(0, totalPrice - totalDownpayment - cashPaid); // Calculate remaining balance after downpayment and cash paid
-
-        // Update the display with calculated values
-        // $('#total-price span').text(totalPrice.toFixed(2) + ' PHP');
+        // Update the UI with calculated values
+        $('#total-price span').text(totalPrice.toFixed(2) + ' PHP');
         $('#downpayment span').text(totalDownpayment.toFixed(2) + ' PHP');
-        $('#remaining-balance').text(remainingBalance.toFixed(1) + ' PHP');
-
-        // Update the remaining balance in the HTML
+        $('#grand-total span').text(grandTotal.toFixed(2) + ' PHP');
         $('#remaining-balance').text(remainingBalance.toFixed(2) + ' PHP');
 
         // Add a note if there's a remaining balance
         if (remainingBalance > 0) {
             $('#balance-note').text('May natitirang balanse ka na ' + remainingBalance.toFixed(2) + ' ₱.');
         } else {
-            $('#balance-note').text(''); // Clear note if no balance
+            $('#balance-note').text('');
         }
     } else {
-        // Reset to default state if dates are not properly selected
+        // Reset values if dates or times are not properly selected
+        $('#duration span').text(''); // Reset the duration
         $('#total-price span').text('₱');
         $('#downpayment span').text('₱');
         $('#grand-total span').text('₱');
         $('#remaining-balance').text('0.00 PHP');
     }
 
-    validateForm(); // Check if the form is ready for submission
+    validateForm();
 }
 
+    // Handle the payment button click functionality
+    $('.payment-button').click(function() {
+        // Remove the "active" class from all payment buttons
+        $('.payment-button').removeClass('active');
+        
+        // Add the "active" class to the clicked button
+        $(this).addClass('active');
+        
+        // Store the payment method in a hidden input or variable
+        var selectedMethod = $(this).data('method');
+        $('#selected-payment-method').val(selectedMethod);  // Assuming you have a hidden input for the payment method
 
+        // Show/hide the appropriate fields based on the selected payment method
+        if (selectedMethod === 'gcash') {
+            $('#gcash-details').removeClass('hidden'); // Show GCash proceed button
+            $('#cash-details').addClass('hidden'); // Hide cash input field
+        } else if (selectedMethod === 'cash') {
+            $('#cash-details').removeClass('hidden'); // Show cash input field
+            $('#gcash-details').addClass('hidden'); // Hide GCash proceed button
+        }
+    });
+
+    // Validate the form to ensure all fields are correctly filled
     function validateForm() {
         var startDate = $('#start_date').val();
         var endDate = $('#end_date').val();
+        var startTime = $('#start_time').val();
+        var endTime = $('#end_time').val();
         var paymentMethod = $('.payment-button.active').data('method');
         var cashAmount = parseFloat($('#cash-amount').val()) || 0;
-        var totalPrice = parseFloat($('#total-price span').text()) || 0;
         var isTermsChecked = $('#agree').is(':checked'); // Check if terms are agreed
 
-        // Check if start date, end date, payment method, and terms are agreed
-        var isValidDates = startDate && endDate;
+        // Check if start date, end date, start time, end time, payment method, and terms are agreed
+        var isValidDates = startDate && endDate && startTime && endTime;
         var isValidPayment = paymentMethod && (paymentMethod === 'cash' ? cashAmount >= 0 : true); // Allow partial payment
         var enableButton = isValidDates && isValidPayment && isTermsChecked;
 
@@ -397,40 +482,13 @@ $(document).ready(function() {
     }
 
     // Call `calculateTotals` whenever relevant inputs change
-    $('#start_date, #end_date, #cash-amount').on('input', calculateTotals);
+    $('#start_date, #end_date, #start_time, #end_time, #cash-amount').on('input', calculateTotals);
 
     // Initialize the form with the current values
     $(document).ready(calculateTotals);
 
-    // Handle payment method selection
-    $('.payment-button').click(function() {
-        var paymentMethod = $(this).data('method');
-        $('#selected_payment_method').val(paymentMethod);
-
-        // Update UI based on selected payment method
-        $('.payment-button').removeClass('active');
-        $(this).addClass('active');
-
-        // Show the payment details section
-        $('#payment-details').show();
-        $('#gcash-details').toggle(paymentMethod === 'gcash');
-        $('#cash-details').toggle(paymentMethod === 'cash');
-
-        // Update hidden field for GCash status based on selected payment method
-        $('#gcash-status').val(paymentMethod === 'cash' ? 'paid' : 'pending');
-
-        calculateTotals();
-    });
-
-    // Calculate totals when cash amount changes
-    $('#cash-amount').on('input', function() {
-        calculateTotals();
-    });
-
-    // Calculate totals when dates are selected
-    $('#start_date, #end_date').on('change', function() {
-        calculateTotals();
-    });
+    // Calculate totals when times are selected
+    $('#start_time, #end_time').on('change', calculateTotals);
 
     // Handle proceed to PayMongo button click
     $('#proceed-to-paymongo').click(function () {
@@ -496,7 +554,7 @@ $(document).ready(function() {
 
     // Handle Yes button click
     $('#confirmYes').click(function() {
-        // Redirect to cars.blade.php
+        // Redirect to cars.blade.php or home page
         window.location.href = '/cars'; // Adjust this path if your route to cars.blade.php is different
     });
 
@@ -522,9 +580,18 @@ $(document).ready(function() {
         validateForm();
     });
 });
-
-
 </script>
+
+
+
+
+
+
+
+
+
+
+
 
 
 <style>

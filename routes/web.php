@@ -43,6 +43,7 @@ use App\Http\Controllers\GpsTrackingController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SettingsController;
 
+
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
     $cars = Car::take(6)->where('status', '=', 'available')->get();
@@ -66,6 +67,10 @@ Route::get('reviews', function () {
 
 Route::get('auth/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('auth/login', [LoginController::class, 'login'])->name('admin.login.submit');
+// web.php
+
+
+
 
 Route::redirect('/admin', 'admin/login');
 
@@ -282,6 +287,8 @@ Route::post('/upload-profile-picture', [UsersController::class, 'uploadProfilePi
     ->name('uploadProfilePicture')
     ->middleware('auth');
 
+    Route::post('/profile/remove-picture', [ProfileController::class, 'removePicture'])->name('profile.removePicture');
+  
 
 
 // Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
@@ -358,6 +365,11 @@ Route::get('/paymongo/failed', function () {
     return view('paymongo.failed');
 })->name('paymongo.failed');
 
+Route::get('/paymongo/paid', function () {
+    // Handle paid
+    return view('paymongo.paid');
+})->name('paymongo.paid');
+
 // Going back to reservation form
 Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
 
@@ -383,6 +395,26 @@ Route::get('/users', [UsersController::class, 'index'])->name('users.index');
 // Route::post('login', [LoginController::class, 'login']);
 // Route::post('2fa/verify', [LoginController::class, 'verify2fa'])->name('2fa.verify');
 
+// Add this line to your routes/web.php
+// Route::post('/2fa/resend', [App\Http\Controllers\TwoFactorController::class, 'resendCode'])->name('2fa.resend');
+// Route::post('/2fa/resend', [App\Http\Controllers\Auth\LoginController::class, 'resend2FA'])->name('2fa.resend');
+
+// Route::post('/password/resend-code', [PasswordResetController::class, 'resendCode'])->name('password.resend.code');
+
+// Route to show the 2FA method selection form
+Route::get('/2fa/verify', [App\Http\Controllers\Auth\LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
+
+// Route to handle sending OTP (based on the method)
+Route::post('/2fa/send', [App\Http\Controllers\Auth\LoginController::class, 'send2FA'])->name('2fa.send');
+
+// Route to verify OTP after entering the code
+Route::post('/verify-otp', [App\Http\Controllers\Auth\LoginController::class, 'verify2FA'])->name('verify.otp');
+
+// Route to resend OTP (if the user requests it)
+Route::post('/2fa/resend', [App\Http\Controllers\Auth\LoginController::class, 'resend2FA'])->name('2fa.resend');
+
+
+
 // Route::post('/request-otp', [OTPController::class, 'requestOtp'])->name('request.otp');
 Route::post('/verify-otp', [OTPController::class, 'verifyOtp'])->name('verify.otp');
 Route::get('/registration-success', function () {
@@ -402,8 +434,13 @@ Route::post('/register/verify-otp', [OTPController::class, 'verifyOtp'])->name('
 
 
 
+
+
+
+// web.php
 Route::get('/verify-otp', function () {
-    return view('verify');
+    // Change 'verify' to the correct view name, for example, 'auth.2fa-verify' 
+    return view('auth.2fa-verify'); // Ensure this matches your file structure
 })->name('verify.otp');
 
 // Calendar
@@ -486,8 +523,6 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/2fa/verify', [LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
 Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify');
 
-Route::get('/2fa/verify', [LoginController::class, 'show2FAVerifyForm'])->name('2fa.verify');
-Route::post('/2fa/verify', [LoginController::class, 'verify2FA'])->name('2fa.verify');
 
 
 // notif approved
@@ -521,3 +556,40 @@ Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name
 Route::post('/cms/add', [CMSController::class, 'add'])->name('cms.add');
 Route::get('/cms/edit/{Welcome}', [CMSController::class, 'edit'])->name('cms.edit');
 Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name('cms.update');
+
+
+
+
+
+// Routes for GPS Tracking
+Route::get('/gps/tracking', [GpsTrackingController::class, 'track'])->name('gps.tracking');
+
+// Route to store GPS data (via POST request)
+Route::post('/gps/store', [GpsTrackingController::class, 'storeGpsData'])->name('gps.store');
+
+
+Route::get('/gps-data', 'App\Http\Controllers\GpsTrackingController@fetchGpsFromProxy');
+Route::get('/gps-data', [App\Http\Controllers\GpsTrackingController::class, 'fetchGpsFromProxy'])->name('fetch.gps.data');
+
+
+// email otp
+Route::post('/send-otp', [OTPController::class, 'sendOtp']);
+Route::post('/verify-otp', [OTPController::class, 'verifyOtp']);
+Route::post('/send-email-otp', [OTPController::class, 'sendEmailOtp']);
+
+Route::post('/send-email-otp', [OTPController::class, 'sendEmailOtp'])->name('send.email.otp');
+
+
+
+Route::post('/verify-otp', [LoginController::class, 'verifyOtp'])->name('verify.otp');
+
+Route::post('/verify-otp', [\App\Http\Controllers\Auth\LoginController::class, 'verifyOtp'])->name('verify.otp');
+
+Route::post('/resend-2fa', [LoginController::class, 'resend2FA'])->name('2fa.resend');
+
+
+
+
+
+
+

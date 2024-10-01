@@ -19,14 +19,16 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username', // Ensures 'username' can be mass assigned
         'password',
-        'phone_number',
+        'phone_number', // Ensures 'phone_number' can be mass assigned
         'profile_picture',
         'valid_id',
         'proof_of_billing',
         'active',
-        'two_factor_code', // Add this line for 2FA code
+        'two_factor_code',
     ];
+
 
     /**
      * Get the reservations for the user.

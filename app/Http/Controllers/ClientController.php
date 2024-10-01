@@ -29,7 +29,7 @@ class ClientController extends Controller
 
         fclose($handle);
 
-        return response()->download($filename)->deleteFileAfterSend(true);
+        return response()->download(file: $filename)->deleteFileAfterSend(true);
     }
 
     public function import(Request $request)
@@ -38,25 +38,27 @@ class ClientController extends Controller
         if ($file) {
             $path = $file->getRealPath();
             $data = array_map('str_getcsv', file($path));
-
+    
             foreach ($data as $index => $row) {
                 if ($index === 0) {
                     continue; // Skip header row
                 }
-
+    
                 Client::updateOrCreate(
                     ['email' => $row[1]],
                     [
                         'name' => $row[0],
                         'email' => $row[1],
                         'created_at' => $row[2],
+                        'username' => $row[3], // Assuming the username is in the 4th column
+                        'phone_number' => $row[4], // Assuming the phone number is in the 5th column
                     ]
                 );
             }
-
+    
             return redirect()->back()->with('success', 'CSV file imported successfully.');
         }
-
+    
         return redirect()->back()->with('error', 'Please upload a valid CSV file.');
     }
 

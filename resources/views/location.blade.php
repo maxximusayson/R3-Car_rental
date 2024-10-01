@@ -1,6 +1,57 @@
 @extends('layouts.myapp')
+@section('title', 'R3 Garage Car Rental | Location')
 
 @section('content')
+<!-- Banner Section -->
+<div class="banner">
+    <h1>Our Locations</h1>
+</div>
+
+<div class="container">
+    <div class="content-wrapper">
+        <!-- Left Content -->
+        <div class="left-content">
+    <!-- Marikina Branch Info -->
+    <div class="branch-info">
+        <div class="branch-icon">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="branch-details">
+            <h2>R3 Garage - Marikina Branch</h2>
+            <p><strong>Phone:</strong> 0955-379-3727</p>
+            <p><strong>Email:</strong> rilleracl@yahoo.com</p>
+            <p><strong>Address:</strong> 36 Friendship st. Friendly Village 1, Marikina City, Philippines</p>
+        </div>
+    </div>
+
+    <!-- Isabela Branch Info -->
+    <div class="branch-info">
+        <div class="branch-icon">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="branch-details">
+            <h2>R3 Garage - Isabela Branch</h2>
+            <p><strong>Phone:</strong> 0955-379-3727</p>
+            <p><strong>Email:</strong> rilleracl@yahoo.com</p>
+            <p><strong>Address:</strong> Alicia, Isabela, Philippines</p>
+        </div>
+    </div>
+</div>
+
+        <!-- Right Content (Maps for both locations) -->
+        <div class="right-content">
+            <!-- Marikina Map -->
+            <div class="map-container">
+                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.1782295743333!2d121.10443815026572!3d14.645822049462128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b9ba367f57b3%3A0x492856bd610c4ee4!2s1%2C%2036%20Friendship%2C%20Marikina%2C%201800%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1712750045270!5m2!1sen!2sph" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <!-- Alicia, Isabela Map -->
+            <div class="map-container" style="margin-top: 20px;">
+                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.7441736430677!2d121.62655107406403!3d16.780710399872313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33855af0ffb19173%3A0xf6e07471f8e3d370!2sAlicia%2C%20Isabela%2C%20Philippines!5e0!3m2!1sen!2sph!4v1712751110000!5m2!1sen!2sph" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
 <style>
     /* General container styling */
     .container {
@@ -103,64 +154,233 @@
         margin-bottom: 10px;
     }
 
-    /* Logo styling */
-    .logo-container {
-        text-align: left;
-        margin-bottom: 40px;
+    /* Banner styling */
+    .banner {
+        background-size: cover;
+        background-position: center;
+        background-image: url('images/homepage/cover4.png'); /* Replace with your image URL */
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
     }
 
-    .logo-container img {
-        max-width: 250px;
+    .banner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
     }
+
+    .banner h1, .banner p {
+        position: relative;
+        color: white;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .banner h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        font-family: 'Century Gothic', sans-serif;
+    }
+
+    .banner p {
+        font-size: 1.25rem;
+        margin-top: 10px;
+        font-family: 'Century Gothic', sans-serif;
+    }
+      /* General container styling */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Flexbox layout for the main content and map */
+    .content-wrapper {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .left-content {
+        width: 45%;
+    }
+
+    .right-content {
+        width: 50%;
+    }
+
+    .branch-info {
+        display: flex;
+        gap: 15px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+    }
+
+    .branch-info:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .branch-image {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .branch-image img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .branch-details {
+        flex: 2;
+    }
+
+    .branch-details h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .branch-details p {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .toggle-button {
+        display: block;
+        margin-top: 5px;
+        background-color: transparent;
+        border: none;
+        color: #007bff;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    .toggle-button:hover {
+        text-decoration: underline;
+    }
+
+    /* Map container styling */
+    .map-container {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .map {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 12px;
+    }
+    /* Flexbox layout for the main content and icon */
+    .branch-info {
+        display: flex;
+        gap: 15px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+    }
+
+    .branch-info:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Red Pin Icon Styling */
+    .branch-icon {
+        font-size: 40px;
+        color: #ff0000; /* Red color for the pin */
+        flex: 0 0 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .branch-details {
+        flex: 1;
+    }
+
+    .branch-details h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .branch-details p {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 8px;
+    }
+    /* Responsive Design for Small Screens */
+    @media (max-width: 768px) {
+        .content-wrapper {
+            flex-direction: column;
+        }
+
+        .left-content, 
+        .right-content {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .map-container {
+            height: 300px;
+        }
+
+        .branch-icon {
+            font-size: 30px;
+        }
+
+        .branch-details h2 {
+            font-size: 1.25rem;
+        }
+
+        .branch-details p {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Even Smaller Devices */
+    @media (max-width: 480px) {
+        .branch-info {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .branch-icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .map-container {
+            height: 250px;
+        }
+
+        .branch-details h2 {
+            font-size: 1.2rem;
+        }
+
+        .branch-details p {
+            font-size: 0.85rem;
+        }
+    }
+
 </style>
-
-
-<div class="container">
-    <div class="content-wrapper">
-        <!-- Left Content -->
-        <div class="left-content">
-            <div class="logo-container">
-                <img src="/images/logos/R3LOGO.png" alt="logo">
-            </div>
-
-            <div class="welcome-text">
-                <h2>Welcome to R3 Garage Car Rental Service</h2>
-                <div class="max-w-3xl">
-                    <p>Discover our convenient rental locations strategically positioned for your ease. Whether you're a local explorer or a traveler, our locations are designed to provide easy access to quality vehicles, ensuring a seamless rental experience.</p>
-                    <p>Explore our diverse fleet and find the perfect vehicle to suit your needs. From compact cars to spacious SUVs, we have a range of options to accommodate your travel plans.</p>
-                    <p>Experience convenience, reliability, and comfort with our rental services. Start your journey with us today!</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-10">
-                <div class="card">
-                    <h2 class="card-title">Company Information</h2>
-                    <p class="card-content">R3 Garage Car Rental</p>
-                    <p class="card-content">Location: Marikina, Philippines</p>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Address</h2>
-                    <p class="card-content">36 Friendship St. Friendly Village 1,</p>
-                    <p class="card-content">Marikina City, Philippines</p>
-                    <p class="card-content">Zip Code/Postal code: 1807</p>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title">Call Us</h2>
-                    <p class="card-content">Call us to speak to a member of our team.</p>
-                    <p class="card-content">We are always happy to help.</p>
-                    <p class="card-content">+63-955-379-3727</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Content (Map) -->
-        <div class="right-content">
-            <div class="map-container">
-                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.1782295743333!2d121.10443815026572!3d14.645822049462128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b9ba367f57b3%3A0x492856bd610c4ee4!2s1%2C%2036%20Friendship%2C%20Marikina%2C%201800%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1712750045270!5m2!1sen!2sph" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection

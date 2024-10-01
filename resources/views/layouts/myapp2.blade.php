@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>R3 Garage Car Rentals</title>
     @vite('resources/css/app.css')
-    @vite('node_modules/flowbite/dist/flowbite.min.js')
+
     <link rel="icon" type="image/x-icon" href="/images/logos/logo.png">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -23,6 +23,7 @@
             margin: 0;
             padding: 0;
         }
+        
 
         .sidebar {
             height: 100%;
@@ -237,15 +238,114 @@
                 </span>
                 <span class="material-icons">expand_more</span>
             </button>
-            <div class="dropdown-container">
-                <a href="{{ route('logout') }}" onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();">
-                    <span class="material-icons">logout</span>{{ __('Logout') }}
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                    @csrf
-                </form>
-            </div>
+           <!-- Trigger Button -->
+<div class="dropdown-container">
+    <a href="#" id="logout-link">
+        <span class="material-icons">logout</span>{{ __('Logout') }}
+    </a>
+</div>
+
+<!-- Pop-up Dialog -->
+<div id="logout-dialog" class="dialog hidden">
+    <div class="dialog-content">
+        <p class="dialog-message">Are you sure you want to log out?</p>
+        <div class="dialog-buttons">
+            <button id="confirm-logout" class="btn btn-primary">Yes</button>
+            <button id="cancel-logout" class="btn btn-secondary">No</button>
+        </div>
+    </div>
+</div>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+    @csrf
+</form>
+
+<!-- Styles -->
+<style>
+    .dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+
+    .dialog-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .dialog-message {
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: #333; /* Updated to ensure text visibility */
+    }
+
+    .dialog-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    document.getElementById('logout-link').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('logout-dialog').classList.remove('hidden');
+    });
+
+    document.getElementById('confirm-logout').addEventListener('click', function () {
+        document.getElementById('logout-form').submit();
+    });
+
+    document.getElementById('cancel-logout').addEventListener('click', function () {
+        document.getElementById('logout-dialog').classList.add('hidden');
+    });
+</script>
+
             @endguest
         </div>
         <div class="sidebar-footer">

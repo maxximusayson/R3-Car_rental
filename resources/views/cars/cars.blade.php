@@ -1,107 +1,337 @@
 @extends('layouts.myapp')
 
+@section('title', 'R3 Garage Car Rental | Cars')
+
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+@php
+    // Get filters from query string
+    $brand = request()->input('brand');
+    $location = strtolower(request()->input('location')); // Convert to lowercase for case insensitivity
+
+    // Logic to determine nearest branch based on location
+    $nearestBranch = null;
+
+    $marikinaBranches = ['marikina', 'marikina center', 'san roque', 'concepcion', 'pasay', 'makati', 'manila', 'quezon city', 'valenzuela', 'las pinas'];
+    $isabelaBranches = ['isabela', 'santiago', 'cauayan'];
+
+    // Determine the nearest branch based on the location input
+    if (in_array($location, $marikinaBranches, true)) {
+        $nearestBranch = 'Marikina';
+    } elseif (in_array($location, $isabelaBranches, true)) {
+        $nearestBranch = 'Isabela'; // Adjust as needed
+    }
+
+    // Filter cars based on the selected brand and nearest branch
+    $filteredCars = $cars->filter(function($car) use ($nearestBranch, $brand) {
+        return (!$nearestBranch || $car->branch === $nearestBranch) && (!$brand || $car->brand === $brand);
+    });
+@endphp
+
+
+
+
+
+<!-- Filter Section -->
+<div class="filter-container">
+    <form method="GET" action="{{ route('cars') }}">
+        <div class="filter-row">
+            <!-- Location Filter -->
+            <div class="filter-column">
+                <label for="location" class="filter-label">Location</label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <select id="location" name="location" class="filter-select">
+                        <option value="">All Locations</option>
+                        <option value="marikina" {{ $location === 'marikina' ? 'selected' : '' }}>Marikina</option>
+                        <option value="isabela" {{ $location === 'isabela' ? 'selected' : '' }}>Isabela</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Car Brand Filter -->
+            <div class="filter-column">
+                <label for="brand" class="filter-label">Brand</label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-car"></i></span>
+                    <select id="brand" name="brand" class="filter-select">
+                        <option value="">All Brands</option>
+                        <option value="TOYOTA" {{ $brand === 'TOYOTA' ? 'selected' : '' }}>TOYOTA</option>
+                        <option value="MITSUBISHI" {{ $brand === 'MITSUBISHI' ? 'selected' : '' }}>MITSUBISHI</option>
+                        <option value="NISSAN" {{ $brand === 'NISSAN' ? 'selected' : '' }}>NISSAN</option>
+                        <option value="MG" {{ $brand === 'MG' ? 'selected' : '' }}>MG</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Filter and Clear Buttons -->
+            <div class="filter-column filter-buttons">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <a href="{{ route('cars') }}" class="btn-clear">
+                    <i class="fas fa-undo"></i> Clear
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+<!-- Styles -->
+<style>
+   /* Base Styles */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fc;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 20px auto; /* Center the container with vertical spacing */
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    justify-content: space-between; /* Distribute space evenly */
+}
+
+.filter-column {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-label {
+    font-weight: bold;
+    color: #4e73df;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.input-group {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #4e73df;
+    color: white;
+    padding: 8px;
+    border-radius: 5px 0 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 10px 10px 10px 35px; /* Padding left to accommodate the icon */
+    border: 1px solid #4e73df;
+    border-radius: 0 5px 5px 0;
+    font-size: 1rem;
+    appearance: none; /* Remove default arrow */
+    background-color: #fff;
+    /* Optional: Add a custom dropdown arrow */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB...'); /* Replace with a valid SVG or remove if not needed */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* Buttons */
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-filter {
+    background-color: #4e73df;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.btn-clear {
+    background-color: transparent;
+    color: #4e73df;
+    border: 2px solid #4e73df;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.3s ease;
+}
+
+.btn-filter:hover,
+.btn-clear:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Styles */
+
+/* Tablets and smaller screens */
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-column {
+        align-items: stretch;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .btn-filter,
+    .btn-clear {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    .filter-container {
+        padding: 10px;
+    }
+
+    .filter-select {
+        padding: 8px 8px 8px 30px; /* Adjust padding for smaller screens */
+        font-size: 0.9rem;
+    }
+
+    .btn-filter,
+    .btn-clear {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .filter-label {
+        font-size: 0.9rem;
+    }
+
+    .input-icon {
+        padding: 6px;
+    }
+}
+
+</style>
 
 
 <!-- Car Section -->
-<div class="mt-6 mb-2 grid md:grid-cols-3 gap-4 justify-center items-center mx-auto max-w-screen-xl" id="carList">
-    @forelse($cars as $car)
-        <div class="relative flex flex-col overflow-hidden rounded-lg border border-orange-100 bg-orange-50 shadow-md car-container car-row"
+<div class="mt-6 mb-2 grid md:grid-cols-3 gap-6 justify-center items-center mx-auto max-w-screen-xl px-4" id="carList">
+    @forelse($filteredCars as $car)
+        <div class="relative flex flex-col overflow-hidden rounded-lg border border-gray-300 bg-white shadow-lg car-container car-row"
             data-brand="{{ $car->brand }}" 
             data-branch="{{ $car->branch }}"
             data-price="{{ $car->price_per_day }}">
 
-            <!-- Folder-like view for images -->
-            <div class="p-0 bg-white rounded-lg shadow-md">
-                <div class="relative grid grid-cols-1 gap-0">
-                    <!-- Image Section -->
-                    @if ($car->images->count() > 0)
-                        <a class="relative overflow-hidden rounded-xl" href="#" 
-                            data-images="{{ $car->images->pluck('image_path') }}" 
-                            data-brand="{{ addslashes($car->brand) }}" 
-                            data-model="{{ addslashes($car->model) }}" 
-                            data-engine="{{ addslashes($car->engine) }}" 
-                            data-price="{{ number_format($car->price_per_day, 2) }}" 
-                            data-description="{{ addslashes($car->description) }}" 
-                            data-branch="{{ addslashes($car->branch) }}"
-                            data-video-path="{{ addslashes($car->video_path) }}"
-                            onclick="showModal(event)">
-                            
-                            <img loading="lazy" class="object-cover w-full h-full rounded-lg" 
-                                src="{{ asset($car->images->first()->image_path) }}" 
-                                alt="Car image" style="width: 100%; height: auto;" />
+            <!-- Image Section -->
+            <div class="p-0 rounded-lg shadow-md">
+                @if ($car->images->count() > 0)
+                    <a class="relative overflow-hidden rounded-t-lg" href="#" 
+                        data-images="{{ $car->images->pluck('image_path') }}" 
+                        data-brand="{{ addslashes($car->brand) }}" 
+                        data-model="{{ addslashes($car->model) }}" 
+                        data-engine="{{ addslashes($car->engine) }}" 
+                        data-price="{{ number_format($car->price_per_day, 2) }}" 
+                        data-description="{{ addslashes($car->description) }}" 
+                        data-branch="{{ addslashes($car->branch) }}"
+                        data-video-path="{{ addslashes($car->video_path) }}"
+                        onclick="showModal(event)">
+                        
+                        <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
+                            src="{{ asset($car->images->first()->image_path) }}" 
+                            alt="Car image" />
 
-                            <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
-                                Click to view details
-                            </span>
-                        </a>
-                    @else
-                        <a class="relative overflow-hidden rounded-xl" href="#" 
-                            data-images="[]" 
-                            data-brand="{{ addslashes($car->brand) }}" 
-                            data-model="{{ addslashes($car->model) }}" 
-                            data-engine="{{ addslashes($car->engine) }}" 
-                            data-price="{{ number_format($car->price_per_day, 2) }}" 
-                            data-description="{{ addslashes($car->description) }}" 
-                            data-branch="{{ addslashes($car->branch) }}"
-                            data-video-path="{{ addslashes($car->video_path) }}"
-                            onclick="showModal(event)">
-                            <img loading="lazy" class="object-cover w-full h-full rounded-lg" 
-                                src="{{ asset('path/to/default/image.jpg') }}" 
-                                alt="Default image" style="width: 100%; height: auto;" />
-                        </a>
-                    @endif
-
-                </div>
+                        <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
+                            Click to view details
+                        </span>
+                    </a>
+                @else
+                    <a class="relative overflow-hidden rounded-t-lg" href="#" 
+                        data-images="[]" 
+                        data-brand="{{ addslashes($car->brand) }}" 
+                        data-model="{{ addslashes($car->model) }}" 
+                        data-engine="{{ addslashes($car->engine) }}" 
+                        data-price="{{ number_format($car->price_per_day, 2) }}" 
+                        data-description="{{ addslashes($car->description) }}" 
+                        data-branch="{{ addslashes($car->branch) }}"
+                        data-video-path="{{ addslashes($car->video_path) }}"
+                        onclick="showModal(event)">
+                        <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
+                            src="{{ asset('path/to/default/image.jpg') }}" 
+                            alt="Default image" />
+                    </a>
+                @endif
             </div>
-
 
             <!-- Car Details Section -->
             <div class="mt-4 px-5 pb-5">
-                <h5 class="font-semibold text-xl text-gray-800">{{ $car->brand }} {{ $car->model }} {{ $car->engine }}</h5>
+                <h5 class="font-semibold text-xl text-gray-800">{{ $car->brand }} {{ $car->model }}</h5>
                 <p class="text-sm text-gray-600">Branch: {{ $car->branch }}</p>
-
-                <div class="mt-2 mb-5 flex items-center justify-between">
-                    <span class="text-3xl font-bold text-black">₱{{ number_format($car->price_per_day, 2) }}</span>
-                </div>
+                <span class="text-lg font-bold text-black">₱{{ number_format($car->price_per_day, 2) }}</span>
 
                 <div class="flex flex-col space-y-3 mt-4">
-                <div class="flex justify-between space-x-3">
-                    <a href="{{ route('car.reservation', ['car' => $car->id]) }}" 
-                    class="reserve-button flex-grow flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
-                    style="font-family: 'Century Gothic', sans-serif;">
-                        Rent Now
-                    </a>
+                    <div class="flex justify-between space-x-3">
+                        <a href="{{ route('car.reservation', ['car' => $car->id]) }}" 
+                           class="reserve-button flex-grow flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-lg transition-all duration-300 ease-in-out"
+                           style="font-family: 'Century Gothic', sans-serif;">
+                            Rent Now
+                        </a>
 
-        <!-- Rate Button -->
-        @auth
-            <button 
-                onclick="showRatingModal({{ $car->id }})"
-                class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
-                style="font-family: 'Century Gothic', sans-serif;">
-                Rate this Car
-            </button>
-        @else
-            <a href="{{ route('login') }}" 
-               class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
-               style="font-family: 'Century Gothic', sans-serif;">
-                Rate this Car
-            </a>
-        @endauth
-    </div>
+                        <!-- Rate Button -->
+                        @auth
+                            <button 
+                                onclick="showRatingModal({{ $car->id }})"
+                                class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
+                                style="font-family: 'Century Gothic', sans-serif;">
+                                Rate this Car
+                            </button>
+                        @else
+                            <a href="{{ route('login') }}" 
+                               class="rate-button flex-grow flex items-center justify-center rounded-lg bg-yellow-500 px-6 py-3 text-base font-bold text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-lg transition-all duration-300 ease-in-out"
+                               style="font-family: 'Century Gothic', sans-serif;">
+                                Rate this Car
+                            </a>
+                        @endauth
+                    </div>
 
-    <!-- See Reviews Button -->
-    <div class="flex justify-center">
-        <button onclick="showReviewsModal({{ $car->id }})" 
-                class="see-reviews-button flex-grow max-w-xs flex items-center justify-center rounded-lg bg-blue-500 text-white px-6 py-3 text-base font-bold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg transition-all duration-300 ease-in-out"
-                style="font-family: 'Century Gothic', sans-serif;">
-            See Reviews
-        </button>
-    </div>
-</div>
-
+                    <!-- See Reviews Button -->
+                    <div class="flex justify-center">
+                        <button onclick="showReviewsModal({{ $car->id }})" 
+                                class="see-reviews-button flex-grow max-w-xs flex items-center justify-center rounded-lg bg-blue-500 text-white px-6 py-3 text-base font-bold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg transition-all duration-300 ease-in-out"
+                                style="font-family: 'Century Gothic', sans-serif;">
+                            See Reviews
+                        </button>
+                    </div>
+                </div>
 
                 <!-- Availability Section -->
                 <div class="mt-4">
@@ -119,8 +349,6 @@
                         <p class="text-sm text-gray-600">This car is currently available.</p>
                     @endif
                 </div>
-
-             
 
                 <!-- Reviews Modal (Initially Hidden) -->
                 <div id="reviewsModal-{{ $car->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
@@ -164,6 +392,9 @@
         <p class="text-center text-gray-600">No cars available for the selected branch.</p>
     @endforelse
 </div>
+
+
+
 
 
 <!-- Rate Modal -->
@@ -780,7 +1011,40 @@ function closeReviewsModal(carId) {
     .carousel-control.next {
         right: 10px;
     }
+    .banner {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.banner h1, .banner p {
+    color: white;
+}
+
+.banner h1 {
+    font-size: 4rem;
+    font-family: 'Century Gothic', sans-serif;
+}
+
+.banner p {
+    font-size: 1.25rem;
+    font-family: 'Century Gothic', sans-serif;
+    margin-top: 1rem;
+}
+/* Add this to your existing CSS */
+
+.scroll-effect {
+    transition: transform 0.3s ease;
+}
+
+.scroll-up {
+    transform: translateY(0); /* Show the element */
+}
+
+.scroll-down {
+    transform: translateY(-20px); /* Hide the element slightly */
+}
     
 </style>
+@endsection
 
-    @endsection

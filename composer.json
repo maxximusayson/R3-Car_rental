@@ -22,7 +22,9 @@
         "nesbot/carbon": "^2.72",
         "paymongo/paymongo-php": "^0.0.0",
         "pear/http_request2": "^2.6",
-        "semaphore/semaphore-php-client": "^1.0" 
+        "semaphore/semaphore-php-client": "^1.0" ,
+        "phpmailer/phpmailer": "^6.5"
+        
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

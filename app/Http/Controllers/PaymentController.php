@@ -15,7 +15,7 @@ class PaymentController extends Controller
             'body' => json_encode([
                 'data' => [
                     'attributes' => [
-                        'amount' => 10000,
+                        'amount' => 200000,
                         'redirect' => [
                             'success' => route('paymongo.success'),
                             'failed' => route('paymongo.failed'),
@@ -27,7 +27,7 @@ class PaymentController extends Controller
             ]),
             'headers' => [
                 'accept' => 'application/json',
-                'authorization' => 'Basic c2tfdGVzdF9hRG9oQkRkdHpQaG9NeG9uaGRaeHNKd206cGtfdGVzdF8zMTM5am52eGNFVzNpRVVUaUx4cHFHTlU=',
+                'authorization' => 'Basic cGtfdGVzdF8zMTM5am52eGNFVzNpRVVUaUx4cHFHTlU6',
                 'content-type' => 'application/json',
             ],
         ]);
