@@ -68,7 +68,7 @@
         <div class="hidden lg:flex lg:space-x-16 flex-grow justify-center">
     <!-- Home Link with Hover Effect -->
     <a href="/" class="text-white no-underline custom-font group relative hover:text-gray-300 transition duration-300 ease-in-out px-4">
-        HOME
+        HOMEs
         <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
     </a>
 
