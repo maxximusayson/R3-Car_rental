@@ -71,6 +71,33 @@ class RegisterController extends Controller
         }
     }
     
+
+    public function resendOtp(Request $request)
+{
+    // Retrieve phone number from session
+    $phoneNumber = session('phone');
+
+    // Check if phone number is present in the session
+    if (!$phoneNumber) {
+        return back()->withErrors(['otp' => 'No phone number found.']);
+    }
+
+    // Generate a new OTP
+    $otp = rand(100000, 999999);
+    Session::put('otp', $otp); // Update session with new OTP
+
+    try {
+        // Attempt to send the OTP using your SMS service
+        $response = $this->smsService->sendOtp($phoneNumber, $otp);
+        // Set a success message in the session
+        return back()->with('success', 'OTP has been resent successfully.');
+    } catch (Exception $e) {
+        // Handle any exceptions that occur when sending the OTP
+        return back()->withErrors(['otp' => 'Failed to resend OTP: ' . $e->getMessage()]);
+    }
+}
+
+
     public function verifyOtp(Request $request)
     {
         $otp = $request->input('otp');
@@ -83,7 +110,11 @@ class RegisterController extends Controller
             Session::forget('otp');
             Session::forget('register_data');
 
-            return redirect()->route('dashboard')->with('success', 'Account created and logged in successfully.');
+            // Set a flash message for successful account creation
+            return redirect()->route('dashboard')->with([
+                'success' => 'Account created and logged in successfully.',
+                'account_created' => 'You have successfully created your account!'
+            ]);
         } else {
             return back()->withErrors(['otp' => 'The OTP entered is incorrect.'])->withInput();
         }

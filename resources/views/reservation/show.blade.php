@@ -33,19 +33,19 @@
 
         <!-- Admin Action Buttons -->
         @if($reservation->status === 'Pending')
-        <div class="mt-8 flex justify-start space-x-4">
-            <form action="{{ route('reservations.approve', $reservation->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-500 transition duration-300">Approve</button>
-            </form>
-            <form action="{{ route('reservations.reject', $reservation->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-500 transition duration-300">Reject</button>
-            </form>
-        </div>
-        @endif
+<div class="mt-8 flex justify-start space-x-4">
+    <form action="{{ route('reservations.approve', $reservation->id) }}" method="POST" onsubmit="removeNotification({{ $reservation->id }})">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-500 transition duration-300">Approve</button>
+    </form>
+    <form action="{{ route('reservations.reject', $reservation->id) }}" method="POST" onsubmit="removeNotification({{ $reservation->id }})">
+        @csrf
+        @method('PUT')
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-500 transition duration-300">Reject</button>
+    </form>
+</div>
+@endif
 
          <!-- Display uploaded IDs -->
          <div class="flex gap-4 mt-4">
@@ -67,17 +67,6 @@
             </div>
         </div>
 
-        <!-- Reject Reservation Button -->
-        <div class="mt-6 flex justify-end">
-            <form action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to reject this reservation?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
-                    Reject
-                </button>
-            </form>
-        </div>
-    </div>
 
 <!-- Modal for Full-Screen Image -->
 <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center transition-opacity duration-300">
@@ -98,5 +87,7 @@ function closeModal() {
     document.getElementById('modalImage').src = ''; // Clear the image source when closing the modal
 }
 </script>
+
+
 
 @endsection

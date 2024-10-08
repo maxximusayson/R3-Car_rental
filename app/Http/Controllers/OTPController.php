@@ -64,8 +64,7 @@ class OTPController extends Controller
         }
     }
 
-    // Email OTP Sending Function
-   // app/Http/Controllers/OTPController.php
+    
 
  
 

@@ -15,7 +15,16 @@ class CarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function showCars()
+    {
+        // Fetch the cars from the database (ensure you include the images if needed)
+        $cars = Car::with('images')->get(); // Eager load images to avoid N+1 query issue
+
+        // Pass the cars variable to the view
+        return view('your_view_name', compact('cars')); // Make sure to use the correct view name
+    }
+
+     public function index()
     {
         $cars = Car::with('images')->get(); // Fetch all cars with images
         $currentDate = Carbon::now();
@@ -305,6 +314,8 @@ class CarController extends Controller
 
         return $availableDates;
     }
+
+   
     
 }
 

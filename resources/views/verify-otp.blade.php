@@ -1,6 +1,9 @@
 @extends('layouts.myapp')
 
 @section('content')
+
+@section('title', 'R3 Garage Car Rental | Verify')
+
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-300">
     <div class="flex bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl w-full">
         <!-- Left Side with Image -->
@@ -28,9 +31,16 @@
                     {{ session('error') }}
                 </div>
             @endif
+            
+            <!-- Display a success message after account creation -->
+            @if(session('account_created'))
+                <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                    {{ session('account_created') }}
+                </div>
+            @endif
 
             <form action="{{ route('register.verify-otp') }}" method="POST">
-            @csrf
+                @csrf
 
                 <!-- Hidden field to pass the phone number for verification -->
                 <input type="hidden" name="phone" value="{{ old('phone', session('phone')) }}">
@@ -51,10 +61,8 @@
                     Verify OTP
                 </button>
             </form>
-            @if (session('error'))
-    <p>{{ session('error') }}</p>
-@endif
         </div>
     </div>
 </div>
 @endsection
+

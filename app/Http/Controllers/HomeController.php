@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\HomepageSection;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -90,16 +91,17 @@ class HomeController extends Controller
 
     public function manage(Request $request)
     {
-        $sectionName = $request->query('section_name');
+        $sections = Section::all();
+        $section = null;
 
-        if ($sectionName) {
-            $section = HomepageSection::where('section_name', $sectionName)->firstOrFail();
-            return view('cms.manage', ['section' => $section]);
+        if ($request->has('edit_section_name')) {
+            $section_name = $request->get('edit_section_name');
+            $section = Section::where('section_name', $section_name)->first();
         }
 
-        $sections = HomepageSection::all();
-        return view('cms.manage', ['sections' => $sections]);
+        return view('cms\manage', compact('sections', 'section'));
     }
+
 
     public function update(Request $request, $sectionName)
     {
@@ -113,4 +115,7 @@ class HomeController extends Controller
 
         return redirect()->route('cms.manage')->with('success', 'Section updated successfully!');
     }
+  
+    
+
 }

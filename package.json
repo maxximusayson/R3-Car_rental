@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start": "node app.js"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
@@ -21,3 +22,5 @@
         "flowbite": "^1.6.5"
     }
 }
+
+

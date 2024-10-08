@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\addNewAdminController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -39,9 +40,11 @@ use App\Http\Controllers\TestFilterController;
 use Illuminate\Auth\Events\Failed;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CMSController;
+use App\Http\Controllers\GpsLogController;
 use App\Http\Controllers\GpsTrackingController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\PaypalController;
 
 
 // ------------------- customer routes --------------------------------------- //
@@ -194,6 +197,7 @@ Route::get('/reservations', function () {
     return view('clientReservations', compact('reservations'));
 })->name('clientReservation')->middleware('auth', 'restrictAdminAccess');
 
+Route::resource('clients', ClientController::class);
 
 
 
@@ -397,7 +401,7 @@ Route::get('/users', [UsersController::class, 'index'])->name('users.index');
 
 // Add this line to your routes/web.php
 // Route::post('/2fa/resend', [App\Http\Controllers\TwoFactorController::class, 'resendCode'])->name('2fa.resend');
-// Route::post('/2fa/resend', [App\Http\Controllers\Auth\LoginController::class, 'resend2FA'])->name('2fa.resend');
+Route::post('/2fa/resend', [App\Http\Controllers\Auth\LoginController::class, 'resend2FA'])->name('2fa.resend');
 
 // Route::post('/password/resend-code', [PasswordResetController::class, 'resendCode'])->name('password.resend.code');
 
@@ -412,7 +416,9 @@ Route::post('/verify-otp', [App\Http\Controllers\Auth\LoginController::class, 'v
 
 // Route to resend OTP (if the user requests it)
 Route::post('/2fa/resend', [App\Http\Controllers\Auth\LoginController::class, 'resend2FA'])->name('2fa.resend');
+Route::post('resend-2fa', [\App\Http\Controllers\AdminAuth\LoginController::class, 'resend2FA'])->name('2fa.resend');
 
+Route::post('resend-2fa', [\App\Http\Controllers\AdminAuth\LoginController::class, 'resend2FA'])->name('2fa.resend');
 
 
 // Route::post('/request-otp', [OTPController::class, 'requestOtp'])->name('request.otp');
@@ -443,6 +449,14 @@ Route::get('/verify-otp', function () {
     return view('auth.2fa-verify'); // Ensure this matches your file structure
 })->name('verify.otp');
 
+// Add this route for resending the OTP
+Route::post('/resend-otp', [RegisterController::class, 'resendOtp'])->name('register.resend-otp');
+Route::post('/register/resend-otp', [RegisterController::class, 'resendOtp'])->name('register.resend-otp');
+// Route for requesting OTP
+Route::post('/request-otp', [RegisterController::class, 'requestOtp'])->name('register.request-otp');
+
+// Route for verifying OTP
+Route::post('/verify-otp', [RegisterController::class, 'verifyOtp'])->name('register.verify-otp');
 // Calendar
 // Route::get('/available-dates', [ReservationController::class, 'getAvailableDates']);
 
@@ -537,14 +551,11 @@ Route::delete('/reservations/{reservation}', [ReservationController::class, 'des
 // cms
 
 
+// CMS Routes
 Route::get('/cms', [CMSController::class, 'index'])->name('cms.index');
-Route::get('/cms/manage', [HomeController::class, 'manage'])->name('cms.manage');
-Route::put('/cms/update/{Content}', [HomeController::class, 'update'])->name('cms.update');
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route to manage sections (shows list or edit form based on parameters)
-Route::get('/cms/{section_name?}', [CMSController::class, 'index'])->name('cms.index');
+Route::get('/cms/manage', [HomeController::class, 'manage'])->name('cms.manage');
 
 // Route to edit a section
 Route::get('/cms/edit/{section_name}', [CMSController::class, 'edit'])->name('cms.edit');
@@ -554,18 +565,55 @@ Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name
 
 // Route to add a new section
 Route::post('/cms/add', [CMSController::class, 'add'])->name('cms.add');
-Route::get('/cms/edit/{Welcome}', [CMSController::class, 'edit'])->name('cms.edit');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/cms/manage', [HomeController::class, 'manage'])->name('cms.manage');
+Route::get('/cms/edit/{section_name}', [CMSController::class, 'edit'])->name('cms.edit');
 Route::put('/cms/update/{section_name}', [CMSController::class, 'update'])->name('cms.update');
+Route::get('/cms/about-us', [AboutUsController::class, 'edit'])->name('aboutus.edit');
+Route::put('/cms/about-us', [AboutUsController::class, 'update'])->name('aboutus.update');
+// Route to display the edit form
+Route::get('/about-us/edit', [AboutUsController::class, 'edit'])->name('aboutUs.edit');
 
-
-
-
+// Route to handle the update
+Route::put('/about-us/update', [AboutUsController::class, 'update'])->name('aboutUs.update');
 
 // Routes for GPS Tracking
 Route::get('/gps/tracking', [GpsTrackingController::class, 'track'])->name('gps.tracking');
 
 // Route to store GPS data (via POST request)
 Route::post('/gps/store', [GpsTrackingController::class, 'storeGpsData'])->name('gps.store');
+
+
+
+Route::get('/cms/manage', [CmsController::class, 'manage'])->name('cms.manage');
+
+
+// Routes for the About Us section
+Route::get('/cms/about-us/edit', [CmsController::class, 'editAboutUs'])->name('cms.aboutUs.edit');
+Route::put('/cms/about-us/update', [CmsController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
+
+Route::post('/cms/about-us/update', [CMSController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
+Route::get('/about', function () {
+    $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
+    return view('about', compact('aboutUs')); // Ensure you have a view for about us
+});
+
+Route::get('/about', [CMSController::class, 'showHomePage'])->name('about'); // For showing the homepage with about us
+
+Route::get('/', [CMSController::class, 'showHomePage'])->name('home');
+
+// Route to edit the About Us section
+Route::get('/cms/about-us/edit', [CMSController::class, 'editAboutUs'])->name('cms.aboutUs.edit');
+
+// Route to handle the update
+Route::put('/cms/about-us/update', [CMSController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
+
+
+
+
+
+
 
 
 Route::get('/gps-data', 'App\Http\Controllers\GpsTrackingController@fetchGpsFromProxy');
@@ -586,10 +634,46 @@ Route::post('/verify-otp', [LoginController::class, 'verifyOtp'])->name('verify.
 Route::post('/verify-otp', [\App\Http\Controllers\Auth\LoginController::class, 'verifyOtp'])->name('verify.otp');
 
 Route::post('/resend-2fa', [LoginController::class, 'resend2FA'])->name('2fa.resend');
+Route::post('/resend-2fa', [LoginController::class, 'resend2FA'])->name('resend.2fa');
+
+// Paypal Route
+// Route::post('paypal/create', [PaypalController::class, 'createOrder'])->name('paypal.create');
+// Route::get('paypal/create', function() {
+//     return 'This route only accepts POST requests for creating PayPal orders.';
+// });
+
+// Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
+// Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+// Route to create a PayPal order
+// Route::post('/paypal/create-order', [PaypalController::class, 'createOrder'])->name('paypal.create');
+// Route::get('/reservation/create', [PaypalController::class, 'createReservation'])->name('reservation.create');
+
+// // Route to capture the PayPal order
+// Route::post('/paypal/capture-order', [PaypalController::class, 'captureOrder'])->name('paypal.capture');
+
+// // Route to handle successful payments
+// Route::get('/paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
+
+// // Route to handle cancelled payments
+// Route::get('/paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
 
 
 
+// Route::post('paypal/create-order', [PaypalController::class, 'createOrder'])->name('paypal.create');
+// Route::post('/paypal/create', [PaypalController::class, 'createOrder'])->name('paypal.create');
 
+
+Route::post('/paypal/create', [PaypalController::class, 'createOrder'])->name('paypal.create');
+Route::post('/paypal/capture', [PaypalController::class, 'captureOrder'])->name('paypal.capture');
+
+Route::get('/paypal/success', function() {
+    return view('paypal.success');
+})->name('paypal.success');
+
+Route::get('/paypal/cancel', function() {
+    return view('paypal.cancel');
+})->name('paypal.cancel');
 
 
 

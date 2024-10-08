@@ -1,7 +1,9 @@
 @extends('layouts.myapp1')
 
 @section('content')
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg7pLs7iesp74vQ-KSEjnFJW3BKhVq7k"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 @php
     $totalCars = \App\Models\Car::count();
     $totalUsedCars = \App\Models\Reservation::where('status', 'Active')->count();
@@ -127,9 +129,6 @@
                             <td class="px-6 py-4">{{ $notification->created_at->format('Y-m-d H:i:s') }}</td>
                         </tr>
                         @empty
-                        <!-- <tr class="text-gray-700 dark:text-gray-400">
-                            <td colspan="2" class="text-center py-4">No notifications found.</td>
-                        </tr> -->
                         @endforelse
                         @forelse($upcomingBookings as $booking)
                         <tr class="text-gray-700 dark:text-gray-400 notification-row" data-id="{{ $booking->id }}">
@@ -153,7 +152,15 @@
     </div>
 </div>
 
+<script>
+    function removeNotification(notificationId) {
+    const notificationRow = document.querySelector(`.notification-row[data-id='${notificationId}']`);
+    if (notificationRow) {
+        notificationRow.remove();
+    }
+}
 
+</script>
 <!-- Chart Section -->
 <div class="container px-4 mx-auto mt-8">
     <h2 class="my-4 text-xl font-semibold text-gray-800 dark:text-gray-300">

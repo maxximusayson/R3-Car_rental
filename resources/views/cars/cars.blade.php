@@ -333,22 +333,67 @@
                     </div>
                 </div>
 
-                <!-- Availability Section -->
-                <div class="mt-4">
-                    <p class="text-sm font-semibold text-gray-700">Availability:</p>
-                    @if ($car->reservations->count() > 0)
-                        <div class="text-sm text-gray-600">
-                            <p class="font-semibold">Reserved on:</p>
-                            <ul class="list-disc list-inside">
-                                @foreach ($car->reservations as $reservation)
-                                    <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-600">This car is currently available.</p>
-                    @endif
-                </div>
+               <!-- Availability Section -->
+<div class="mt-4">
+    <p class="text-sm font-semibold text-gray-700">Availability:</p>
+    @if ($car->reservations->count() > 0)
+        <div class="text-sm text-gray-600">
+            <p class="font-semibold">Reserved on:</p>
+            <ul class="list-disc list-inside">
+                @foreach ($car->reservations->take(1) as $reservation)
+                    <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
+                @endforeach
+            </ul>
+            @if ($car->reservations->count() > 2)
+                <button id="seeMoreBtn" class="text-blue-500 hover:underline text-sm mt-2">See more</button>
+            @endif
+        </div>
+    @else
+        <p class="text-sm text-gray-600">This car is currently available.</p>
+    @endif
+</div>
+
+<!-- Modal (hidden by default) -->
+<div id="reservationModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-full overflow-y-auto">
+        <h2 class="text-lg font-semibold mb-4">All Reservations</h2>
+        <ul class="list-disc list-inside">
+            @foreach ($car->reservations as $reservation)
+                <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
+            @endforeach
+        </ul>
+        <button id="closeModalBtn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Close</button>
+    </div>
+</div>
+
+<!-- JavaScript to handle modal -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const seeMoreBtn = document.getElementById('seeMoreBtn');
+        const reservationModal = document.getElementById('reservationModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        
+        if (seeMoreBtn) {
+            seeMoreBtn.addEventListener('click', function() {
+                reservationModal.classList.remove('hidden');  // Show the modal
+            });
+        }
+
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', function() {
+                reservationModal.classList.add('hidden');  // Hide the modal when "Close" is clicked
+            });
+        }
+
+        // Optional: Close modal if user clicks outside of the modal content
+        reservationModal.addEventListener('click', function(event) {
+            if (event.target === reservationModal) {
+                reservationModal.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
 
                 <!-- Reviews Modal (Initially Hidden) -->
                 <div id="reviewsModal-{{ $car->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">

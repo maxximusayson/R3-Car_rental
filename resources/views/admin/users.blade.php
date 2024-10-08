@@ -2,12 +2,22 @@
 
 @section('content')
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg7pLs7iesp74vQ-KSEjnFJW3BKhVq7k"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <!-- Clock -->
 <div id="clock" class="text-gray-900 dark:text-gray-300 text-lg font-semibold absolute top-4 right-4">
     <span id="time"></span>
 </div>
 
 <div class="mx-auto max-w-screen-xl">
+    {{-- Flash message for deletion success --}}
+    @if (session('success'))
+        <div class="bg-green-500 text-white p-4 rounded-lg mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
     {{-- Clients Section --}}
     <div id="reservations" class="mt-12">
         <div class="flex items-center justify-center">
@@ -17,23 +27,7 @@
 
     <div class="w-full overflow-hidden rounded-lg shadow-md mb-12">
         <div class="w-full overflow-x-auto">
-            <div class="flex justify-between items-center mb-4">
-                <!-- Export Button -->
-                <form action="{{ route('clients.export') }}" method="GET">
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700">
-        Export to CSV
-    </button>
-</form>
-                <!-- Import Form -->
-                <form action="{{ route('clients.import') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <label for="csv_file" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-700 cursor-pointer">
-                        Import CSV
-                    </label>
-                    <input type="file" name="csv_file" id="csv_file" accept=".csv" class="hidden">
-                    <button type="submit" class="hidden">Upload</button>
-                </form>
-            </div>
+           
             <table class="w-full table-auto text-center bg-white dark:bg-gray-800 rounded-lg">
                 <thead>
                     <tr class="text-xs font-semibold tracking-wide text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-300">
@@ -51,11 +45,7 @@
                             <!-- Profile Picture -->
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-center">
-                                    @if($client->profile_picture_url)
-                                        <img src="{{ asset($client->profile_picture_url) }}" alt="{{ $client->name }}" class="h-10 w-10 rounded-full object-cover">
-                                    @else
-                                        <img src="{{ asset('images/default-profile.png') }}" alt="Default Profile Picture" class="h-10 w-10 rounded-full object-cover">
-                                    @endif
+                                    <img src="{{ asset($client->profile_picture_url ?: 'images/default-profile.png') }}" alt="{{ $client->name }}" class="h-10 w-10 rounded-full object-cover">
                                 </div>
                             </td>
                             <!-- Name -->
@@ -72,25 +62,20 @@
                             <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                 {{ $client->created_at->format('Y-m-d') }}
                             </td>
-                          <!-- Reservations -->
-                                <td class="px-6 py-4 text-sm">
-                                    @if ($client->reservations_count > 0)
-                                        {{ $client->reservations_count }}
-                                    @else
-                                        <span class="text-gray-500">No reservations</span>
-                                    @endif
-                                </td>
-
+                            <!-- Reservations -->
+                            <td class="px-6 py-4 text-sm">
+                                {{ $client->reservations_count > 0 ? $client->reservations_count : 'No reservations' }}
+                            </td>
                             <!-- Actions -->
                             <td class="px-6 py-4">
                                 <div class="flex justify-center space-x-4">
-                                    <a href="" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200">
+                                    <a href="{{ route('clients.edit', $client->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200">
                                         Edit
                                     </a>
-                                    <form action="" method="POST">
+                                    <form action="{{ route('clients.destroy', $client->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200">
+                                        <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-200" onclick="return confirm('Are you sure you want to delete this client?');">
                                             Delete
                                         </button>
                                     </form>

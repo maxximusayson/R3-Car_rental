@@ -4,7 +4,7 @@
 
 <!-- Contact Form -->
 <div class="max-w-2xl mx-auto my-12 p-8 bg-white rounded-lg shadow-lg" style="font-family: 'Century Gothic', sans-serif;">
-    <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-8">Get in Touch</h2>
+    <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-8">Contact Us</h2>
     <form action="{{ route('contact.submit') }}" method="POST" id="contact-form" class="space-y-6">
         @csrf
         <!-- Name Fields -->

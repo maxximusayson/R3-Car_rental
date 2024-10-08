@@ -2,7 +2,7 @@
 @section('title', 'R3 Garage Car Rental | Register')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-300">
+<div class="min-h-screen flex items-center justify-center bg-gray-200">
     <div class="flex flex-col md:flex-row bg-white shadow-xl rounded-lg overflow-hidden max-w-4xl w-full">
         <!-- Left Side with Image -->
         <div class="bg-blue-100 p-8 md:w-1/2 w-full flex items-center justify-center">
@@ -21,7 +21,7 @@
 
                 <div class="mb-6">
                     <label for="name" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Name</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}"
+                    <input type="text" id="name" name="name" value="{{ old('name') }}"placeholder="Enter your full name"
                         class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         style="font-family: 'Century Gothic', sans-serif;">
                     @error('name')
@@ -29,19 +29,19 @@
                     @enderror
                 </div>
 
-<div class="mb-6">
-    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-    <input type="email" id="email" name="email" value="{{ old('email') }}"
-        class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-        placeholder="Enter your email address" required>
-    @error('email')
-    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-    @enderror
-</div>
+                <div class="mb-6">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email"
+                        class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="" required>
+                    @error('email')
+                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <div class="mb-6">
                     <label for="username" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Username</label>
-                    <input type="text" id="username" name="username" value="{{ old('username') }}"
+                    <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Enter your username"
                         class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         style="font-family: 'Century Gothic', sans-serif;">
                     @error('username')
@@ -50,25 +50,25 @@
                 </div>
 
                 <div class="mb-6">
-    <label for="phone_number" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Phone Number</label>
-    <div class="flex">
-        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-600 sm:text-sm">
-            +63
-        </span>
-        <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}"
-            class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            style="font-family: 'Century Gothic', sans-serif;"
-            placeholder="Enter phone number without leading 0"
-            pattern="\d*" 
-            inputmode="numeric"
-            maxlength="10"
-            oninput="validatePhoneNumber(this)"
-            onkeypress="return isNumberKey(event)">
-    </div>
-    @error('phone_number')
-    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-    @enderror
-</div>
+                        <label for="phone_number" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Phone Number</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-100 text-gray-600 sm:text-sm">
+                                +63
+                            </span>
+                            <input type="text" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" placeholder="Enter your phone number"
+                                class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-r-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                style="font-family: 'Century Gothic', sans-serif;"
+                                placeholder="Enter phone number without leading 0"
+                                pattern="\d*" 
+                                inputmode="numeric"
+                                maxlength="10"
+                                oninput="validatePhoneNumber(this)"
+                                onkeypress="return isNumberKey(event)">
+                        </div>
+                        @error('phone_number')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
 
 
                 <script>
@@ -89,7 +89,7 @@
                 <div class="mb-6 relative">
                     <label for="password" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Password</label>
                     <div class="relative">
-                        <input type="password" id="password" name="password"
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
                             class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             style="font-family: 'Century Gothic', sans-serif;">
                         <button type="button" id="togglePassword" 
@@ -118,7 +118,7 @@
                 <div class="mb-6 relative">
                     <label for="password-confirm" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Confirm Password</label>
                     <div class="relative">
-                        <input type="password" id="password-confirm" name="password_confirmation"
+                        <input type="password" id="password-confirm" name="password_confirmation" placeholder="re-type your password"
                             class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             style="font-family: 'Century Gothic', sans-serif;">
                         <button type="button" id="togglePasswordConfirm" 
@@ -165,11 +165,14 @@
 <style>
     /* Password requirement styles */
     .password-requirement {
+        transition: opacity 0.5s ease, transform 0.5s ease;
         font-size: 0.875rem; /* Small text */
         color: red; /* Default color is red */
     }
 
     .password-requirement.valid {
+        opacity: 0; /* Fade out */
+        transform: translateY(-10px); /* Optional: Slight upward movement */
         color: green; /* Turns green when valid */
         display: none; /* Hide when valid */
     }
@@ -177,6 +180,22 @@
     #eyeIcon {
         cursor: pointer;
     }
+    .password-requirements {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.password-requirements.hidden {
+    opacity: 0; /* Fade out */
+    transform: translateY(-10px); /* Optional: Slight upward movement */
+}
+.password-requirement {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.password-requirement.valid {
+    opacity: 0; /* Fade out */
+    transform: translateY(-10px); /* Optional: Slight upward movement */
+}
 
     /* Responsive Layout for smaller screens */
     @media (max-width: 768px) {
@@ -227,29 +246,36 @@
 
     // Password validation script
     document.getElementById('password').addEventListener('input', function() {
-        const password = this.value;
+    const password = this.value;
 
-        // Regular expressions to check each requirement
-        const uppercase = /[A-Z]/.test(password);
-        const number = /\d/.test(password);
-        const special = /[^A-Za-z0-9]/.test(password);
-        const length = password.length >= 8;
+    // Regular expressions to check each requirement
+    const uppercase = /[A-Z]/.test(password);
+    const number = /\d/.test(password);
+    const special = /[^A-Za-z0-9]/.test(password);
+    const length = password.length >= 8;
 
-        // Toggle classes based on password validation
-        toggleValidation('uppercase', uppercase);
-        toggleValidation('number', number);
-        toggleValidation('special', special);
-        toggleValidation('length', length);
-    });
+    // Toggle classes based on password validation
+    toggleValidation('uppercase', uppercase);
+    toggleValidation('number', number);
+    toggleValidation('special', special);
+    toggleValidation('length', length);
 
-    function toggleValidation(elementId, isValid) {
-        const element = document.getElementById(elementId);
-        if (isValid) {
-            element.classList.add('valid');
-        } else {
-            element.classList.remove('valid');
-        }
+    // Check if all requirements are met
+    if (uppercase && number && special && length) {
+        document.getElementById('passwordRequirements').classList.add('hidden');
+    } else {
+        document.getElementById('passwordRequirements').classList.remove('hidden');
     }
+});
+
+function toggleValidation(elementId, isValid) {
+    const element = document.getElementById(elementId);
+    if (isValid) {
+        element.classList.add('valid');
+    } else {
+        element.classList.remove('valid');
+    }
+}
 
     // Toggle password visibility
     document.getElementById('togglePassword').addEventListener('click', function() {

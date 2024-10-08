@@ -60,9 +60,10 @@
 <nav class="bg-custom-orange px-4 lg:px-8 py-2 text-white shadow-lg" style="font-family: 'Century Gothic', sans-serif;">
     <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         {{-- Logo --}}
-        <a href="{{ route('home') }}" class="flex items-center">
-            <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
-        </a>
+        <a class="flex items-center pointer-events-none">
+    <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
+</a>
+
 
         {{-- Desktop Navigation with No Underline on Hover --}}
         <div class="hidden lg:flex lg:space-x-16 flex-grow justify-center">
@@ -152,13 +153,6 @@
 
     </div>
 </nav>
-
-
-<!-- Add padding to prevent content from overlapping the navbar -->
-<div class="pt-16">
-    <!-- Your page content here -->
-</div>
-
         </header>
     @else
         {{-- Logged-in User Header --}}
@@ -166,9 +160,10 @@
     <nav class="bg-custom-orange px-6 py-4 text-white" style="font-family: 'Century Gothic', sans-serif;">
         <div class="flex justify-between items-center">
             <!-- Logo -->
-            <a href="{{ route('home') }}" class="flex items-center">
-                <img src="/images/logos/R3Logo.png" class="h-16" alt="R3 Logo" />
-            </a>
+            <div class="flex items-center">
+    <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
+</div>
+
 
             <!-- Desktop Navigation Links -->
             <div class="hidden lg:flex space-x-6">
@@ -317,11 +312,14 @@
         <div id="chatbotInput"></div>
     </div>
 
-    <button id="chatbotTrigger"><i class="fas fa-comments"></i></button>
+    <button id="chatbotTrigger">
+    <img src="/images/icons/r3chatbot.png" alt="Chatbot" style="width: 50px; height: 50px;">
+</button>
+
 
  <script>
-    const botProfileImage = '/images/icons/chatbot.png';
-
+    const botProfileImage = '/images/icons/r3chatbot.png';
+        
     // Function to open the chatbot
     document.getElementById('chatbotTrigger').addEventListener('click', function () {
         const chatbot = document.getElementById('chatbot');
@@ -343,15 +341,23 @@
 
     // Function to handle user option selection
     function selectOption(option) {
-        const chatbotMessages = document.getElementById('chatbotMessages');
-        addUserMessage(option); // Display user-selected option
-        showTypingIndicator(); // Show typing indicator for bot response
-        setTimeout(() => {
-            hideTypingIndicator();
-            handleBotResponse(option); // Handle bot response
-            appendQuickReplies(); // Show quick replies again after bot response
-        }, 3000);
-    }
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const quickReplies = chatbotMessages.querySelectorAll('.quickReply');
+
+    // Add dissolve effect to all quick reply buttons
+    quickReplies.forEach(button => {
+        button.classList.add('dissolve'); // Add dissolve class
+    });
+
+    addUserMessage(option); // Display user-selected option
+    showTypingIndicator(); // Show typing indicator for bot response
+    setTimeout(() => {
+        hideTypingIndicator();
+        handleBotResponse(option); // Handle bot response
+        appendQuickReplies(); // Show quick replies again after bot response
+    }, 3000);
+}
+
 
     // Function to handle bot responses based on user selection
     function handleBotResponse(option) {
@@ -368,12 +374,18 @@
         }
     }
 
-    // Function to add user message to chat
-    function addUserMessage(message) {
-        const chatbotMessages = document.getElementById('chatbotMessages');
-        const userMessage = `<div class="message userMessage"><div class="messageBubble">${message}</div></div>`;
-        chatbotMessages.insertAdjacentHTML('beforeend', userMessage);
-    }
+    function scrollToBottom() {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to the bottom
+}
+
+// Function to add user message to chat
+function addUserMessage(message) {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const userMessage = `<div class="message userMessage"><div class="messageBubble">${message}</div></div>`;
+    chatbotMessages.insertAdjacentHTML('beforeend', userMessage);
+    scrollToBottom(); // Scroll to the bottom after adding the message
+}
 
     // Function to add bot message to chat
     function addBotMessage(message) {
@@ -395,20 +407,21 @@
         if (typingIndicator) typingIndicator.remove();
     }
 
-    // Function to show quick reply buttons
-    function appendQuickReplies() {
-        const chatbotMessages = document.getElementById('chatbotMessages');
-        const quickReplies = `
-            <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
-                <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
-                <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
-                <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
-                <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
-                <button class="quickReply" onclick="selectOption('FAQs')">FAQs</button>
-            </div>
-        `;
-        chatbotMessages.insertAdjacentHTML('beforeend', quickReplies);
-    }
+    <!-- Function to show quick reply buttons -->
+function appendQuickReplies() {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const quickReplies = `
+        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
+            <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
+            <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
+            <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
+            <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
+            <button class="quickReply" onclick="selectOption('FAQs')">FAQs</button>
+        </div>
+    `;
+    chatbotMessages.insertAdjacentHTML('beforeend', quickReplies);
+}
+
 
     // Function to clear chat messages
     function clearChatMessages() {
@@ -445,6 +458,7 @@
             document.getElementById('chatbotTrigger').style.display = 'block'; // Show the trigger button again
         }, 300); // Delay to allow transition to complete before hiding
     });
+    
 </script>
 
 
@@ -596,20 +610,24 @@
             padding: 20px;
             overflow-y: auto;
             background-color: #f9f9f9;
+            height: 300px; /* Set a height for the message container */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
 
-        /* Quick reply button styles */
         .quickReply {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
+    background-color: #007bff; /* Button color */
+    color: white; /* Text color */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for the button */
+    margin: 5px; /* Margin between buttons */
+    cursor: pointer; /* Cursor style */
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+}
+.quickReply.dissolve {
+    opacity: 0; /* Set opacity to 0 for fade effect */
+    pointer-events: none; /* Disable clicking on button while fading */
+}
 
         /* Chatbot trigger icon */
         #chatbotTrigger {

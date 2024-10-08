@@ -311,4 +311,37 @@ public function resend2FA(Request $request)
 }
 
 
+public function resend(Request $request)
+{
+    // Initialize the variable
+    $otpResentSuccessfully = false;
+
+    // Your logic to resend the OTP goes here
+    // For example:
+    try {
+        // Assuming you have a method to send the OTP, such as:
+        // $this->sendOtp($user); // Replace $user with the relevant user instance
+
+        // Simulate sending OTP (you would replace this with your actual logic)
+        $user = $request->user(); // Get the authenticated user
+        $otp = $this->generateOtp(); // Generate a new OTP
+        $this->sendOtp($user->phone_number, $otp); // Send OTP via SMS or Email
+
+        // If the sending operation was successful
+        $otpResentSuccessfully = true;
+    } catch (\Exception $e) {
+        // Handle any exceptions that occur during OTP sending
+        \Log::error('Error sending OTP: ' . $e->getMessage());
+    }
+
+    // Return JSON response based on success or failure
+    if ($otpResentSuccessfully) {
+        return response()->json(['success' => true, 'message' => 'OTP has been resent successfully.']);
+    } else {
+        return response()->json(['success' => false, 'message' => 'Failed to resend OTP.']);
+    }
+}
+
+
+
 }

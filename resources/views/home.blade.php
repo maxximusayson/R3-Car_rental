@@ -10,7 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <main>
-<div class="container-fluid main-content py-4">
     <div class="row justify-content-center">
         <div class="container-fluid p-0">
             <!-- Banner Slideshow Section -->
@@ -195,6 +194,7 @@
     </div>
 </section>
 
+
 <style>
     .car-card-wrapper {
         opacity: 0; /* Initially hidden */
@@ -248,9 +248,20 @@ function scrollToSection() {
 <section class="about-us py-4 bg-light">
     <div class="container text-center">
         <h3 class="section-title mb-3">About Us</h3>
-        <p class="lead">Welcome to our car rental service! We strive to provide the best car rental experience to our customers. With a wide range of vehicles and flexible rental options, we make it easy for you to find the perfect car for your needs. Our dedicated team is committed to ensuring your satisfaction from reservation to return.</p>
+
+        @if($aboutUs)
+            <p class="lead">{{ Str::limit($aboutUs->content, 500) }}</p>
+        @else
+            <p class="lead">Content not available.</p> <!-- Default message if content is missing -->
+        @endif
     </div>
 </section>
+
+
+
+
+
+
 
 <style>
     .about-us {

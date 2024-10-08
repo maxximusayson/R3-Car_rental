@@ -67,4 +67,16 @@ class ClientController extends Controller
     $client = Client::findOrFail($id);
     return view('clients.show', compact('client'));
 }
+
+public function destroy(Client $client)
+{
+    $client->delete(); // Delete the client from the database
+    return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+}
+
+
+public function edit(Client $client)
+    {
+        return view('clients.edit', compact('client'));
+    }
 }

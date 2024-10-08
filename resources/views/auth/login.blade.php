@@ -14,7 +14,7 @@
             <div class="flex justify-center mb-6">
                 <!-- <img src="/images/logos/R3Logo.png" alt="Logo" class="h-24"> -->
             </div>
-            <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800" style="font-family: 'Century Gothic', sans-serif;">Sign in to Your Account</h2>
+            <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800" style="font-family: 'Century Gothic', sans-serif;">Login</h2>
 
             <form id="loginForm" method="POST" action="{{ route('login') }}">
                 @csrf
@@ -31,15 +31,18 @@
 
                 <div class="mb-6 relative">
                     <label for="password" class="block text-sm font-medium text-gray-700" style="font-family: 'Century Gothic', sans-serif;">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password"
-                        class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        style="font-family: 'Century Gothic', sans-serif;">
-                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-600">
-                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12A3 3 0 119 12a3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5s8.268 2.943 9.542 7C20.268 16.057 16.478 19 12 19s-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </button>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" placeholder="Enter your password"
+                            class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            style="font-family: 'Century Gothic', sans-serif;">
+                        <button type="button" id="togglePassword" 
+                            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600" aria-label="Toggle Password Visibility">
+                            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-.174.735-.42 1.441-.732 2.108M15.732 19.646A9.98 9.98 0 0112 19c-4.478 0-8.268-2.943-9.542-7-.175-.735-.421-1.441-.733-2.108" />
+                            </svg>
+                        </button>
+                    </div>
                     @error('password')
                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                     @enderror

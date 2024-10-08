@@ -33,7 +33,7 @@
             <h2>R3 Garage - Isabela Branch</h2>
             <p><strong>Phone:</strong> 0955-379-3727</p>
             <p><strong>Email:</strong> rilleracl@yahoo.com</p>
-            <p><strong>Address:</strong> Alicia, Isabela, Philippines</p>
+            <p><strong>Address:</strong> Purok Rang Ayan, Alicia, Isabela</p>
         </div>
     </div>
 </div>
@@ -47,7 +47,7 @@
 
             <!-- Alicia, Isabela Map -->
             <div class="map-container" style="margin-top: 20px;">
-                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.7441736430677!2d121.62655107406403!3d16.780710399872313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33855af0ffb19173%3A0xf6e07471f8e3d370!2sAlicia%2C%20Isabela%2C%20Philippines!5e0!3m2!1sen!2sph!4v1712751110000!5m2!1sen!2sph" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d954.5688082740556!2d121.66551148380455!3d16.86227402243355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3385559a62c7dc0b%3A0x9d020875e5fb1c8f!2sR3%20GARAGE%20CAR%20RENTAL!5e0!3m2!1sen!2sph!4v1728365317052!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </div>

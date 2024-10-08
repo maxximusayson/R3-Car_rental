@@ -1,5 +1,5 @@
 @extends('layouts.myapp3')
-
+@section('title', 'R3 Garage Car Rental | Verify')
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
@@ -41,7 +41,7 @@
             <form id="verify-code-form" method="POST" action="{{ route('verify.otp') }}">
                 @csrf
                 <div class="mb-4">
-                    <label for="two_factor_code" class="block text-sm font-medium text-gray-700">2FA Code</label>
+                    <label for="two_factor_code" class="block text-sm font-medium text-gray-700">2FA Code (6-digit code)</label>
                     <input type="text" id="two_factor_code" name="two_factor_code" placeholder="Enter the code you received"
                         class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                     @error('two_factor_code')
@@ -57,8 +57,8 @@
             <!-- Resend Code button -->
             <div class="mt-6 text-center">
                 <form method="POST" action="{{ route('2fa.resend') }}">
-                    @csrf
-                    <button type="submit"
+                @csrf
+                    <button type="submit" id="resend-button"
                         class="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
                         Resend Code
                     </button>
@@ -78,7 +78,7 @@
     </div>
 </div>
 
-Script to toggle the forms
+<!-- Script to toggle the forms -->
 <script>
     // Handle OTP form submission and toggle visibility
     document.getElementById('method-form').addEventListener('submit', function (e) {
@@ -107,69 +107,11 @@ Script to toggle the forms
 </script>
 
 <script>
-//     // Handle method selection and display forms
-// document.getElementById('method-submit').addEventListener('click', function () {
-//     let selectedMethod = document.querySelector('input[name="2fa_method"]:checked').value;
-
-//     if (selectedMethod === 'email') {
-//         let otp_val = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-//         let email = prompt('Please enter your email address:');
-
-//         if (!validateEmail(email)) {
-//             alert('Please enter a valid email address.');
-//             return;
-//         }
-
-//         fetch('/send-email-otp', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-//             },
-//             body: JSON.stringify({
-//                 email: email
-//             })
-//         })
-//         .then(response => {
-//             if (!response.ok) {
-//                 // This handles server errors (500 level)
-//                 throw new Error(`Server Error: ${response.statusText}`);
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             if (data.success) {
-//                 alert(`A 2FA code has been sent to your email: ${email}`);
-//                 document.getElementById('select-method').style.display = 'none';
-//                 document.getElementById('verify-code').style.display = 'block';
-//             } else {
-//                 alert(data.message || "Failed to send OTP. Please try again.");
-//             }
-//         })
-//         .catch(error => {
-//             // More detailed error reporting
-//             alert("An error occurred while sending the OTP. Please check the console for more details.");
-//             console.error("Send OTP Error:", error);
-//         });
-//     } else {
-//         // For SMS method (ensure the route works for SMS as well)
-//         alert(`A 2FA code has been sent via ${selectedMethod.toUpperCase()}`);
-//         document.getElementById('select-method').style.display = 'none';
-//         document.getElementById('verify-code').style.display = 'block';
-//     }
-// });
-
-// Validate email format
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
-}
-
 // Restrict input to numbers only in the 2FA code field
 document.getElementById('two_factor_code').addEventListener('input', function (e) {
     this.value = this.value.replace(/\D/g, '');
-    if (this.value.length > 6) {
-        this.value = this.value.slice(0, 6);
+    if (this.value.length > 6) { // Changed from 6 to 5
+        this.value = this.value.slice(0, 5); // Changed from 6 to 5
     }
 });
 
@@ -189,32 +131,50 @@ document.getElementById('verify-code-form').addEventListener('submit', function 
         body: JSON.stringify({ otp: twoFactorCode })
     })
     .then(response => {
-        // Check if the response status is OK (200)
         if (!response.ok) {
-            // Throw error if it's not successful
             return response.json().then(err => { throw new Error(err.message || 'Invalid OTP. Please try again.'); });
         }
-        return response.json(); // Proceed to get the JSON body if the response is OK
+        return response.json();
     })
     .then(data => {
         if (data.success) {
-            // Success: OTP verified
             alert('OTP verified successfully!');
-            window.location.href = '/'; // Redirect to home or another page
+            window.location.href = '/';
         } else {
-            // Failure: OTP not valid
             alert(data.message || 'Invalid OTP. Please try again.');
         }
     })
     .catch(error => {
-        // Handle any errors that occur during the fetch
         alert(`Error: ${error.message}`);
         console.error("Verify OTP Error:", error);
     });
-
-
 });
 
+// Handle Resend Code button submission
+document.getElementById('resend-code-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+        } else {
+            alert('Failed to resend code. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error resending code:', error);
+        alert('An error occurred while resending the code. Please try again later.');
+    });
+});
 </script>
 
 @endsection

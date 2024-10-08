@@ -2,43 +2,36 @@
 
 @section('content')
 <div class="container">
-    @if(isset($section))
-        <!-- Editing a specific section -->
-        <h1>Edit {{ ucfirst($section->section_name) }} Section</h1>
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        <form action="{{ route('cms.update', $section->section_name) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="form-group">
-                <label for="content">Content</label>
-                <textarea id="content" name="content" class="form-control" rows="10">{{ old('content', $section->content) }}</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-            <a href="{{ route('cms.manage') }}" class="btn btn-secondary">Back to List</a>
-        </form>
-    @else
-        <!-- List of sections -->
-        <h1>Manage Homepage Content</h1>
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-        @foreach($sections as $section)
-            <div class="section mb-4">
-                <h2>{{ ucfirst($section->section_name) }} Section</h2>
-                <p>{{ Str::limit($section->content, 200) }}</p> <!-- Display a snippet of the content -->
-                <a href="{{ route('cms.manage', ['section_name' => $section->section_name]) }}" class="btn btn-primary">Edit</a>
-            </div>
-        @endforeach
+    <h1>Manage Homepage Content</h1>
+    
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     @endif
+
+    <!-- Editable About Us Section -->
+    <div class="section mb-4">
+        <h2>About Us Section</h2>
+
+        @if($aboutUs)
+            <!-- Display current About Us content -->
+            <p>{{ Str::limit($aboutUs->content, 500) }}</p>
+            <!-- Form for editing About Us -->
+            <form action="{{ route('cms.aboutUs.update') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="about_us_content">Edit About Us Content</label>
+                    <textarea class="form-control" id="about_us_content" name="content" rows="5" required>{{ $aboutUs->content ?? '' }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Save changes</button>
+            </form>
+        @else
+            <p>Content not available.</p> <!-- Default message if content is missing -->
+        @endif
+    </div>
+
 </div>
+
 @endsection

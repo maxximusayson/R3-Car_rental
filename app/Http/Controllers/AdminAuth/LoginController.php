@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
@@ -126,4 +127,87 @@ class LoginController extends Controller
     {
         return view('auth.2fa-verify'); // Ensure this view exists
     }
+
+    public function resend2FA(Request $request)
+    {
+        // Validate the user's session or authentication status if necessary
+        $request->validate([
+            'user_id' => 'required|exists:users,id', // Validate user ID in request if necessary
+        ]);
+    
+        // Retrieve the user from the session or based on the provided user ID
+        $userId = Session::get('two_factor:user:id', $request->input('user_id'));
+        $user = User::find($userId);
+    
+        if (!$user || !$user->phone_number) {
+            return response()->json(['success' => false, 'message' => 'Invalid user or phone number.']);
+        }
+    
+        // Generate a new OTP
+        $otp = $this->generateOtp();
+    
+        // Send OTP using your sendOtp method
+        try {
+            $this->sendOtp($user->phone_number, $otp);
+            
+            // Store the OTP in the session or database for verification
+            session(['otp' => $otp]); // Store OTP for later verification
+    
+            return response()->json(['success' => true, 'message' => 'OTP has been resent successfully.']);
+        } catch (\Exception $e) {
+            Log::error('Failed to resend OTP: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to resend OTP.']);
+        }
+    }
+    
+    
+    private function generateOtp()
+    {
+        // Logic to generate the OTP (e.g., random number)
+        return rand(100000, 999999); // Example: returns a random 6-digit number
+    }
+
+    private function sendOtp($phoneNumber, $otp)
+{
+    // Your Semaphore API key
+    $apiKey = env('SEMAPHORE_API_KEY');
+
+    // Semaphore API endpoint for sending SMS
+    $url = 'https://semaphore.co/api/v4/sms/send';
+
+    // Prepare the request payload
+    $data = [
+        'apikey' => $apiKey,
+        'number' => $phoneNumber,
+        'message' => 'Your OTP code is: ' . $otp,
+    ];
+
+    // Initialize cURL
+    $ch = curl_init($url);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+    // Execute the request
+    $response = curl_exec($ch);
+
+    // Check for errors
+    if (curl_errno($ch)) {
+        Log::error('Semaphore error: ' . curl_error($ch));
+        throw new \Exception('Unable to send OTP via SMS.');
+    }
+
+    // Close cURL
+    curl_close($ch);
+
+    // Optionally, decode the response to check for success
+    $result = json_decode($response, true);
+    if (isset($result['status']) && $result['status'] !== 'success') {
+        Log::error('Failed to send SMS: ' . $result['message']);
+        throw new \Exception('Unable to send OTP via SMS.');
+    }
+}
+
 }

@@ -1,5 +1,5 @@
 @extends('layouts.myapp2')
-
+@section('title', 'R3 Garage Car Rental | My Account')
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -328,7 +328,7 @@
                 }
             </script>
 
-            <!-- Display the uploaded IDs -->
+       <!-- Display the uploaded IDs -->
 <h2 class="text-2xl md:text-3xl font-semibold text-blue-600 mb-4">Reservation and Uploaded ID's</h2>
 <div class="bg-white shadow-md rounded-lg p-6 relative">
     <!-- Button to see all uploaded IDs -->
@@ -353,43 +353,58 @@
                     <!-- Driver's License -->
                     <div class="flex-1">
                         <p class="font-medium text-gray-700 mb-2">Driver's License:</p>
-                        @if($reservation->driver_license)
+                        @if($reservation->driver_license && now()->isBefore($reservation->expiration_time))
                             <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
                         @else
-                            <p class="text-gray-500">No driver's license uploaded.</p>
+                            <p class="text-gray-500">This driver's license has expired or the reservation has ended.</p>
                         @endif
                     </div>
                     
                     <!-- Valid ID -->
                     <div class="flex-1">
                         <p class="font-medium text-gray-700 mb-2">Valid ID:</p>
-                        @if($reservation->valid_id)
+                        @if($reservation->valid_id && now()->isBefore($reservation->expiration_time))
                             <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
                         @else
-                            <p class="text-gray-500">No valid ID uploaded.</p>
+                            <p class="text-gray-500">This valid ID has expired or the reservation has ended.</p>
                         @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Display remaining balance -->
-            <div class="bg-gray-50 p-4 rounded-md border border-gray-200 shadow-sm">
-                <p class="font-medium text-gray-700">Remaining Balance:</p>
-                <p class="text-gray-800 text-lg" id="remaining-balance">
-                    {{ number_format($reservation->remaining_balance, 1) }} PHP
-                </p>
-            </div>
+            @if(session('reservation'))
+    @php
+        $reservation = session('reservation');
+    @endphp
+    
+  <!-- Display remaining balance -->
+<div class="bg-gray-50 p-4 rounded-md border border-gray-200 shadow-sm">
+    <p class="font-medium text-gray-700">Remaining Balance:</p>
+    <p class="text-gray-800 text-lg" id="remaining-balance">
+        @if(isset($reservation['remaining_balance']))
+            {{ number_format($reservation['remaining_balance'], 2) }} PHP
+        @else
+            0.00 PHP
+        @endif
+    </p>
+</div>
 
-            <!-- Delete Button -->
-            <div class="mt-4">
-                <form action="{{ route('reservations.destroy', $reservation->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reservation?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
-                        Delete Reservation
-                    </button>
-                </form>
-            </div>
+    
+
+    <!-- Use the reservation id from the session -->
+    @if(isset($reservation['id']))
+        <form action="{{ route('reservations.destroy', $reservation['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reservation?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">Delete Reservation</button>
+        </form>
+    @else
+        <p>Reservation ID not found.</p>
+    @endif
+@else
+    <!-- <p>Reservation Ended.</p> -->
+@endif  
+
         </div>
     @endforeach
 </div>
@@ -414,23 +429,24 @@
                     <h4 class="text-xl font-semibold">{{ $reservation->car->brand }} {{ $reservation->car->model }}</h4>
                     <p class="text-gray-600">Reservation Date: {{ $reservation->start_date }} to {{ $reservation->end_date }}</p>
                     
-                    <div class="flex gap-6 mt-4">
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-700">Driver's License:</p>
-                            @if($reservation->driver_license)
-                                <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
-                            @else
-                                <p class="text-gray-500">No driver's license uploaded.</p>
-                            @endif
-                        </div>
-
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-700">Valid ID:</p>
-                            @if($reservation->valid_id)
-                                <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
-                            @else
-                                <p class="text-gray-500">No valid ID uploaded.</p>
-                            @endif
+                     <div class="mt-4">
+            <div class="flex gap-6 mb-6">
+                <div class="flex-1">
+                    <p class="font-medium text-gray-700 mb-2">Driver's License:</p>
+                    @if($reservation->driver_license && $reservation->expiration_time > now())
+                        <img src="{{ asset($reservation->driver_license) }}" alt="Driver's License" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
+                    @else
+                        <p class="text-gray-500">No valid driver's license uploaded or the document has expired.</p>
+                    @endif
+                </div>
+                
+                <div class="flex-1">
+                    <p class="font-medium text-gray-700 mb-2">Valid ID:</p>
+                    @if($reservation->valid_id && $reservation->expiration_time > now())
+                        <img src="{{ asset($reservation->valid_id) }}" alt="Valid ID" class="rounded shadow-sm cursor-pointer" onclick="showImageModal(this)">
+                    @else
+                        <p class="text-gray-500">No valid ID uploaded or the document has expired.</p>
+                    @endif
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 @extends('layouts.myapp')
 
 @section('content')
+@section('title', 'R3 Garage Car Rental | Reservation')
 
 <!-- Stepper and Form Container -->
 <div class="container mx-auto px-4 py-8">
@@ -155,8 +156,33 @@
                             <img src="{{ asset('images/icons/cash.png') }}" alt="Cash" class="w-8 h-8"> <span>Cash</span>
                         </button>
                     </div>
-                </div>
 
+                    <!-- paypal codes -->
+                    <script src="https://www.paypal.com/sdk/js?client-id=AUD5EUaZdfhFxTftE7maWnumaSb-cvFBlGhx6pxBGjxCDzIl0b9VBOKHtHUQJGDMSyBkxK4DNvg8IMzz"></script>                  
+                    <div id="paypal-button-container"></div>
+
+                    <script>
+                         paypal.Buttons({
+                                fundingSource: paypal.FUNDING.PAYPAL, // Force the button to only use PayPal
+                                createOrder: function(data, actions) {
+                                   
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            amount: {
+                                                value: '200'
+                                            }
+                                        }]
+                                    });
+                                },
+                                onApprove:function(data, actions){
+                                    console.log('Data :', data);
+                                    console.log('Actions :', actions);
+                                    return actions.order.capture().then
+                                }
+                            }).render('#paypal-button-container');
+                    </script>
+
+</div>
                 <!-- Note Section -->
 <div class="note mb-6">
     <p class="note-title font-bold">Note:</p>
@@ -172,7 +198,8 @@
 
 
                <!-- Price Summary Section -->
-<div class="mt-4 p-4 border rounded-md w-full">
+<!-- Price Summary Section -->
+<div id="price-summary" class="mt-4 p-4 border rounded-md w-full hidden"> <!-- Add the hidden class initially -->
     <div class="flex justify-between items-center">
         <p class="font-bold">Duration:</p>
         <p id="duration"><span></span> days</p>
@@ -190,6 +217,8 @@
         <p id="grand-total"><span></span> PHP</p>
     </div>
 </div>
+
+
 
 
                 <!-- Payment Details -->
@@ -324,14 +353,50 @@
                 });
             </script>
         </div>
+   <!-- Car Specifications and Description Section -->
+   <div class="mt-0 md:w-full bg-white p-6 rounded-lg shadow-md">
+    <!-- Car Specifications -->
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">Car Specifications</h3>
+    <ul class="space-y-4">
+        <li class="flex items-center">
+            <strong class="text-gray-700">Brand:</strong> <span class="ml-2">{{ $car->brand }}</span>
+        </li>
+        <li class="flex items-center">
+            <strong class="text-gray-700">Model:</strong> <span class="ml-2">{{ $car->model }}</span>
+        </li>
+        <li class="flex items-center">
+            <strong class="text-gray-700">Engine:</strong> <span class="ml-2">{{ $car->engine }}</span>
+        </li>
+    </ul>
 
-        <!-- Car Image on the Right Side -->
-        <div class="md:w-1/3 flex items-center justify-center mt-6 md:mt-0 car-image-container">
-            <img loading="lazy" class="object-cover w-full h-auto" 
-                 src="{{ asset($car->images->first()->image_path) }}" 
-                 alt="Car image" />
+    <!-- Car Description -->
+<div class="mt-8">
+    <h4 class="text-xl font-semibold text-gray-800 mb-4">Description</h4>
+    <p class="text-gray-600 leading-relaxed text-justify">
+        {{ $car->description }}
+    </p>
+</div>
+<!-- Container for Car Images and Specifications -->
+<div class="container mx-auto px-4 py-8">
+    <!-- Car Images Section -->
+    <div class="md:w-full">
+        <h3 class="text-xl font-semibold mb-1">Car Images</h3>
+        <div class="grid grid-cols-2 gap-4">
+            @foreach($car->images as $image)
+                <div class="car-image-container">
+                    <img 
+                        loading="lazy" 
+                        class="object-cover w-full h-auto rounded-lg shadow-md" 
+                        src="{{ asset($image->image_path) }}" 
+                        srcset="{{ asset($image->image_path) }} 1x, {{ asset($image->image_path) }} 2x" 
+                        alt="Image of {{ $car->make }} {{ $car->model }}" />
+                </div>
+            @endforeach
         </div>
     </div>
+</div>
+</div>
+</div>
 </div>
 
 <!-- Include jQuery and Flatpickr -->
@@ -349,6 +414,36 @@
 $(document).ready(function() {
     // Array of already booked dates, passed from the backend
     var bookedDates = @json($bookedDates);
+
+    // Function to save form data to local storage
+    function saveFormData() {
+        localStorage.setItem('fullName', $('#full-name').val());
+        localStorage.setItem('username', $('#username').val());
+        localStorage.setItem('startDate', $('#start_date').val());
+        localStorage.setItem('startTime', $('#start_time').val());
+        localStorage.setItem('endDate', $('#end_date').val());
+        localStorage.setItem('endTime', $('#end_time').val());
+        localStorage.setItem('cashAmount', $('#cash-amount').val());
+        // Store additional inputs if needed
+    }
+
+    // Function to load form data from local storage
+    function loadFormData() {
+        $('#full-name').val(localStorage.getItem('fullName') || '');
+        $('#username').val(localStorage.getItem('username') || '');
+        $('#start_date').val(localStorage.getItem('startDate') || '');
+        $('#start_time').val(localStorage.getItem('startTime') || '');
+        $('#end_date').val(localStorage.getItem('endDate') || '');
+        $('#end_time').val(localStorage.getItem('endTime') || '');
+        $('#cash-amount').val(localStorage.getItem('cashAmount') || '');
+    }
+
+      // Call `calculateTotals` whenever relevant inputs change
+      $('#start_date, #end_date, #start_time, #end_time, #cash-amount, #full-name, #username').on('input', function() {
+        calculateTotals();
+        updatePriceSummaryVisibility();
+        saveFormData(); // Save data to local storage whenever inputs change
+    });
 
     // Initialize Flatpickr on both fields
     function initializeFlatpickr() {
@@ -385,84 +480,130 @@ $(document).ready(function() {
         }
     }
 
-    // Calculate the totals based on the selected dates and times
-  function calculateTotals() {
+    function calculateTotals() {
     var startDate = new Date($('#start_date').val());
     var endDate = new Date($('#end_date').val());
     var startTime = $('#start_time').val();
     var endTime = $('#end_time').val();
 
     if (startDate && endDate && startTime && endTime && startDate <= endDate) {
-        // Ensure the end date is treated as the same day if start and end are 1 day apart
+        // Calculate the duration in days
         var durationInDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-        
+
         // If start and end date are the same, consider it 1 full day
         if (durationInDays < 1) {
             durationInDays = 1;
         }
-        
+
         // Display the duration in the duration field
         $('#duration span').text(durationInDays + ' days');
 
-        var pricePerDay = parseFloat('{{ $car->price_per_day }}');
-        var totalPrice = durationInDays * pricePerDay;
+        var pricePerDay = parseFloat('{{ $car->price_per_day }}'); // Price per day from backend
+        var totalPrice = durationInDays * pricePerDay; // Total price for the rental period
 
-        // Downpayment is fixed 1000 PHP per day
-        var downpaymentPerDay = 1000;
-        var totalDownpayment = durationInDays * downpaymentPerDay;
+        // Fixed downpayment of 1000 PHP
+        var downpaymentFixed = 1000; 
+        var totalDownpayment = downpaymentFixed; // Total downpayment is fixed to 1000 PHP
 
-        var cashPaid = parseFloat($('#cash-amount').val()) || 0;
-        var remainingBalance = Math.max(0, totalPrice - totalDownpayment - cashPaid);
+        // Amount paid by the user (input from the form)
+        var cashPaid = parseFloat($('#cash-amount').val()) || 0; 
 
-        // Calculate Grand Total
-        var grandTotal = totalPrice - totalDownpayment;
+        // Calculate remaining balance
+        var remainingBalance = totalPrice - totalDownpayment - cashPaid; // Remaining balance calculation
+
+        // Ensure the remaining balance is at least zero
+        remainingBalance = Math.max(remainingBalance, 0);
 
         // Update the UI with calculated values
-        $('#total-price span').text(totalPrice.toFixed(2) + ' PHP');
-        $('#downpayment span').text(totalDownpayment.toFixed(2) + ' PHP');
-        $('#grand-total span').text(grandTotal.toFixed(2) + ' PHP');
-        $('#remaining-balance').text(remainingBalance.toFixed(2) + ' PHP');
+        $('#total-price span').text(totalPrice.toFixed(2) + ' PHP'); // Total price display
+        $('#downpayment span').text(totalDownpayment.toFixed(2) + ' PHP'); // Downpayment display
+        $('#grand-total span').text((totalPrice - totalDownpayment).toFixed(2) + ' PHP'); // Grand total display
+        $('#remaining-balance').text(remainingBalance.toFixed(2) + ' PHP'); // Remaining balance display
 
         // Add a note if there's a remaining balance
         if (remainingBalance > 0) {
             $('#balance-note').text('May natitirang balanse ka na ' + remainingBalance.toFixed(2) + ' ₱.');
         } else {
-            $('#balance-note').text('');
+            $('#balance-note').text(''); // Clear balance note if no remaining balance
         }
     } else {
         // Reset values if dates or times are not properly selected
         $('#duration span').text(''); // Reset the duration
-        $('#total-price span').text('₱');
-        $('#downpayment span').text('₱');
-        $('#grand-total span').text('₱');
-        $('#remaining-balance').text('0.00 PHP');
+        $('#total-price span').text('₱'); // Reset total price
+        $('#downpayment span').text('₱'); // Reset downpayment
+        $('#grand-total span').text('₱'); // Reset grand total
+        $('#remaining-balance').text('0.00 PHP'); // Reset remaining balance
+        $('#balance-note').text(''); // Clear balance note
     }
 
-    validateForm();
+    validateForm(); // Call your validation function
 }
 
-    // Handle the payment button click functionality
-    $('.payment-button').click(function() {
+
+   // Handle the payment button click functionality
+   $('.payment-button').click(function() {
+        var selectedMethod = $(this).data('method');
+        var isActive = $(this).hasClass('active');
+
         // Remove the "active" class from all payment buttons
         $('.payment-button').removeClass('active');
+        $('#gcash-details').addClass('hidden'); // Hide GCash details initially
+        $('#cash-details').addClass('hidden'); // Hide cash input field initially
         
-        // Add the "active" class to the clicked button
-        $(this).addClass('active');
-        
-        // Store the payment method in a hidden input or variable
-        var selectedMethod = $(this).data('method');
-        $('#selected-payment-method').val(selectedMethod);  // Assuming you have a hidden input for the payment method
+        if (isActive) {
+            // If the clicked button is already active, deselect it
+            $(this).removeClass('active');
+            $('#price-summary').addClass('hidden'); // Hide price summary when deselected
+        } else {
+            // Add the "active" class to the clicked button
+            $(this).addClass('active');
+            $('#selected-payment-method').val(selectedMethod);  // Store the payment method in a hidden input
 
-        // Show/hide the appropriate fields based on the selected payment method
-        if (selectedMethod === 'gcash') {
-            $('#gcash-details').removeClass('hidden'); // Show GCash proceed button
-            $('#cash-details').addClass('hidden'); // Hide cash input field
-        } else if (selectedMethod === 'cash') {
-            $('#cash-details').removeClass('hidden'); // Show cash input field
-            $('#gcash-details').addClass('hidden'); // Hide GCash proceed button
+            // Show/hide the appropriate fields based on the selected payment method
+            if (selectedMethod === 'gcash') {
+                $('#gcash-details').removeClass('hidden'); // Show GCash proceed button
+            } else if (selectedMethod === 'cash') {
+                $('#cash-details').removeClass('hidden'); // Show cash input field
+                $('#price-summary').removeClass('hidden'); // Show price summary section
+            }
+
+            // Update the price summary visibility
+            updatePriceSummaryVisibility();
         }
     });
 
+        // Handle the form submission
+        $('#reservation_form').submit(function(e) {
+        var gcashStatus = $('#gcash-status').val();
+        var paymentMethod = $('.payment-button.active').data('method');
+
+        if (paymentMethod === 'gcash' && gcashStatus === 'pending') {
+            e.preventDefault();
+            alert('You need to complete the payment in the GCash app.');
+        } else {
+            // Clear local storage after successful submission
+            localStorage.clear();
+        }
+    });
+    // Call updatePriceSummaryVisibility on page load
+    updatePriceSummaryVisibility();
+
+    // Call `calculateTotals` whenever relevant inputs change
+    $('#start_date, #end_date, #start_time, #end_time, #cash-amount').on('input', function() {
+        calculateTotals();
+        updatePriceSummaryVisibility(); // Update visibility after calculating totals
+    });
+ // Initialize visibility based on payment method
+ function updatePriceSummaryVisibility() {
+        var selectedMethod = $('.payment-button.active').data('method');
+        if (!selectedMethod) {
+            $('#price-summary').addClass('hidden'); // Hide if no method is selected
+        } else if (selectedMethod === 'gcash') {
+            $('#price-summary').addClass('hidden'); // Hide for GCash
+        } else if (selectedMethod === 'cash') {
+            $('#price-summary').removeClass('hidden'); // Show for Cash
+        }
+    }
     // Validate the form to ensure all fields are correctly filled
     function validateForm() {
         var startDate = $('#start_date').val();
@@ -595,6 +736,9 @@ $(document).ready(function() {
 
 
 <style>
+    .hidden {
+    display: none; /* This will hide the element */
+}
 .stepper-container {
     display: flex;
     justify-content: space-between;
