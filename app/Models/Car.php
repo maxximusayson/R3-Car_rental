@@ -33,7 +33,7 @@ class Car extends Model
 
     public function images()
     {
-        return $this->hasMany(CarImage::class);
+        return $this->hasMany(CarImage::class); // Adjust this to your actual model
     }
 
     // Check if the car is available on a specific date

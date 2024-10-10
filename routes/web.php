@@ -45,7 +45,8 @@ use App\Http\Controllers\GpsTrackingController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PaypalController;
-
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostsController;
 
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
@@ -610,7 +611,13 @@ Route::get('/cms/about-us/edit', [CMSController::class, 'editAboutUs'])->name('c
 Route::put('/cms/about-us/update', [CMSController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
 
 
+Route::get('/home', [PostsController::class, 'index'])->name('home'); // Make sure the route matches
+Route::resource('posts', PostController::class);
 
+Route::get('/', [CMSController::class, 'showHomePage'])->name('home'); // Adjust the URL as needed
+Route::resource('posts', PostsController::class);
+Route::get('/posts', [PostsController::class, 'index'])->name('posts.index');
+Route::delete('/posts/{id}', [PostsController::class, 'destroy'])->name('posts.destroy');
 
 
 
@@ -674,6 +681,3 @@ Route::get('/paypal/success', function() {
 Route::get('/paypal/cancel', function() {
     return view('paypal.cancel');
 })->name('paypal.cancel');
-
-
-

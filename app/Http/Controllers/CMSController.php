@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\HomepageSection;
+use App\Models\Post;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,24 +13,28 @@ class CMSController extends Controller
 {
     // Display all sections
     public function manage()
-{
-    // Fetch all sections
-    $sections = DB::table('cms_sections')->get();
-
-    // Fetch the About Us content
-    $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
-
-    // Create a default entry if it doesn't exist
-    if (!$aboutUs) {
-        DB::table('cms_sections')->insert([
-            'section_name' => 'about_us',
-            'content' => 'Default content for About Us.',
-        ]);
+    {
+        // Fetch all sections
+        $sections = DB::table('cms_sections')->get();
+    
+        // Fetch the About Us content
         $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
+    
+        // Create a default entry if it doesn't exist
+        if (!$aboutUs) {
+            DB::table('cms_sections')->insert([
+                'section_name' => 'about_us',
+                'content' => 'Default content for About Us.',
+            ]);
+            $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
+        }
+    
+        // Fetch all posts for display
+        $posts = Post::all(); // Make sure to import your Post model at the top
+    
+        return view('cms.manage', compact('sections', 'aboutUs', 'posts'));
     }
-
-    return view('cms.manage', compact('sections', 'aboutUs'));
-}
+    
 
     
 
@@ -83,16 +88,43 @@ class CMSController extends Controller
         return redirect()->route('cms.manage')->with('success', 'About Us section updated successfully.');
     }
     // In your controller
-public function showHomePage()
-{
-    // Fetch the About Us content
-    $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
+    public function showHomePage()
+    {
+        $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
+        $posts = Post::with('images')->latest()->take(5)->get();
+        $cars = Car::with('images')->take(3)->get();  // Fetching cars
+    
+        return view('home', compact('aboutUs', 'posts', 'cars'));  // Passing cars to the view
+    }
+    
+    
+    
 
-    // Fetch cars (ensure your model and logic here are correct)
-    $cars = Car::with('images')->take(3)->get(); // Adjust this based on your actual model
+    
+    
+    public function storePost(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    return view('home', compact('aboutUs', 'cars')); // Pass both variables
-}
+        // Handle the image upload if it exists
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
 
+        // Create the new post
+        Post::create([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'image_path' => $imagePath,
+        ]);
+
+        return redirect()->route('cms.manage')->with('success', 'Post added successfully!');
+    }
     
 }

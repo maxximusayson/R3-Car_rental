@@ -62,6 +62,11 @@
                         class="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
                         Resend Code
                     </button>
+                    <br><br>
+                    <a href="/2fa/verify" class="text-blue-600 font-semibold hover:underline transition">
+                        Go Back
+                    </a>
+
                 </form>
                 @if (session('resend_success'))
                     <div class="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">

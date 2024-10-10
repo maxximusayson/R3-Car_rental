@@ -18,4 +18,8 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function images()
+    {
+        return $this->hasMany(PostImage::class); // Adjust this if the foreign key is different
+    }
 }

@@ -21,7 +21,7 @@ class CarController extends Controller
         $cars = Car::with('images')->get(); // Eager load images to avoid N+1 query issue
 
         // Pass the cars variable to the view
-        return view('your_view_name', compact('cars')); // Make sure to use the correct view name
+        return view('home', compact('cars'));
     }
 
      public function index()

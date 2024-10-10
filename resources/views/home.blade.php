@@ -163,6 +163,46 @@
     }
 </script>
 
+<!-- Display Posts -->
+<div class="container mt-4">
+    <h2 class="text-center mb-4" style="font-family: 'Times New Roman', Times, serif;">Latest Posts</h2> <!-- Center the heading and apply font -->
+    @if($posts->count() > 0)
+        <div class="row">
+            @foreach($posts as $post)
+                <div class="col-md-4 mb-4"> <!-- Adjust the column width for three columns -->
+                    <div class="card">
+                        <div class="card-body text-center" style="font-family: 'Times New Roman', Times, serif;"> <!-- Center the post content and apply font -->
+                            <h3>{{ $post->title }}</h3>
+                            <p style="text-align: justify; font-family: 'Times New Roman', Times, serif;">{{ $post->content }}</p> <!-- Justify the post content and apply font -->
+                            @if($post->image_path)
+                            <img src="{{ asset('images/posts/' . $post->image_path) }}" alt="{{ $post->title }}" class="img-fluid mb-2" style="width: 100%; height: 450px; object-fit: cover;"> <!-- Set consistent image size -->
+                            @else
+                                 <p class="text-danger">Image not found.</p> <!-- Optional: Show an error if no image -->
+                            @endif
+                        </div>
+                    </div>
+                </div>
+           @endforeach
+        </div>
+    @else
+        <p class="text-center" style="font-family: 'Times New Roman', Times, serif;">No posts available.</p> <!-- Center the message and apply font -->
+    @endif
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- Section to scroll to (e.g., Our Cars section) -->
@@ -170,29 +210,36 @@
     <div class="container text-center">
         <h3 class="section-title mb-4">Best Choice</h3>
         <div class="row justify-content-center">
-            @foreach ($cars->slice(0, 3) as $car)
-            <div class="col-sm-12 col-md-6 col-lg-4 mb-4 car-card-wrapper">
-                <div class="car-card card border-0 shadow-sm rounded-lg overflow-hidden h-100">
-                    <!-- Modern Horizontal Best Choice Ribbon -->
-                    <div class="ribbon">Best Choice</div>
+        @if($cars->count() > 0)
+            @foreach($cars as $car)
+                <div class="col-sm-12 col-md-6 col-lg-4 mb-4 car-card-wrapper">
+                    <div class="car-card card border-0 shadow-sm rounded-lg overflow-hidden h-100">
+                        <!-- Modern Horizontal Best Choice Ribbon -->
+                        <div class="ribbon">Best Choice</div>
 
-                    <a href="{{ route('car.reservation', ['car' => $car->id]) }}" class="img-wrapper">
-                        <img class="card-img-top img-fluid" src="{{ asset($car->images->first()->image_path) }}" alt="{{ $car->brand }} {{ $car->model }}">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title font-weight-bold">{{ $car->brand }} {{ $car->model }}</h5>
-                        <p class="text-muted">{{ $car->engine }}</p>
-                        <p class="card-text text-primary">₱{{ number_format($car->price_per_day, 2) }}</p>
-                        <a href="{{ route('car.reservation', ['car' => $car->id]) }}" class="btn btn-primary btn-block mt-auto shadow-sm">Reserve Now</a>
+                        <a href="{{ route('car.reservation', ['car' => $car->id]) }}" class="img-wrapper">
+                            <img class="card-img-top img-fluid" src="{{ asset($car->images->first()->image_path) }}" alt="{{ $car->brand }} {{ $car->model }}">
+                        </a>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title font-weight-bold">{{ $car->brand }} {{ $car->model }}</h5>
+                            <p class="text-muted">{{ $car->engine }}</p>
+                            <p class="card-text text-primary">₱{{ number_format($car->price_per_day, 2) }}</p>
+                            <a href="{{ route('car.reservation', ['car' => $car->id]) }}" class="btn btn-primary btn-block mt-auto shadow-sm">Reserve Now</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endforeach
+        @else
+            <p>No cars available.</p> <!-- Message if no cars are found -->
+        @endif
         </div>
         <!-- See All Cars Button -->
         <a href="https://r3garagecarrental.online/cars" class="btn btn-outline-secondary mt-4 px-4 py-2 shadow-sm">See All Cars</a>
     </div>
 </section>
+
+
+
 
 
 <style>
@@ -383,7 +430,7 @@ function scrollToSection() {
             </div>
             @endforeach
 
-            @foreach([5 => 'montage.mp4', 11 => 'montage2.mp4'] as $i => $video)
+            <!-- @foreach([5 => 'montage.mp4', 11 => 'montage2.mp4'] as $i => $video)
             <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
                 @php
                     $videoPath = 'images/gallery/' . $video;
@@ -393,7 +440,7 @@ function scrollToSection() {
                     Your browser does not support the video tag.
                 </video>
             </div>
-            @endforeach
+            @endforeach -->
         </div>
     </div>
 </section>
