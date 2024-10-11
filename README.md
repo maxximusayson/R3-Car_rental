@@ -7,7 +7,7 @@ Members:
 
 
 
-Miles Abude
+Miles Gabriel Abude
 
 
 
@@ -17,12 +17,12 @@ Maxximus Ayson
 
 
 
-Kurt Campos
+Kurt Micheil
 
 
 
 
-Reicelyn Mendoza
+Maria Reicelyn Mendoza
 
 
 
