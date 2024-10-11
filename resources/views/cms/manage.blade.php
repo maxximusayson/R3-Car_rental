@@ -1,3 +1,4 @@
+
 @extends('layouts.myapp1')
 
 @section('content')
@@ -99,4 +100,35 @@
         </div>
     </div>
 </div>
+
+<!-- Gallery Management Section -->
+<div class="col-md-12 mb-5">
+    <h2 class="text-primary">Manage Gallery</h2>
+
+    <!-- Form for adding a new gallery image -->
+    <form action="{{ route('gallery.store') }}" method="POST" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
+        @csrf
+        <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="image" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Image</button>
+    </form>
+
+    <!-- Display existing gallery images -->
+    <h3 class="mt-4">Existing Gallery Images</h3>
+    <div class="row">
+        @foreach($galleryImages as $image)
+            <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+                <img src="{{ asset($image->image_path) }}" alt="Gallery Image" class="img-fluid rounded shadow-sm">
+                <form action="{{ route('gallery.destroy', $image->id) }}" method="POST" class="mt-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        @endforeach
+    </div>
+</div>
+
 @endsection

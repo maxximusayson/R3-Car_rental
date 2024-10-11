@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SmsService
 {
@@ -39,10 +40,10 @@ class SmsService
         $response = Http::asForm()->post($this->apiURL, $postData);
 
         // Log and handle the response
-        \Log::info('Semaphore OTP Response:', $response->json());
+        Log::info('Semaphore OTP Response:', $response->json());
 
         if ($response->failed()) {
-            \Log::error('Failed to send OTP: ' . $response->body());
+            Log::error('Failed to send OTP: ' . $response->body());
             throw new \Exception('Failed to send OTP: ' . $response->body());
         }
 

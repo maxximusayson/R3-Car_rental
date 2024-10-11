@@ -48,6 +48,8 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\GalleryImageController;
+
 
 // ------------------- customer routes --------------------------------------- //
 Route::get('/', function () {
@@ -620,6 +622,14 @@ Route::post('/gps/store', [GpsTrackingController::class, 'storeGpsData'])->name(
 Route::get('/cms/manage', [CmsController::class, 'manage'])->name('cms.manage');
 
 
+// Gallery management routes
+
+
+Route::get('/cms/manage', [CmsController::class, 'manage'])->name('cms.manage');
+Route::post('/cms/update-logo', [CmsController::class, 'updateLogo'])->name('cms.updateLogo');
+
+
+
 // Routes for the About Us section
 Route::get('/cms/about-us/edit', [CmsController::class, 'editAboutUs'])->name('cms.aboutUs.edit');
 Route::put('/cms/about-us/update', [CmsController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
@@ -649,6 +659,9 @@ Route::resource('posts', PostsController::class);
 Route::get('/posts', [PostsController::class, 'index'])->name('posts.index');
 Route::delete('/posts/{id}', [PostsController::class, 'destroy'])->name('posts.destroy');
 
+Route::get('/cms/manage', [CMSController::class, 'manage'])->name('cms.manage');
+Route::post('/cms/gallery', [CMSController::class, 'storeGalleryImage'])->name('gallery.store');
+Route::delete('/cms/gallery/{galleryImage}', [CMSController::class, 'destroyGalleryImage'])->name('gallery.destroy');
 
 
 

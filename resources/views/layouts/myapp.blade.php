@@ -57,12 +57,12 @@
     }
 </style>
 
-<nav class="bg-custom-orange px-4 lg:px-8 py-2 text-white shadow-lg" style="font-family: 'Century Gothic', sans-serif;">
-    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-        {{-- Logo --}}
-        <a class="flex items-center pointer-events-none">
-    <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
-</a>
+    <nav class="bg-custom-orange px-4 lg:px-8 py-2 text-white shadow-lg" style="font-family: 'Century Gothic', sans-serif;">
+        <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+            {{-- Logo --}}
+            <a class="flex items-center pointer-events-none">
+        <img src="/images/logos/R3Logo.png" class="mr-2 h-12" alt="R3 Logo" loading="lazy" />
+    </a>
 
 
         {{-- Desktop Navigation with No Underline on Hover --}}

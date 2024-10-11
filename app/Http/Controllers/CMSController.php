@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\GalleryImage;
 use App\Models\HomepageSection;
 use App\Models\Post;
 use App\Models\Section;
@@ -14,13 +15,8 @@ class CMSController extends Controller
     // Display all sections
     public function manage()
     {
-        // Fetch all sections
         $sections = DB::table('cms_sections')->get();
-    
-        // Fetch the About Us content
         $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
-    
-        // Create a default entry if it doesn't exist
         if (!$aboutUs) {
             DB::table('cms_sections')->insert([
                 'section_name' => 'about_us',
@@ -28,11 +24,11 @@ class CMSController extends Controller
             ]);
             $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
         }
-    
-        // Fetch all posts for display
-        $posts = Post::all(); // Make sure to import your Post model at the top
-    
-        return view('cms.manage', compact('sections', 'aboutUs', 'posts'));
+
+        $posts = Post::all();
+        $galleryImages = GalleryImage::all(); // Fetch all gallery images
+
+        return view('cms.manage', compact('sections', 'aboutUs', 'posts', 'galleryImages'));
     }
     
 
@@ -93,8 +89,9 @@ class CMSController extends Controller
         $aboutUs = DB::table('cms_sections')->where('section_name', 'about_us')->first();
         $posts = Post::with('images')->latest()->take(5)->get();
         $cars = Car::with('images')->take(3)->get();  // Fetching cars
-    
-        return view('home', compact('aboutUs', 'posts', 'cars'));  // Passing cars to the view
+        $galleryImages = GalleryImage::all();
+
+        return view('home', compact('aboutUs', 'posts', 'cars', 'galleryImages'));
     }
     
     
@@ -125,6 +122,40 @@ class CMSController extends Controller
         ]);
 
         return redirect()->route('cms.manage')->with('success', 'Post added successfully!');
+    }
+
+    public function storeGalleryImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle the file upload
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imagePath = 'images/gallery/' . $imageName;
+
+        // Move the uploaded file to the public/images/gallery directory
+        $image->move(public_path('images/gallery'), $imageName);
+
+        // Save the image path to the database
+        GalleryImage::create(['image_path' => $imagePath]);
+
+        return redirect()->route('cms.manage')->with('success', 'Gallery image added successfully!');
+    }
+
+    public function destroyGalleryImage(GalleryImage $galleryImage)
+    {
+        $imagePath = public_path($galleryImage->image_path);
+
+        // Check if the file exists and delete it
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
+        $galleryImage->delete();
+
+        return redirect()->route('cms.manage')->with('success', 'Gallery image deleted successfully!');
     }
     
 }

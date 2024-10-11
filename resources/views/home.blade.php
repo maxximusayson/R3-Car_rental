@@ -421,26 +421,11 @@ function scrollToSection() {
     <div class="container text-center">
         <h3 class="section-title mb-4">Gallery</h3>
         <div class="row">
-            @foreach(range(1, 11) as $i) <!-- Loop for images -->
-            <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-                @php
-                    $imagePath = 'images/gallery/' . $i . '.png';
-                @endphp
-                <img src="{{ asset($imagePath) }}" alt="Gallery Image {{ $i }}" class="img-fluid rounded shadow-sm gallery-img" onclick="openModal({{ $i-1 }}, 'image')">
-            </div>
+            @foreach($galleryImages as $image)
+                <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
+                    <img src="{{ asset($image->image_path) }}" alt="Gallery Image" class="img-fluid rounded shadow-sm">
+                </div>
             @endforeach
-
-            <!-- @foreach([5 => 'montage.mp4', 11 => 'montage2.mp4'] as $i => $video)
-            <div class="col-sm-12 col-md-6 col-lg-4 mb-3">
-                @php
-                    $videoPath = 'images/gallery/' . $video;
-                @endphp
-                <video controls autoplay muted loop class="img-fluid rounded shadow-sm gallery-img" onclick="openModal({{ $i-1 }}, 'video')">
-                    <source src="{{ asset($videoPath) }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            @endforeach -->
         </div>
     </div>
 </section>
