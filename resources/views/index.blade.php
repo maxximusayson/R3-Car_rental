@@ -126,6 +126,33 @@
                 font-size: 1rem; /* Slightly reduce icon size */
             }
         }
+
+        #locationHistoryContainer {
+    border: 1px solid #e5e7eb; /* Light gray border */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px;
+}
+
+th {
+    background-color: #f3f4f6; /* Light gray background */
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Zebra striping */
+}
+
+tbody tr:hover {
+    background-color: #f1f5f9; /* Light hover effect */
+}
+
     </style>
 </head>
 <body>
@@ -147,119 +174,263 @@
         <!-- Map -->
         <div id="map"></div>
     </div>
+
+<!-- Last Known Location Container -->
+<div id="lastKnownLocation" class="bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-bold mb-2">Last Known Location</h2>
+    
+    <div id="lastKnownLocationData" class="tile mb-2">
+        <i class="fas fa-map-marker-alt text-blue-500"></i>
+        <span id="lastLocationText" class="ml-2">Fetching last known location...</span>
+    </div>
+</div>
+
+<!-- Location History Container -->
+<div id="locationHistoryContainer" class="overflow-auto bg-white p-4 rounded-lg shadow-md" style="max-height: 300px;">
+    <h3 class="text-xl font-bold mb-2">Location History:</h3>
+    <table id="locationHistoryList" class="min-w-full">
+        <thead>
+            <tr>
+                <th class="px-2 py-1">Device ID</th>
+                <th class="px-2 py-1">Latitude</th>
+                <th class="px-2 py-1">Longitude</th>
+                <th class="px-2 py-1">Address</th>
+                <th class="px-2 py-1">Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Location history data will be dynamically added here -->
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
         
-    <script>
-        // Function to update the date and clock
-        function updateClock() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const dateString = now.toLocaleDateString(undefined, options);
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('date').textContent = dateString;
-            document.getElementById('time').textContent = timeString;
+<script>
+    // Global variable to store last known locations and history
+    let lastKnownLocations = JSON.parse(localStorage.getItem('lastKnownLocations')) || {};
+    let locationHistory = JSON.parse(localStorage.getItem('locationHistory')) || {};
+
+    // Function to update the date and clock
+    function updateClock() {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateString = now.toLocaleDateString(undefined, options);
+        const timeString = now.toLocaleTimeString();
+        document.getElementById('date').textContent = dateString;
+        document.getElementById('time').textContent = timeString;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    var map;
+    var markers = [];
+
+    $(document).ready(function() {
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 10 // Adjust the zoom level here (lower number means more zoomed out)
+            });
         }
 
-        updateClock();
-        setInterval(updateClock, 1000);
+        function fetchGPSData() {
+            $.ajax({
+                url: '/gps-data',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data); // Log the full data response
+                    $('#gpsDataContainer').empty();
+                    markers.forEach(function(marker) {
+                        marker.setMap(null);
+                    });
+                    markers = [];
 
-        var map;
-        var markers = [];
+                    $.each(data, function(index, device) {
+                        console.log(device); // Log each device object
 
-        $(document).ready(function() {
-            function initMap() {
-                map = new google.maps.Map(document.getElementById('map'), {
-                    center: {lat: 0, lng: 0},
-                    zoom: 20
+                        var gpsStatusClass = (device.gps_status && (device.gps_status.toUpperCase() === 'OK' || device.gps_status.toUpperCase() === 'GOOD')) ? 'status-ok' : 'status-no-signal';
+
+                        var card = `
+                            <div class="card">
+                                <div class="card-title">Device ID: ${device.gps_id || 'N/A'}</div>
+                                <div class="tile"><i class="fas fa-map-marker-alt"></i><strong>Latitude:</strong><span>${device.latitude || 0.0}</span></div>
+                                <div class="tile"><i class="fas fa-map-marker-alt"></i><strong>Longitude:</strong><span>${device.longitude || 0.0}</span></div>
+                                <div class="tile"><i class="fas fa-tachometer-alt"></i><strong>Speed:</strong><span>${device.speed || 0.0} km/h</span></div>
+                                <div class="tile"><i class="fas fa-satellite"></i><strong>Satellites:</strong><span>${device.satellites || 0}</span></div>
+                                <div class="tile"><i class="fas fa-signal"></i><strong>GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span></div>
+                                <div class="tile"><i class="fas fa-clock"></i><strong>Timestamp:</strong><span>${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString() : 'N/A'}</span></div>
+                            </div>
+                        `;
+
+                        $('#gpsDataContainer').append(card);
+
+                        if (device.latitude && device.longitude) {
+                            var formattedDeviceName = device.gps_id ? device.gps_id.charAt(0).toUpperCase() + device.gps_id.slice(1).toLowerCase() : 'Unknown Device';
+                            var iconUrl = (device.type === 'car') ? '/images/icons/car.png' : '/images/icons/car2.png';
+
+                            var marker = new google.maps.Marker({
+                                position: { lat: parseFloat(device.latitude), lng: parseFloat(device.longitude) },
+                                map: map,
+                                title: formattedDeviceName,
+                                icon: {
+                                    url: iconUrl,
+                                    scaledSize: new google.maps.Size(50, 50)
+                                }
+                            });
+
+                            var infoWindow = new google.maps.InfoWindow({
+                                content: `
+                                    <div style="font-family: 'Roboto', sans-serif; padding: 10px; border-radius: 5px; background-color: #ffffff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+                                        <strong style="color: #007bff;">Device Name:</strong> <span style="font-size: 1.1rem;">${formattedDeviceName}</span>
+                                        <br>
+                                        <strong style="color: #007bff;">GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span>
+                                        <br>
+                                        <strong style="color: #007bff;">Latitude:</strong> <span>${device.latitude || 0.0}</span>
+                                        <br>
+                                        <strong style="color: #007bff;">Longitude:</strong> <span>${device.longitude || 0.0}</span>
+                                    </div>
+                                `
+                            });
+
+                            marker.addListener('click', function() {
+                                infoWindow.open(map, marker);
+                            });
+
+                            markers.push(marker);
+                            map.setCenter(marker.getPosition());
+
+                            // Only store the last known location if the GPS status is not 'OK' or 'GOOD'
+                            if (!(device.gps_status && (device.gps_status.toUpperCase() === 'OK' || device.gps_status.toUpperCase() === 'GOOD'))) {
+                                lastKnownLocations[device.gps_id] = {
+                                    latitude: device.latitude,
+                                    longitude: device.longitude,
+                                    gps_status: device.gps_status
+                                };
+
+                                localStorage.setItem('lastKnownLocations', JSON.stringify(lastKnownLocations));
+
+                                // Fetch address and update the display and history
+                                getAddressFromCoordinates(device.latitude, device.longitude).then(address => {
+                                    $('#lastLocationText').text(`${formattedDeviceName} - Latitude: ${device.latitude}, Longitude: ${device.longitude}, Address: ${address}`);
+
+                                    // Store the location history with address
+                                    storeLocationHistory(device.gps_id, device.latitude, device.longitude, address);
+                                });
+                            } else {
+                                // If the device is on and has a good signal, don't store its location
+                                $('#lastLocationText').text(`${formattedDeviceName} is currently active and has a good GPS signal.`);
+                            }
+                        } else {
+                            // Update last known location if the device is off or has no coordinates
+                            if (lastKnownLocations[device.gps_id]) {
+                                const lastLocation = lastKnownLocations[device.gps_id];
+                                const lastLocationText = `${device.gps_id ? device.gps_id : 'Unknown Device'} - Latitude: ${lastLocation.latitude}, Longitude: ${lastLocation.longitude}`;
+
+                                // Create a new entry for the location history
+                                getAddressFromCoordinates(lastLocation.latitude, lastLocation.longitude).then(address => {
+                                    $('#lastLocationText').text(`${lastLocationText}, Address: ${address}`);
+                                    storeLocationHistory(device.gps_id, lastLocation.latitude, lastLocation.longitude, address);
+                                });
+                            } else {
+                                // If the device is completely new and off, show a message
+                                $('#lastLocationText').text(`${device.gps_id ? device.gps_id : 'Unknown Device'} is off and has no known locations.`);
+                            }
+                        }
+                    });
+
+                    // Restore and display location history
+                    displayLocationHistory();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching GPS data:', error);
+                }
+            });
+        }
+
+        // Function to store location history with address
+        function storeLocationHistory(gps_id, latitude, longitude, address) {
+            const historyEntry = {
+                latitude: latitude,
+                longitude: longitude,
+                address: address || "Unknown Address", // Store address with fallback
+                timestamp: Date.now()
+            };
+
+            if (!locationHistory[gps_id]) {
+                locationHistory[gps_id] = [];
+            }
+
+            // Push to the front of the history array for latest first
+            locationHistory[gps_id].unshift(historyEntry);
+            localStorage.setItem('locationHistory', JSON.stringify(locationHistory));
+        }
+
+        // Function to get address from coordinates using Google Maps Geocoding API
+        function getAddressFromCoordinates(latitude, longitude) {
+            return new Promise((resolve, reject) => {
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'location': { lat: latitude, lng: longitude } }, (results, status) => {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            const address = results[0].formatted_address;
+                            resolve(address || "Unknown Address");
+                        } else {
+                            resolve("No results found");
+                        }
+                    } else {
+                        console.error('Geocoder failed due to: ' + status);
+                        reject(status);
+                    }
+                });
+            });
+        }
+
+        // Function to display location history in a well-structured format
+        function displayLocationHistory() {
+            $('#locationHistoryContainer').empty(); // Clear previous history display
+            let historyHTML = '<table><thead><tr><th>Device ID</th><th>Latitude</th><th>Longitude</th><th>Address</th><th>Timestamp</th></tr></thead><tbody>';
+
+            for (const gps_id in locationHistory) {
+                const entries = locationHistory[gps_id];
+                entries.forEach(entry => {
+                    historyHTML += `<tr>
+                        <td>${gps_id}</td>
+                        <td>${entry.latitude}</td>
+                        <td>${entry.longitude}</td>
+                        <td>${entry.address}</td>
+                        <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                    </tr>`;
                 });
             }
 
-            function fetchGPSData() {
-    $.ajax({
-        url: '/gps-data',
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            console.log(data); // Log the full data response
-            $('#gpsDataContainer').empty();
-            markers.forEach(function(marker) {
-                marker.setMap(null);
-            });
-            markers = [];
-
-            $.each(data, function(index, device) {
-    console.log(device); // Log each device object
-
-    var gpsStatusClass = (device.gps_status && (device.gps_status.toUpperCase() === 'OK' || device.gps_status.toUpperCase() === 'GOOD')) ? 'status-ok' : 'status-no-signal';
-
-    var card = `
-        <div class="card">
-            <div class="card-title">Device ID: ${device.gps_id || 'N/A'}</div>
-            <div class="tile"><i class="fas fa-map-marker-alt"></i><strong>Latitude:</strong><span>${device.latitude || 0.0}</span></div>
-            <div class="tile"><i class="fas fa-map-marker-alt"></i><strong>Longitude:</strong><span>${device.longitude || 0.0}</span></div>
-            <div class="tile"><i class="fas fa-tachometer-alt"></i><strong>Speed:</strong><span>${device.speed || 0.0} km/h</span></div>
-            <div class="tile"><i class="fas fa-satellite"></i><strong>Satellites:</strong><span>${device.satellites || 0}</span></div>
-            <div class="tile"><i class="fas fa-signal"></i><strong>GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span></div>
-            <div class="tile"><i class="fas fa-clock"></i><strong>Timestamp:</strong><span>${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString() : 'N/A'}</span></div>
-        </div>
-    `;
-    
-    $('#gpsDataContainer').append(card);
-
-    if (device.latitude && device.longitude) {
-        var formattedDeviceName = device.gps_id ? device.gps_id.charAt(0).toUpperCase() + device.gps_id.slice(1).toLowerCase() : 'Unknown Device'; // Format the device name
-        
-        // Determine the icon based on device type or other criteria
-        var iconUrl = (device.type === 'car') ? '/images/icons/car.png' : '/images/icons/car2.png'; // Update with your other device's icon path
-
-        var marker = new google.maps.Marker({
-            position: { lat: parseFloat(device.latitude), lng: parseFloat(device.longitude) },
-            map: map,
-            title: formattedDeviceName, // Use the formatted device name as title
-            icon: {
-                url: iconUrl,
-                scaledSize: new google.maps.Size(50, 50) // Set the size of the icon
-            }
-        });
-
-        // Create an InfoWindow for the marker
-        var infoWindow = new google.maps.InfoWindow({
-            content: `
-                <div style="font-family: 'Roboto', sans-serif; padding: 10px; border-radius: 5px; background-color: #ffffff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
-                    <strong style="color: #007bff;">Device Name:</strong> <span style="font-size: 1.1rem;">${formattedDeviceName}</span>
-                    <br>
-                    <strong style="color: #007bff;">GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span>
-                    <br>
-                    <strong style="color: #007bff;">Latitude:</strong> <span>${device.latitude || 0.0}</span>
-                    <br>
-                    <strong style="color: #007bff;">Longitude:</strong> <span>${device.longitude || 0.0}</span>
-                </div>
-            `
-        });
-
-        // Add click event to open InfoWindow
-        marker.addListener('click', function() {
-            infoWindow.open(map, marker);
-        });
-
-        markers.push(marker);
-        map.setCenter(marker.getPosition());
-    }
-});
-
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching GPS data:', error);
+            historyHTML += '</tbody></table>';
+            $('#locationHistoryContainer').html(historyHTML);
         }
+
+        initMap();
+        fetchGPSData();
+        setInterval(fetchGPSData, 10000); // Fetch data every 10 seconds
     });
-}
+</script>
 
 
 
-            initMap();
-            fetchGPSData();
-            setInterval(fetchGPSData, 2000);
-        });
-    </script>
+<button id="clearHistoryButton" style="margin: 10px; padding: 10px; background-color: #ff4d4d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Clear History
+</button>
+
+
+
+
+
+
+
 </body>
 </html>
 

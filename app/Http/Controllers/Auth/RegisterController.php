@@ -33,8 +33,10 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'phone_number' => ['required', 'string', 'regex:/^(\+63)?9\d{9}$/'], // Adjust regex for phone number
+            'phone_number' => ['required', 'string', 'regex:/^(\+63)?9\d{9}$/', 'unique:users'], // Ensure phone number is unique
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'phone_number.unique' => 'This phone number is already registered in another account.', // Custom error message for duplicate phone numbers
         ]);
     }
 
@@ -70,33 +72,31 @@ class RegisterController extends Controller
             return back()->withErrors(['otp' => 'Failed to send OTP: ' . $e->getMessage()])->withInput();
         }
     }
-    
 
     public function resendOtp(Request $request)
-{
-    // Retrieve phone number from session
-    $phoneNumber = session('phone');
+    {
+        // Retrieve phone number from session
+        $phoneNumber = session('phone');
 
-    // Check if phone number is present in the session
-    if (!$phoneNumber) {
-        return back()->withErrors(['otp' => 'No phone number found.']);
+        // Check if phone number is present in the session
+        if (!$phoneNumber) {
+            return back()->withErrors(['otp' => 'No phone number found.']);
+        }
+
+        // Generate a new OTP
+        $otp = rand(100000, 999999);
+        Session::put('otp', $otp); // Update session with new OTP
+
+        try {
+            // Attempt to send the OTP using your SMS service
+            $response = $this->smsService->sendOtp($phoneNumber, $otp);
+            // Set a success message in the session
+            return back()->with('success', 'OTP has been resent successfully.');
+        } catch (Exception $e) {
+            // Handle any exceptions that occur when sending the OTP
+            return back()->withErrors(['otp' => 'Failed to resend OTP: ' . $e->getMessage()]);
+        }
     }
-
-    // Generate a new OTP
-    $otp = rand(100000, 999999);
-    Session::put('otp', $otp); // Update session with new OTP
-
-    try {
-        // Attempt to send the OTP using your SMS service
-        $response = $this->smsService->sendOtp($phoneNumber, $otp);
-        // Set a success message in the session
-        return back()->with('success', 'OTP has been resent successfully.');
-    } catch (Exception $e) {
-        // Handle any exceptions that occur when sending the OTP
-        return back()->withErrors(['otp' => 'Failed to resend OTP: ' . $e->getMessage()]);
-    }
-}
-
 
     public function verifyOtp(Request $request)
     {

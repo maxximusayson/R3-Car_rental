@@ -42,6 +42,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CMSController;
 use App\Http\Controllers\GpsLogController;
 use App\Http\Controllers\GpsTrackingController;
+use App\Http\Controllers\LastKnownLocationController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\PaypalController;
@@ -499,6 +500,35 @@ Route::post('/settings/add-admin', [SettingsController::class, 'addAdmin'])->nam
 
 // gps
 Route::get('/gps-tracking', [GpsTrackingController::class, 'track'])->name('gps.tracking');
+
+Route::post('/last-known-locations', [LastKnownLocationController::class, 'store']);
+
+
+Route::post('/save-last-known-location', [GpsTrackingController::class, 'saveLastKnownLocation']);
+Route::get('/save-last-known-location', [GpsTrackingController::class, 'fetchLastKnownLocation']);
+
+
+
+// Example of a route to handle saving the last known location
+Route::post('/save-last-known-location', function (Request $request) {
+    // Validate incoming data
+    $validatedData = $request->validate([
+        'gps_id' => 'required|string',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+        'speed' => 'required|numeric',
+        'satellites' => 'required|integer',
+        'gps_status' => 'required|string',
+        'timestamp' => 'required|integer',
+    ]);
+
+    
+
+    return response()->json(['message' => 'Last known location saved successfully']);
+});
+
+
+
 
 // notif
 Route::get('/notifications/latest', function () {
