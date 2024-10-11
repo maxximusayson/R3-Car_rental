@@ -3,9 +3,25 @@ CAPSTONE PROJECT: R3 GARAGE CAR RENTAL SYSTEM
 
 
 Members:
+
+
+
+
 Miles Abude
+
+
+
+
 Maxximus Ayson
+
+
+
+
 Kurt Campos
+
+
+
+
 Reicelyn Mendoza
 
 
