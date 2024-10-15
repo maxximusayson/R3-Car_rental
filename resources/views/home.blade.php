@@ -163,31 +163,44 @@
     }
 </script>
 
-<!-- Display Posts -->
+<!-- Display Blog Posts -->
 <div class="container mt-4">
-    <h2 class="text-center mb-4" style="font-family: 'Times New Roman', Times, serif;">Latest Posts</h2> <!-- Center the heading and apply font -->
+    <h2 class="section-title text-center mb-4" style="font-family: 'Century Gothic', sans-serif; font-weight: bold;">Latest Posts</h2>
+
     @if($posts->count() > 0)
         <div class="row">
             @foreach($posts as $post)
-                <div class="col-md-4 mb-4"> <!-- Adjust the column width for three columns -->
-                    <div class="card">
-                        <div class="card-body text-center" style="font-family: 'Times New Roman', Times, serif;"> <!-- Center the post content and apply font -->
-                            <h3>{{ $post->title }}</h3>
-                            <p style="text-align: justify; font-family: 'Times New Roman', Times, serif;">{{ $post->content }}</p> <!-- Justify the post content and apply font -->
-                            @if($post->image_path)
-                            <img src="{{ asset('images/posts/' . $post->image_path) }}" alt="{{ $post->title }}" class="img-fluid mb-2" style="width: 100%; height: 450px; object-fit: cover;"> <!-- Set consistent image size -->
-                            @else
-                                 <p class="text-danger">Image not found.</p> <!-- Optional: Show an error if no image -->
-                            @endif
+                <div class="col-md-6 mb-4"> <!-- Use two columns for a blog-style layout -->
+                    <div class="card h-100 shadow-sm"> <!-- Add shadow for a modern blog style -->
+                        @if($post->image_path)
+                            <img src="{{ asset('images/posts/' . $post->image_path) }}" alt="{{ $post->title }}" class="card-img-top" style="object-fit: contain; width: 100%; height: 300px;"> <!-- Display full image with object-fit: contain -->
+                        @else
+                            <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 300px;">
+                                <p class="text-danger">Image not found.</p> <!-- Optional: Show an error if no image -->
+                            </div>
+                        @endif
+
+                        <div class="card-body" style="font-family: 'Times New Roman', Times, serif;">
+                            <h3 class="card-title text-center">{{ $post->title }}</h3>
+
+                            <p class="card-text" style="text-align: justify;">
+                                {{ Str::limit($post->content, 150) }} <!-- Limit the content to 150 characters -->
+                            </p>
+
+                            <!-- Optional: Blog post metadata (author and date) -->
+                            <p class="text-muted" style="font-size: 0.9rem;">
+    <em>By {{ $post->author }} | {{ $post->created_at->timezone('Asia/Manila')->format('M d, Y - h:i A') }}</em>
+                            </p>
                         </div>
                     </div>
                 </div>
-           @endforeach
+            @endforeach
         </div>
     @else
         <p class="text-center" style="font-family: 'Times New Roman', Times, serif;">No posts available.</p> <!-- Center the message and apply font -->
     @endif
 </div>
+
 
 
 
