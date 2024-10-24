@@ -92,6 +92,8 @@ class ReservationController extends Controller
             'driver_license' => 'required|file|mimes:jpg,png,pdf|max:2048',
             'valid_id' => 'required|file|mimes:jpg,png,pdf|max:2048',
             'cash_amount' => 'nullable|numeric|min:0', // Validate cash amount
+            'payment_method' => 'required|in:GCash,PayPal,Cash', // Validate the payment method
+
         ]);
     
         // Fetch the car and user data
@@ -169,17 +171,6 @@ class ReservationController extends Controller
         // Redirect to the thank-you page
         return redirect()->route('reservation.thankyou');
     }
-    
-
-    
-    
-
-    
-    
-    
-
-    
-
     /**
      * Display the specified resource.
      */
