@@ -75,61 +75,61 @@
 </div>
 
 <!-- Full Pick-up and Return Date/Time Section with Header, Car Brands, Location Input, and Search Button -->
-<section class="py-5" style="background: linear-gradient(135deg, #4e73df, #1cc88a);">
-    <div class="container p-5 rounded" style="background: linear-gradient(135deg, #ffffff, #f8f9fc); box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);">
+<section id="pickupReturnSection" class="py-5 hidden-section" style="background: linear-gradient(135deg, #4e73df, #1cc88a);">
+    <div class="container p-5 rounded" style="background: #fff; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.6s ease;">
         <!-- Header: Choose Dates & Location -->
-        <div class="text-center mb-4">
-            <h3 class="text-dark" style="font-size: 2rem;">Choose Dates & Location</h3>
+        <div class="text-center mb-5">
+            <h3 class="text-dark" style="font-size: 2.5rem; font-weight: 600;">Choose Dates & Location</h3>
         </div>
         
         <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="col-12 col-md-10">
+                <div class="row">
                     <!-- Pick-up Date/Time -->
-                    <div class="d-flex flex-column mb-3 mb-md-0">
-                        <h5 class="text-dark" style="font-size: 1.5rem;">Pick-up Date/Time</h5>
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-dark mb-2" style="font-size: 1.6rem; font-weight: 500;">Pick-up Date/Time</h5>
                         <div class="input-group input-group-lg">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">
+                                <span class="input-group-text bg-light">
                                     <i class="fa fa-calendar"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" value="2024-09-27">
+                            <input type="date" class="form-control" value="2024-09-27" style="transition: all 0.3s ease;">
                             <div class="input-group-append">
-                                <span class="input-group-text">
+                                <span class="input-group-text bg-light">
                                     <i class="fa fa-clock"></i>
                                 </span>
                             </div>
-                            <input type="time" class="form-control" value="08:00">
+                            <input type="time" class="form-control" value="08:00" style="transition: all 0.3s ease;">
                         </div>
                     </div>
 
                     <!-- Return Date/Time -->
-                    <div class="d-flex flex-column mb-3 mb-md-0">
-                        <h5 class="text-dark" style="font-size: 1.5rem;">Return Date/Time</h5>
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-dark mb-2" style="font-size: 1.6rem; font-weight: 500;">Return Date/Time</h5>
                         <div class="input-group input-group-lg">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">
+                                <span class="input-group-text bg-light">
                                     <i class="fa fa-calendar"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" value="2024-09-29">
+                            <input type="date" class="form-control" value="2024-09-29" style="transition: all 0.3s ease;">
                             <div class="input-group-append">
-                                <span class="input-group-text">
+                                <span class="input-group-text bg-light">
                                     <i class="fa fa-clock"></i>
                                 </span>
                             </div>
-                            <input type="time" class="form-control" value="08:00">
+                            <input type="time" class="form-control" value="08:00" style="transition: all 0.3s ease;">
                         </div>
                     </div>
                 </div>
 
                 <!-- Car Brand and Location -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mt-4">
+                <div class="row mt-4">
                     <!-- Car Brand -->
-                    <div class="d-flex flex-column mb-3 mb-md-0">
-                        <h5 class="text-dark" style="font-size: 1.5rem;">Car Brand</h5>
-                        <select class="form-control form-control-lg" id="carBrand">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-dark mb-2" style="font-size: 1.6rem; font-weight: 500;">Car Brand</h5>
+                        <select class="form-control form-control-lg" id="carBrand" style="transition: all 0.3s ease;">
                             <option value="TOYOTA">TOYOTA</option>
                             <option value="MITSUBISHI">MITSUBISHI</option>
                             <option value="NISSAN">NISSAN</option>
@@ -138,20 +138,57 @@
                     </div>
 
                     <!-- Location Input -->
-                    <div class="d-flex flex-column mb-3 mb-md-0">
-                        <h5 class="text-dark" style="font-size: 1.5rem;">Enter Location</h5>
-                        <input type="text" class="form-control form-control-lg" id="locationInput" placeholder="Enter location">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="text-dark mb-2" style="font-size: 1.6rem; font-weight: 500;">Enter Location</h5>
+                        <input type="text" class="form-control form-control-lg" id="locationInput" placeholder="Enter location" style="transition: all 0.3s ease;">
                     </div>
+                </div>
 
-                    <!-- Search Button -->
-                    <div class="ml-0 mt-3 mt-md-0">
-                        <button type="button" class="btn btn-primary btn-lg shadow-sm" onclick="submitSearch()">Search</button>
+                <!-- Search Button -->
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-auto text-center">
+                        <button type="button" class="btn btn-primary btn-lg px-5 py-3 shadow" style="font-size: 1.2rem; transition: background-color 0.3s ease, transform 0.3s ease;" onclick="submitSearch()">Search</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    /* Initial state (hidden and shifted left) */
+    .hidden-section .container {
+        opacity: 0;
+        transform: translateX(-100%);
+        transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    /* Visible state when in the viewport */
+    .visible-section .container {
+        opacity: 1;
+        transform: translateX(0);
+    }
+</style>
+
+<script>
+    // Intersection Observer to reveal the section when it enters the viewport
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible-section');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        const section = document.querySelector('#pickupReturnSection');
+        observer.observe(section);
+    });
+</script>
+
 
 <script>
     function submitSearch() {
@@ -163,31 +200,83 @@
     }
 </script>
 
-<!-- Display Posts -->
+<!-- Display Blog Posts -->
 <div class="container mt-4">
-    <h2 class="text-center mb-4" style="font-family: 'Times New Roman', Times, serif;">Latest Posts</h2> <!-- Center the heading and apply font -->
+    <h2 class="section-title text-center mb-4" style="font-family: 'Century Gothic', sans-serif; font-weight: bold;">Latest Posts</h2>
+
     @if($posts->count() > 0)
         <div class="row">
             @foreach($posts as $post)
-                <div class="col-md-4 mb-4"> <!-- Adjust the column width for three columns -->
-                    <div class="card">
-                        <div class="card-body text-center" style="font-family: 'Times New Roman', Times, serif;"> <!-- Center the post content and apply font -->
-                            <h3>{{ $post->title }}</h3>
-                            <p style="text-align: justify; font-family: 'Times New Roman', Times, serif;">{{ $post->content }}</p> <!-- Justify the post content and apply font -->
-                            @if($post->image_path)
-                            <img src="{{ asset('images/posts/' . $post->image_path) }}" alt="{{ $post->title }}" class="img-fluid mb-2" style="width: 100%; height: 450px; object-fit: cover;"> <!-- Set consistent image size -->
-                            @else
-                                 <p class="text-danger">Image not found.</p> <!-- Optional: Show an error if no image -->
-                            @endif
+                <div class="col-md-6 mb-4 blog-post hidden-post"> <!-- Use two columns for a blog-style layout -->
+                    <div class="card h-100 shadow-sm"> <!-- Add shadow for a modern blog style -->
+                        @if($post->image_path)
+                            <img src="{{ asset('images/posts/' . $post->image_path) }}" alt="{{ $post->title }}" class="card-img-top" style="object-fit: contain; width: 100%; height: 300px;"> <!-- Display full image with object-fit: contain -->
+                        @else
+                            <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 300px;">
+                                <p class="text-danger">Image not found.</p> <!-- Optional: Show an error if no image -->
+                            </div>
+                        @endif
+
+                        <div class="card-body" style="font-family: 'Times New Roman', Times, serif;">
+                            <h3 class="card-title text-center">{{ $post->title }}</h3>
+
+                            <p class="card-text" style="text-align: justify;">
+                                {{ Str::limit($post->content, 150) }} <!-- Limit the content to 150 characters -->
+                            </p>
+
+                            <!-- Optional: Blog post metadata (author and date) -->
+                            <p class="text-muted" style="font-size: 0.9rem;">
+                                <em>By {{ $post->author }} | {{ $post->created_at->timezone('Asia/Manila')->format('M d, Y - h:i A') }}</em>
+                            </p>
                         </div>
                     </div>
                 </div>
-           @endforeach
+            @endforeach
         </div>
     @else
         <p class="text-center" style="font-family: 'Times New Roman', Times, serif;">No posts available.</p> <!-- Center the message and apply font -->
     @endif
 </div>
+
+<style>
+    /* Initial state (hidden and positioned below) */
+    .hidden-post {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95); /* Scale down slightly for a modern feel */
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out; /* Faster transitions for reveal */
+    }
+
+    /* Visible state when in the viewport */
+    .visible-post {
+        opacity: 1;
+        transform: translateY(0) scale(1); /* Full size and in position */
+        transition: transform 0.3s ease-in, opacity 0.3s ease-in; /* Slower transition for hiding */
+    }
+</style>
+
+<script>
+    // Intersection Observer to reveal each blog post when it enters the viewport
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible-post');
+                    entry.target.classList.remove('hidden-post');
+                } else {
+                    entry.target.classList.remove('visible-post');
+                    entry.target.classList.add('hidden-post');
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        // Select all blog posts and observe each one
+        const posts = document.querySelectorAll('.blog-post');
+        posts.forEach(post => observer.observe(post));
+    });
+</script>
+
 
 
 

@@ -16,7 +16,7 @@
             <div class="flex justify-center mb-6">
                 <!-- Placeholder for Logo if needed -->
             </div>
-            <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800" style="font-family: 'Century Gothic', sans-serif;">Verify OTP</h2>
+            <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800" style="font-family: 'Century Gothic', sans-serif;">SMS Verification Code</h2>
 
             <!-- Display a success message if the OTP was sent successfully -->
             @if(session('success'))

@@ -3,16 +3,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg7pLs7iesp74vQ-KSEjnFJW3BKhVq7k"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 @section('content')
-<!-- Header -->
-<div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-4">
-    <h1 class="text-4xl font-extrabold text-shadow">Welcome, Admin!</h1>
-    <p class="mt-2 text-lg">Here’s an overview of your current activities and statistics.</p>
-</div>
 
-<!-- Clock -->
-<div id="clock" class="text-white text-lg font-semibold position-absolute top-4 end-0 bg-gradient-to-r from-blue-500 to-indigo-600 py-2 px-4 rounded-lg shadow-lg">
-    <span id="date"></span>, <span id="time"></span>
-</div>
 
 
     <div class="my-3 d-flex justify-content-end">

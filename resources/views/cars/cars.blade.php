@@ -29,6 +29,9 @@
 @endphp
 
 
+
+
+
 <!-- Filter Section -->
 <div class="filter-container">
     <form method="GET" action="{{ route('cars') }}">
@@ -77,8 +80,99 @@
 <!-- FontAwesome for icons -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
+<!-- Styles -->
+<style>
+    .filter-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: #f8f9fc;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
+    .filter-row {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
 
+    .filter-column {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 10px;
+    }
+
+    .filter-label {
+        font-weight: bold;
+        color: #4e73df;
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        background-color: #4e73df;
+        color: white;
+        padding: 10px;
+        border-radius: 5px 0 0 5px;
+    }
+
+    .filter-select {
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #4e73df;
+        border-radius: 0 5px 5px 0;
+        width: 200px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-filter {
+        background-color: #4e73df;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-clear {
+        background-color: transparent;
+        color: #4e73df;
+        border: 2px solid #4e73df;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-filter i, .btn-clear i {
+        margin-right: 8px;
+    }
+
+    .btn-filter:hover, .btn-clear:hover {
+        opacity: 0.8;
+    }
+</style>
 
 
 <!-- Car Section -->
@@ -90,44 +184,45 @@
             data-price="{{ $car->price_per_day }}">
 
             <!-- Image Section -->
-            <div class="p-0 rounded-lg shadow-md">
-                @if ($car->images->count() > 0)
-                    <a class="relative overflow-hidden rounded-t-lg" href="#" 
-                        data-images="{{ $car->images->pluck('image_path') }}" 
-                        data-brand="{{ addslashes($car->brand) }}" 
-                        data-model="{{ addslashes($car->model) }}" 
-                        data-engine="{{ addslashes($car->engine) }}" 
-                        data-price="{{ number_format($car->price_per_day, 2) }}" 
-                        data-description="{{ addslashes($car->description) }}" 
-                        data-branch="{{ addslashes($car->branch) }}"
-                        data-video-path="{{ addslashes($car->video_path) }}"
-                        onclick="showModal(event)">
-                        
-                        <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
-                            src="{{ asset($car->images->first()->image_path) }}" 
-                            alt="Car image" />
+           <div class="p-0 rounded-lg shadow-md">
+    @if ($car->images->count() > 0)
+        <a class="relative overflow-hidden rounded-t-lg" href="#" 
+            data-images="{{ $car->images->pluck('image_path') }}" 
+            data-brand="{{ addslashes($car->brand) }}" 
+            data-model="{{ addslashes($car->model) }}" 
+            data-engine="{{ addslashes($car->engine) }}" 
+            data-price="{{ number_format($car->price_per_day, 2) }}" 
+            data-description="{{ addslashes($car->description) }}" 
+            data-branch="{{ addslashes($car->branch) }}"
+            data-video-path="{{ addslashes($car->video_path) }}"
+            onclick="showModal(event)">
+            
+            <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
+                src="{{ asset($car->images->first()->image_path) }}" 
+                alt="Car image" style="object-fit: contain; width: 100%; height: 100%;" />
 
-                        <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
-                            Click to view details
-                        </span>
-                    </a>
-                @else
-                    <a class="relative overflow-hidden rounded-t-lg" href="#" 
-                        data-images="[]" 
-                        data-brand="{{ addslashes($car->brand) }}" 
-                        data-model="{{ addslashes($car->model) }}" 
-                        data-engine="{{ addslashes($car->engine) }}" 
-                        data-price="{{ number_format($car->price_per_day, 2) }}" 
-                        data-description="{{ addslashes($car->description) }}" 
-                        data-branch="{{ addslashes($car->branch) }}"
-                        data-video-path="{{ addslashes($car->video_path) }}"
-                        onclick="showModal(event)">
-                        <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
-                            src="{{ asset('path/to/default/image.jpg') }}" 
-                            alt="Default image" />
-                    </a>
-                @endif
-            </div>
+            <span class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-lg font-semibold opacity-0 hover:opacity-100 transition-opacity" style="font-family: 'Century Gothic', sans-serif;">
+                Click to view details
+            </span>
+        </a>
+    @else
+        <a class="relative overflow-hidden rounded-t-lg" href="#" 
+            data-images="[]" 
+            data-brand="{{ addslashes($car->brand) }}" 
+            data-model="{{ addslashes($car->model) }}" 
+            data-engine="{{ addslashes($car->engine) }}" 
+            data-price="{{ number_format($car->price_per_day, 2) }}" 
+            data-description="{{ addslashes($car->description) }}" 
+            data-branch="{{ addslashes($car->branch) }}"
+            data-video-path="{{ addslashes($car->video_path) }}"
+            onclick="showModal(event)">
+            <img loading="lazy" class="object-cover w-full h-48 rounded-t-lg" 
+                src="{{ asset('path/to/default/image.jpg') }}" 
+                alt="Default image" style="object-fit: contain; width: 100%; height: 100%;" />
+        </a>
+    @endif
+</div>
+
 
             <!-- Car Details Section -->
             <div class="mt-4 px-5 pb-5">
@@ -170,67 +265,22 @@
                     </div>
                 </div>
 
-               <!-- Availability Section -->
-<div class="mt-4">
-    <p class="text-sm font-semibold text-gray-700">Availability:</p>
-    @if ($car->reservations->count() > 0)
-        <div class="text-sm text-gray-600">
-            <p class="font-semibold">Reserved on:</p>
-            <ul class="list-disc list-inside">
-                @foreach ($car->reservations->take(1) as $reservation)
-                    <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
-                @endforeach
-            </ul>
-            @if ($car->reservations->count() > 2)
-                <button id="seeMoreBtn" class="text-blue-500 hover:underline text-sm mt-2">See more</button>
-            @endif
-        </div>
-    @else
-        <p class="text-sm text-gray-600">This car is currently available.</p>
-    @endif
-</div>
-
-<!-- Modal (hidden by default) -->
-<div id="reservationModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 max-h-full overflow-y-auto">
-        <h2 class="text-lg font-semibold mb-4">All Reservations</h2>
-        <ul class="list-disc list-inside">
-            @foreach ($car->reservations as $reservation)
-                <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
-            @endforeach
-        </ul>
-        <button id="closeModalBtn" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Close</button>
-    </div>
-</div>
-
-<!-- JavaScript to handle modal -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const seeMoreBtn = document.getElementById('seeMoreBtn');
-        const reservationModal = document.getElementById('reservationModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        
-        if (seeMoreBtn) {
-            seeMoreBtn.addEventListener('click', function() {
-                reservationModal.classList.remove('hidden');  // Show the modal
-            });
-        }
-
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', function() {
-                reservationModal.classList.add('hidden');  // Hide the modal when "Close" is clicked
-            });
-        }
-
-        // Optional: Close modal if user clicks outside of the modal content
-        reservationModal.addEventListener('click', function(event) {
-            if (event.target === reservationModal) {
-                reservationModal.classList.add('hidden');
-            }
-        });
-    });
-</script>
-
+                <!-- Availability Section -->
+                <div class="mt-4">
+                    <p class="text-sm font-semibold text-gray-700">Availability:</p>
+                    @if ($car->reservations->count() > 0)
+                        <div class="text-sm text-gray-600">
+                            <p class="font-semibold">Reserved on:</p>
+                            <ul class="list-disc list-inside">
+                                @foreach ($car->reservations as $reservation)
+                                    <li>From {{ $reservation->start_date->format('M d, Y') }} to {{ $reservation->end_date->format('M d, Y') }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-600">This car is currently available.</p>
+                    @endif
+                </div>
 
                 <!-- Reviews Modal (Initially Hidden) -->
                 <div id="reviewsModal-{{ $car->id }}" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
@@ -497,7 +547,7 @@ function closeReviewsModal(carId) {
 
 
 <!-- Confirmation Modal -->
-<div id="confirmationModal" class="flex">
+<div id="confirmationModal" style="display: none;">
     <div id="confirmationModalContent" class="bg-white rounded-lg shadow-lg p-6 max-w-lg mx-auto">
         <span class="close text-black text-xl cursor-pointer" onclick="hideConfirmationModal()">&times;</span>
         <h2 class="text-xl font-semibold mb-4">Notice: Important Information Before Renting</h2>
@@ -515,24 +565,6 @@ function closeReviewsModal(carId) {
         </div>
     </div>
 </div>
-
-<!-- JavaScript for Modal behavior -->
-<script>
-    // Function to show the modal
-    function showConfirmationModal() {
-        document.getElementById('confirmationModal').style.display = 'flex';
-    }
-
-    // Function to hide the modal
-    function hideConfirmationModal() {
-        document.getElementById('confirmationModal').style.display = 'none';
-    }
-
-   
-
-    // Open the modal when needed
-    // You can trigger the modal to open by calling `showConfirmationModal()`
-</script>
 
 <!-- Image Modal -->
 <div id="imageModal" style="display: none;">
@@ -945,226 +977,6 @@ function closeReviewsModal(carId) {
     transform: translateY(-20px); /* Hide the element slightly */
 }
     
-</style>
-
-<!-- Styles -->
-<style>
-   /* Base Styles */
-.filter-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background-color: #f8f9fc;
-    border-radius: 10px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
-    margin: 20px auto; /* Center the container with vertical spacing */
-}
-
-.filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
-    justify-content: space-between; /* Distribute space evenly */
-}
-
-.filter-column {
-    flex: 1;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-}
-
-.filter-label {
-    font-weight: bold;
-    color: #4e73df;
-    margin-bottom: 10px;
-    font-size: 1rem;
-}
-
-.input-group {
-    position: relative;
-    width: 100%;
-}
-
-.input-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #4e73df;
-    color: white;
-    padding: 8px;
-    border-radius: 5px 0 0 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.filter-select {
-    width: 100%;
-    padding: 10px 10px 10px 35px; /* Padding left to accommodate the icon */
-    border: 1px solid #4e73df;
-    border-radius: 0 5px 5px 0;
-    font-size: 1rem;
-    appearance: none; /* Remove default arrow */
-    background-color: #fff;
-    /* Optional: Add a custom dropdown arrow */
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB...'); /* Replace with a valid SVG or remove if not needed */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-}
-
-/* Buttons */
-.filter-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-filter {
-    background-color: #4e73df;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: opacity 0.3s ease;
-}
-
-.btn-clear {
-    background-color: transparent;
-    color: #4e73df;
-    border: 2px solid #4e73df;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: opacity 0.3s ease;
-}
-
-.btn-filter:hover,
-.btn-clear:hover {
-    opacity: 0.8;
-}
-
-/* Responsive Styles */
-
-/* Tablets and smaller screens */
-@media (max-width: 768px) {
-    .filter-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filter-column {
-        align-items: stretch;
-    }
-
-    .filter-buttons {
-        flex-direction: column;
-    }
-
-    .btn-filter,
-    .btn-clear {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Mobile phones */
-@media (max-width: 480px) {
-    .filter-container {
-        padding: 10px;
-    }
-
-    .filter-select {
-        padding: 8px 8px 8px 30px; /* Adjust padding for smaller screens */
-        font-size: 0.9rem;
-    }
-
-    .btn-filter,
-    .btn-clear {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-    }
-
-    .filter-label {
-        font-size: 0.9rem;
-    }
-
-    .input-icon {
-        padding: 6px;
-    }
-}
-  /* Background overlay */
-  #confirmationModal {
-      display: none; /* Hidden by default */
-      position: fixed;
-      z-index: 50;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
-      justify-content: center;
-      align-items: center;
-  }
-
-  /* Modal content */
-  #confirmationModalContent {
-      background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 600px;
-      width: 90%;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.3s ease-out; /* Animation for a smooth appearance */
-  }
-
-  /* Close button */
-  .close {
-      float: right;
-      font-size: 1.5rem;
-      cursor: pointer;
-  }
-
-  /* Simple fade-in effect */
-  @keyframes fadeIn {
-      from {
-          opacity: 0;
-          transform: translateY(-10%);
-      }
-      to {
-          opacity: 1;
-          transform: translateY(0);
-      }
-  }
-
-  /* Buttons */
-  .btn-confirm, .btn-cancel {
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-  }
-
-  .btn-confirm:hover {
-      background-color: #4caf50;
-  }
-
-  .btn-cancel:hover {
-      background-color: #d32f2f;
-  }
-
 </style>
 @endsection
 

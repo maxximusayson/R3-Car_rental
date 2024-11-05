@@ -14,6 +14,9 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     
+        <script src="https://cdn.tailwindcss.com"></script>
+
+    
     <!-- Vite for resources -->
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
@@ -317,7 +320,7 @@
 </button>
 
 
- <script>
+<script>
     const botProfileImage = '/images/icons/r3chatbot.png';
         
     // Function to open the chatbot
@@ -335,29 +338,30 @@
                 hideTypingIndicator();
                 addBotMessage('Hi there! Welcome to R3 Car Rental Garage. How can we assist you today?');
                 appendQuickReplies();
+                scrollToBottom(); // Auto scroll after initial welcome message
             }, 3000);
         }
     });
 
     // Function to handle user option selection
     function selectOption(option) {
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    const quickReplies = chatbotMessages.querySelectorAll('.quickReply');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const quickReplies = chatbotMessages.querySelectorAll('.quickReply');
 
-    // Add dissolve effect to all quick reply buttons
-    quickReplies.forEach(button => {
-        button.classList.add('dissolve'); // Add dissolve class
-    });
+        // Add dissolve effect to all quick reply buttons
+        quickReplies.forEach(button => {
+            button.classList.add('dissolve'); // Add dissolve class
+        });
 
-    addUserMessage(option); // Display user-selected option
-    showTypingIndicator(); // Show typing indicator for bot response
-    setTimeout(() => {
-        hideTypingIndicator();
-        handleBotResponse(option); // Handle bot response
-        appendQuickReplies(); // Show quick replies again after bot response
-    }, 3000);
-}
-
+        addUserMessage(option); // Display user-selected option
+        showTypingIndicator(); // Show typing indicator for bot response
+        setTimeout(() => {
+            hideTypingIndicator();
+            handleBotResponse(option); // Handle bot response
+            appendQuickReplies(); // Show quick replies again after bot response
+            scrollToBottom(); // Auto scroll after the bot response
+        }, 3000);
+    }
 
     // Function to handle bot responses based on user selection
     function handleBotResponse(option) {
@@ -368,30 +372,40 @@
         } else if (option === 'Book a Car') {
             addBotMessage('Please visit our <a href="https://r3garagecarrental.online/cars" target="_blank" style="color: #007bff; text-decoration: underline;">Car Listing page</a> to choose and book your car.');
         } else if (option === 'Contact Us') {
-            addBotMessage('Phone: +1 234 567 890, Email: support@r3garage.com, Address: 123 Main St, Metro Manila');
+            addBotMessage('Phone: +63-955-379-3727, Email: r3garage@gmail.com, Address: R3 Garage - Marikina Branch,36 Friendship st. Friendly Village 1, Marikina City');
         } else if (option === 'FAQs') {
-            addBotMessage('FAQs: Payment Options (Gcash, Cash only), Late Returns (additional hourly rate applies).');
+            addBotMessage(`Here are some common questions:
+            <br><b>1. What is required to confirm my booking?</b><br>
+            - To confirm your booking, a downpayment of 1,000 PHP is required. The remaining balance must be paid on the day of the rental.
+            <br><b>2. What happens if I need to take the car outside of Metro Manila?</b><br>
+            - If the car travels outside of Metro Manila, there will be an additional charge of 500 PHP.
+            <br><b>3. What happens if the car is damaged during my rental?</b><br>
+            - In case of any damage, you are responsible for covering the repair costs as per the terms and conditions outlined in the rental agreement.
+            <br><b>4. What payment methods do you accept?</b><br>
+            - We accept payments through Paypal, GCash, or Cash.`);
         }
+        scrollToBottom(); // Auto scroll after the bot response
     }
 
     function scrollToBottom() {
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to the bottom
-}
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight; // Scroll to the bottom
+    }
 
-// Function to add user message to chat
-function addUserMessage(message) {
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    const userMessage = `<div class="message userMessage"><div class="messageBubble">${message}</div></div>`;
-    chatbotMessages.insertAdjacentHTML('beforeend', userMessage);
-    scrollToBottom(); // Scroll to the bottom after adding the message
-}
+    // Function to add user message to chat
+    function addUserMessage(message) {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const userMessage = `<div class="message userMessage"><div class="messageBubble">${message}</div></div>`;
+        chatbotMessages.insertAdjacentHTML('beforeend', userMessage);
+        scrollToBottom(); // Scroll to the bottom after adding the message
+    }
 
     // Function to add bot message to chat
     function addBotMessage(message) {
         const chatbotMessages = document.getElementById('chatbotMessages');
         const botMessage = `<div class="message botMessage"><img src="${botProfileImage}" alt="Bot"><div class="messageBubble">${message}</div></div>`;
         chatbotMessages.insertAdjacentHTML('beforeend', botMessage);
+        scrollToBottom(); // Scroll to the bottom after adding the message
     }
 
     // Function to show typing indicator
@@ -399,6 +413,7 @@ function addUserMessage(message) {
         const chatbotMessages = document.getElementById('chatbotMessages');
         const typingIndicator = `<div id="typingIndicator" class="message typing">Typing...</div>`;
         chatbotMessages.insertAdjacentHTML('beforeend', typingIndicator);
+        scrollToBottom(); // Scroll to bottom to ensure typing indicator is visible
     }
 
     // Function to hide typing indicator
@@ -407,21 +422,21 @@ function addUserMessage(message) {
         if (typingIndicator) typingIndicator.remove();
     }
 
-    <!-- Function to show quick reply buttons -->
-function appendQuickReplies() {
-    const chatbotMessages = document.getElementById('chatbotMessages');
-    const quickReplies = `
-        <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
-            <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
-            <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
-            <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
-            <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
-            <button class="quickReply" onclick="selectOption('FAQs')">FAQs</button>
-        </div>
-    `;
-    chatbotMessages.insertAdjacentHTML('beforeend', quickReplies);
-}
-
+    // Function to show quick reply buttons
+    function appendQuickReplies() {
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const quickReplies = `
+            <div style="display: flex; flex-wrap: wrap; justify-content: flex-start;">
+                <button class="quickReply" onclick="selectOption('Rental Rates')">Rental Rates</button>
+                <button class="quickReply" onclick="selectOption('Rental Policies')">Rental Policies</button>
+                <button class="quickReply" onclick="selectOption('Book a Car')">Book a Car</button>
+                <button class="quickReply" onclick="selectOption('Contact Us')">Contact Us</button>
+                <button class="quickReply" onclick="selectOption('FAQs')">FAQs</button>
+            </div>
+        `;
+        chatbotMessages.insertAdjacentHTML('beforeend', quickReplies);
+        scrollToBottom(); // Scroll to bottom after adding quick replies
+    }
 
     // Function to clear chat messages
     function clearChatMessages() {
@@ -458,8 +473,13 @@ function appendQuickReplies() {
             document.getElementById('chatbotTrigger').style.display = 'block'; // Show the trigger button again
         }, 300); // Delay to allow transition to complete before hiding
     });
-    
+
+    // Ensure the chatbot is responsive to window resizing
+    window.addEventListener('resize', function () {
+        scrollToBottom(); // Scroll to the bottom if the window is resized
+    });
 </script>
+
 
 
 

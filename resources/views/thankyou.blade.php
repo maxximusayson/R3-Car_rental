@@ -1,4 +1,5 @@
 @extends('layouts.myapp')
+@section('title', 'R3 Garage Car Rental | Success')
 
 @section('content')
 
@@ -21,7 +22,6 @@
     <div class="flex flex-col md:flex-row bg-white rounded-md p-6" id="review-section">
         <div class="md:w-2/3 md:border-r border-gray-800 pr-4 text-center">
             <div class="w-32 mt-10 mx-auto">
-                <img loading="lazy" src="/images/logos/R3LOGO.jpg" alt="R3 Logo">
             </div>
             <h1 class="font-bold text-gray-900 text-4xl mt-4">Review Your Information and Payment Details.</h1>
             <p class="text-gray-600 mt-2">Thank you for choosing and trusting our car company.</p>

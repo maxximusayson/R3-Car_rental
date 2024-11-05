@@ -112,13 +112,14 @@ class CarController extends Controller
             }
         }
     
-        // Handle video upload (optional)
-        if ($request->hasFile('video')) {
-            $videoName = time() . '_' . $request->video->getClientOriginalName();
-            $videoPath = $request->video->move(public_path('videos/cars'), $videoName);
-            $car->video_path = 'videos/cars/' . $videoName;
-            $car->save();
-        }
+         // Handle video upload (optional)
+    if ($request->hasFile('video')) {
+        $video = $request->file('video');
+        $videoName = time() . '_' . $video->getClientOriginalName();
+        $video->move(public_path('videos/cars'), $videoName);
+        $car->video_path = 'videos/cars/' . $videoName;
+        $car->save();
+    }
     
         return redirect()->route('cars.index')->with('success', 'Car details created successfully.');
     }
@@ -147,56 +148,66 @@ class CarController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Car $car)
-    {
-        $request->validate([
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'engine' => 'required|string|max:255',
-            'quantity' => 'required|integer',
-            'price_per_day' => 'required|numeric',
-            'status' => 'required|string',
-            'branch' => 'required|string',
-            'description' => 'nullable|string',
-            'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:10240', // Validate multiple images
-            'video' => 'nullable|mimes:mp4,avi,mov|max:51200', // Validate video file
-        ]);
-    
-        $car->update([
-            'brand' => $request->brand,
-            'model' => $request->model,
-            'engine' => $request->engine,
-            'quantity' => $request->quantity,
-            'price_per_day' => $request->price_per_day,
-            'description' => $request->input('description'),
-            'status' => $request->status,
-            'branch' => $request->branch,
-        ]);
-    
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $imageName = $request->brand . '-' . $request->model . '-' . $request->engine . '-' . Str::random(10) . '.' . $image->extension();
-                $path = $image->storeAs('images/cars', $imageName, 'public');
-    
-                CarImage::create([
-                    'car_id' => $car->id,
-                    'image_path' => $path,
-                ]);
-            }
+{
+    $request->validate([
+        'brand' => 'required|string|max:255',
+        'model' => 'required|string|max:255',
+        'engine' => 'required|string|max:255',
+        'quantity' => 'required|integer',
+        'price_per_day' => 'required|numeric',
+        'status' => 'required|string',
+        'branch' => 'required|string',
+        'description' => 'nullable|string',
+        'images.*' => 'nullable|mimes:jpeg,png,jpg,gif|max:10240', // Validate multiple images
+        'video' => 'nullable|mimes:mp4,avi,mov|max:51200', // Validate video file
+    ]);
+
+    // Update car details
+    $car->update([
+        'brand' => $request->brand,
+        'model' => $request->model,
+        'engine' => $request->engine,
+        'quantity' => $request->quantity,
+        'price_per_day' => $request->price_per_day,
+        'description' => $request->input('description'),
+        'status' => $request->status,
+        'branch' => $request->branch,
+    ]);
+
+    // Handle image uploads
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            $imageName = $request->brand . '-' . $request->model . '-' . $request->engine . '-' . Str::random(10) . '.' . $image->extension();
+            $path = $image->storeAs('images/cars', $imageName, 'public');
+
+            CarImage::create([
+                'car_id' => $car->id,
+                'image_path' => $path,
+            ]);
         }
-    
-        if ($request->hasFile('video')) {
-            // Delete the old video if exists
-            if ($car->video_path) {
-                Storage::disk('public')->delete($car->video_path);
-            }
-    
-            $videoPath = $request->file('video')->store('videos/cars', 'public');
-            $car->video_path = $videoPath;
-            $car->save();
-        }
-    
-        return redirect()->route('cars.index')->with('success', 'Car details updated successfully.');
     }
+
+   // Handle video upload
+    if ($request->hasFile('video')) {
+        // Delete the old video if it exists
+        if ($car->video_path) {
+            $oldVideoPath = public_path($car->video_path);
+            if (file_exists($oldVideoPath)) {
+                unlink($oldVideoPath);
+            }
+        }
+
+        // Upload new video
+        $video = $request->file('video');
+        $videoName = time() . '_' . $video->getClientOriginalName();
+        $video->move(public_path('videos/cars'), $videoName);
+        $car->video_path = 'videos/cars/' . $videoName;
+        $car->save();
+    }
+
+    return redirect()->route('cars.index')->with('success', 'Car details updated successfully.');
+}
+
     
 
     /**
