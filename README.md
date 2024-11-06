@@ -7,7 +7,7 @@ Members:
 
 
 
-Miles Gabriel Abude
+Miles Abude
 
 
 
