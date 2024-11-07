@@ -553,10 +553,11 @@ function closeReviewsModal(carId) {
         <h2 class="text-xl font-semibold mb-4">Notice: Important Information Before Renting</h2>
         <p class="mb-4">Please be aware of the following before proceeding with your reservation:</p>
         <ul class="list-disc list-inside mb-4">
-            <li><strong>Booking Confirmation:</strong> Ensure that all details provided are accurate. Once you proceed, the reservation will be confirmed, and any changes may be subject to cancellation fees.</li>
-            <li><strong>Identification:</strong> Valid identification and a driver’s license (if applicable) will be required at the time of pickup.</li>
-            <li><strong>Insurance:</strong> Verify that you have adequate insurance coverage or opt-in for additional insurance options provided.</li>
-            <li><strong>Terms and Conditions:</strong> Familiarize yourself with our rental terms and conditions to avoid any misunderstandings.</li>
+            <li><strong class="text-red-600">Booking Confirmation:</strong> Ensure that all details provided are accurate. Once you proceed, the reservation will be confirmed, and any changes may be subject to cancellation fees.</li>
+            <li><strong class="text-red-600">Identification:</strong> Valid identification and a driver’s license (if applicable) will be required at the time of pickup.</li>
+            <li><strong class="text-red-600">Insurance:</strong> Verify that you have adequate insurance coverage or opt-in for additional insurance options provided.</li>
+            <li><strong class="text-red-600">Terms and Conditions:</strong> Familiarize yourself with our rental terms and conditions to avoid any misunderstandings.</li>
+            <li><strong class="text-red-600">Security:</strong> <strong>Please be advised that your rented vehicle is actively monitored by our administrator for security and safety purposes. This monitoring helps us protect our customers and maintain our service standards.</strong></li>
         </ul>
         <p class="mb-4">Proceeding with this reservation signifies your acceptance of these terms and conditions. If you have any questions or need assistance, please contact our support team.</p>
         <div class="flex justify-end space-x-4">
@@ -565,6 +566,14 @@ function closeReviewsModal(carId) {
         </div>
     </div>
 </div>
+
+<!-- Additional CSS styles -->
+<style>
+    .text-red-600 {
+        color: #e53e3e; /* Tailwind red color */
+    }
+</style>
+
 
 <!-- Image Modal -->
 <div id="imageModal" style="display: none;">

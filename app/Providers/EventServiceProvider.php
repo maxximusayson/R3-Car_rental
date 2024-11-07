@@ -1,36 +1,44 @@
 <?php
 
+// EventServiceProvider.php
+
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Models\AuditTable;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * The event to listener mappings for the application.
-     *
-     * @var array<class-string, array<int, class-string>>
-     */
-    protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-    ];
-
-    /**
-     * Register any events for your application.
-     */
-    public function boot(): void
+    public function boot()
     {
-        //
+        parent::boot();
+
+        // Listen for login event
+        Event::listen(Login::class, function ($event) {
+            if ($event->user) {
+                AuditTable::create([
+                    'action' => 'logged in',
+                    'user' => $event->user->id,
+                    'details' => 'User logged in successfully.',
+                ]);
+            }
+        });
+
+        // Listen for logout event
+        Event::listen(Logout::class, function ($event) {
+            if ($event->user) {
+                AuditTable::create([
+                    'action' => 'logged out',
+                    'user' => $event->user->id,
+                    'details' => 'User logged out successfully.',
+                ]);
+            }
+        });
     }
 
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     */
     public function shouldDiscoverEvents(): bool
     {
         return false;
