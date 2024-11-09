@@ -12,6 +12,8 @@
     <link rel="icon" type="image/x-icon" href="/images/logos/logo.png">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         html {
             scroll-behavior: smooth;

@@ -36,4 +36,4 @@ class AboutUsController extends Controller
         return redirect()->route('cms.manage')->with('success', 'About Us section updated successfully.');
     }
 }
-w
+

@@ -124,25 +124,40 @@ class CMSController extends Controller
         return redirect()->route('cms.manage')->with('success', 'Post added successfully!');
     }
 
-    public function storeGalleryImage(Request $request)
-    {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+   public function storeGalleryImage(Request $request)
+{
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        // Handle the file upload
-        $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $imagePath = 'images/gallery/' . $imageName;
-
-        // Move the uploaded file to the public/images/gallery directory
-        $image->move(public_path('images/gallery'), $imageName);
-
-        // Save the image path to the database
-        GalleryImage::create(['image_path' => $imagePath]);
-
-        return redirect()->route('cms.manage')->with('success', 'Gallery image added successfully!');
+    // Check if the image file is being received correctly
+    if (!$request->hasFile('image')) {
+        return back()->with('error', 'No image file found.');
     }
+
+    $image = $request->file('image');
+
+    // Check if the image is valid
+    if (!$image->isValid()) {
+        return back()->with('error', 'Uploaded image is not valid.');
+    }
+
+    $imageName = time() . '_' . $image->getClientOriginalName();
+    $imagePath = 'images/gallery/' . $imageName;
+
+    // Try moving the uploaded file to the public/images/gallery directory
+    try {
+        $image->move(public_path('images/gallery'), $imageName);
+    } catch (\Exception $e) {
+        return back()->with('error', 'Failed to upload image: ' . $e->getMessage());
+    }
+
+    // Save the image path to the database
+    GalleryImage::create(['image_path' => $imagePath]);
+
+    return redirect()->route('cms.manage')->with('success', 'Gallery image added successfully!');
+}
+
 
     public function destroyGalleryImage(GalleryImage $galleryImage)
     {

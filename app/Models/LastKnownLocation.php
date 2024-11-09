@@ -31,5 +31,5 @@ class LastKnownLocation extends Model
     LastKnownLocation::create($data);
 
     return response()->json(['message' => 'Location saved successfully.']);
-}w
+}
 }

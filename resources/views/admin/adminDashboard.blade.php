@@ -98,16 +98,12 @@
             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-300">Notifications</h2>
             <div>
                 <form action="{{ route('notifications.export') }}" method="GET" class="inline">
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-700">
-                        Export to CSV
-                    </button>
+                    
                 </form>
                 <form action="{{ route('notifications.import') }}" method="POST" enctype="multipart/form-data" class="inline">
                     @csrf
                     <input type="file" name="csv_file" accept=".csv" class="hidden" id="csv-file-input">
-                    <label for="csv-file-input" class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-700 cursor-pointer">
-                        Import CSV
-                    </label>
+                   
                 </form>
             </div>
         </div>
@@ -324,8 +320,7 @@
 <!-- Users Section -->
 <div class="container mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <h2 class="px-6 py-4 text-2xl font-semibold text-gray-900 dark:text-white">Current Users</h2>
-        
+<h2 class="px-6 py-4 text-2xl font-semibold text-black">Current Users</h2>
         <!-- Search Input -->
         <div class="px-6 py-4 flex items-center">
             <div class="relative w-full md:w-1/3">
@@ -336,11 +331,11 @@
             </div>
         </div>
 
+        <!-- User Cards (Initially limited to 6) -->
         <div id="userCards" class="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($currentUsers as $user)
+            @foreach ($currentUsers->take(6) as $user)
             <div class="user-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4 transition-transform transform hover:scale-105" data-name="{{ strtolower($user->name) }}" data-email="{{ strtolower($user->email) }}">
                 <div class="flex items-center space-x-4">
-                    <!-- Profile Picture -->
                     <div>
                         @if($user->profile_picture_url)
                             <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-16 w-16 rounded-full object-cover ring-2 ring-blue-500">
@@ -355,7 +350,7 @@
                 </div>
                 <div class="mt-4 flex items-center">
                     @php
-$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8)); // Reduced to 1 minute
+$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8));
                     @endphp
                     <div class="h-4 w-4 rounded-full mr-2 @if($isOnline) bg-green-500 @else bg-red-500 @endif"></div>
                     <span class="text-sm font-medium @if($isOnline) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif">
@@ -368,10 +363,85 @@ $isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8
             <div class="text-gray-800 dark:text-gray-300 col-span-full text-center py-6">
                 No current users found.
             </div>
+            @else
+            <!-- View More Button -->
+            <div class="col-span-full text-center mt-4">
+                <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    View More
+                </button>
+            </div>
             @endif
         </div>
     </div>
 </div>
+
+<!-- Modal for Viewing All Users -->
+<div id="userModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-2xl w-full mx-4 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">All Users</h3>
+            <button onclick="closeModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            @foreach ($currentUsers as $user)
+            <div class="user-card bg-gray-50 dark:bg-gray-700 rounded-lg shadow p-4">
+                <div class="flex items-center space-x-4">
+                    <div>
+                        @if($user->profile_picture_url)
+                            <img src="{{ asset($user->profile_picture_url) }}" alt="{{ $user->name }}" class="h-12 w-12 rounded-full object-cover ring-2 ring-blue-500">
+                        @else
+                            <img src="{{ asset('images/icons/default.jpg') }}" alt="Default Profile Picture" class="h-12 w-12 rounded-full object-cover ring-2 ring-gray-300 dark:ring-gray-600">
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $user->name }}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ $user->email }}</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    @php
+$isOnline = $user->last_activity && $user->last_activity->gt(now()->subMinutes(8));
+                    @endphp
+                    <div class="h-4 w-4 rounded-full mr-2 @if($isOnline) bg-green-500 @else bg-red-500 @endif"></div>
+                    <span class="text-sm font-medium @if($isOnline) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif">
+                        @if($isOnline) Online @else Offline @endif
+                    </span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Modal -->
+<script>
+    function openModal() {
+        document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('userModal').classList.add('hidden');
+    }
+
+    function filterUsers() {
+        const filter = document.getElementById('userFilter').value.toLowerCase();
+        const userCards = document.querySelectorAll('.user-card');
+
+        userCards.forEach(card => {
+            const name = card.getAttribute('data-name');
+            const email = card.getAttribute('data-email');
+
+            if (name.includes(filter) || email.includes(filter)) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+</script>
+
 
 
 
@@ -444,8 +514,78 @@ function filterUsers() {
                 </table>
             </div>
         </div>
+        <!-- View More Button -->
+        @if ($reservations->count() > 5)
+        <div class="px-6 py-4 text-center">
+            <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                View More
+            </button>
+        </div>
+        @endif
     </div>
 </div>
+
+<!-- Modal for Viewing All Reservations -->
+<div id="reservationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-4xl w-full mx-4 p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">All Reservations</h3>
+            <button onclick="closeModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full whitespace-nowrap">
+                <thead>
+                    <tr class="text-left font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
+                        <th class="px-6 py-3">Client</th>
+                        <th class="px-6 py-3">Car</th>
+                        <th class="px-6 py-3">Started at</th>
+                        <th class="px-6 py-3">End at</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach ($reservations as $reservation)
+                    <tr class="text-gray-700 dark:text-gray-400 @if($reservation->status == 'Active') bg-yellow-200 @endif">
+                        <td class="px-6 py-4">
+                            <div>
+                                <p class="font-semibold">{{ $reservation->user->name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $reservation->user->email }}</p>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">{{ $reservation->car->brand }} {{ $reservation->car->model }}</td>
+                        <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->start_date)->format('Y-m-d') }}</td>
+                        <td class="px-6 py-4">{{ Carbon\Carbon::parse($reservation->end_date)->format('Y-m-d') }}</td>
+                        <td class="px-6 py-4">{{ $reservation->status }}</td>
+                        <td class="px-6 py-4">
+                            <a class="text-blue-600 hover:underline" href="{{ route('editStatus', ['reservation' => $reservation->id]) }}">Update Client Status</a><br>
+                            <a class="text-blue-600 hover:underline" href="{{ route('editPayment', ['reservation' => $reservation->id]) }}">Edit Payment</a><br>
+                            <a class="text-red-600 hover:underline" href="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete this reservation?')) { document.getElementById('delete-form-modal-{{ $reservation->id }}').submit(); }">Delete</a>
+                            <form id="delete-form-modal-{{ $reservation->id }}" action="{{ route('deleteReservation', ['reservation' => $reservation->id]) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Modal -->
+<script>
+    function openModal() {
+        document.getElementById('reservationModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('reservationModal').classList.add('hidden');
+    }
+</script>
 
 <script>
     // JavaScript for filtering users based on input

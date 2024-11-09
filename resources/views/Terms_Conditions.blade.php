@@ -1,7 +1,8 @@
 @extends('layouts.myapp')
+@section('title', 'R3 Garage Car Rental | Terms and Conditions')
 @section('content')
     <div class="flex flex-col justify-center items-center gap-12 my-8 mx-auto max-w-screen-xl px-6 sm:px-8" style="font-family: 'Century Gothic', sans-serif;">
-        <img src="/images/logos/R3LOGO.png" alt="logo" class="w-[150px] mb-6">
+        <img src="/images/logos/R3Logo.png" alt="logo" class="w-[150px] mb-6">
         <h2 class="text-4xl sm:text-5xl font-bold text-center text-gray-900 mb-8 tracking-wide">Terms & Conditions</h2>
         <div class="text-start flex flex-col gap-8 md:w-2/3 w-full bg-white p-8 sm:p-10 rounded-xl shadow-lg border border-gray-200">
 

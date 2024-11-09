@@ -131,7 +131,7 @@
 
                 @if(Auth::user()->alerts->isEmpty())
                     <div class="text-center py-20 text-gray-500">
-                        <p class="text-lg">No alerts available.</p>
+                        <p class="text-lg">No notifications available.</p>
                     </div>
                 @else
                     <table class="w-full text-left border-separate border-spacing-2 md:border-spacing-4">
@@ -396,7 +396,7 @@
         <form action="{{ route('reservations.destroy', $reservation['id']) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reservation?');">
             @csrf
             @method('DELETE')
-            <button type="submit" class="btn btn-danger">Delete Reservation</button>
+           
         </form>
     @else
         <p>Reservation ID not found.</p>

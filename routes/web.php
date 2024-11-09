@@ -651,7 +651,7 @@ Route::get('/cms/about-us/edit', [CMSController::class, 'editAboutUs'])->name('c
 Route::put('/cms/about-us/update', [CMSController::class, 'updateAboutUs'])->name('cms.aboutUs.update');
 
 
-Route::get('/home', [PostsController::class, 'index'])->name('home'); // Make sure the route matches
+Route::get('/', [PostsController::class, 'index'])->name('home'); // Make sure the route matches
 Route::resource('posts', PostController::class);
 
 Route::get('/', [CMSController::class, 'showHomePage'])->name('home'); // Adjust the URL as needed

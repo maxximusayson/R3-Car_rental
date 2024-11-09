@@ -1,8 +1,8 @@
 @extends('layouts.myapp')
-
+@section('title', 'R3 Garage Car Rental | Privacy and Policy')
 @section('content')
 <div class="flex flex-col justify-center items-center gap-12 my-8 mx-auto max-w-4xl px-6">
-    <img src="/images/logos/R3LOGO.png" alt="logo" class="w-[150px] mb-4">
+    <img src="/images/logos/R3Logo.png" alt="logo" class="w-[150px] mb-4">
     <h2 class="text-4xl font-semibold text-gray-800">Privacy Policy</h2>
     <div class="text-justify flex flex-col gap-6 w-full md:w-4/5 lg:w-3/5">
         <p class="text-base leading-relaxed text-gray-700 font-century">

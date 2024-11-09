@@ -3,7 +3,7 @@
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gray-200">
     <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">Verify Code</h2>
+        <h2 class="text-3xl font-semibold text-center mb-6 text-gray-800">Verification Code</h2>
         @if (session('message'))
             <div class="bg-green-100 text-green-700 p-4 rounded mb-4">{{ session('message') }}</div>
         @endif
