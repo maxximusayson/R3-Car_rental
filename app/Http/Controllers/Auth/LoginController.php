@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditTable;
+use App\Models\AuditTrail;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -86,6 +88,7 @@ class LoginController extends Controller
         RateLimiter::clear($key);
 
         $user = Auth::user();
+        
 
         // Admins bypass 2FA
         if ($user->role === 'admin') {
@@ -120,8 +123,6 @@ class LoginController extends Controller
         // Log the OTP sent action
         Log::info('Sent OTP via SMS and Email', ['user_id' => $user->id, 'otp' => $otpCode]);
     }
-    
-
     
     
     public function show2FAVerifyForm()
@@ -193,18 +194,23 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::user();
-
-        // Update last activity (optional)
-        $user->last_activity = null;
-        $user->save();
-
+    
+        // Check if a user is authenticated
+        if ($user) {
+            // Update last activity (optional)
+            $user->last_activity = null;
+            $user->save();
+            
+        }
+    
         // Log out and clear session
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+    
         return redirect('/');
     }
+    
 
     public function send2FA(Request $request)
 {
@@ -331,7 +337,7 @@ public function resend(Request $request)
         $otpResentSuccessfully = true;
     } catch (\Exception $e) {
         // Handle any exceptions that occur during OTP sending
-        \Log::error('Error sending OTP: ' . $e->getMessage());
+        Log::error('Error sending OTP: ' . $e->getMessage());
     }
 
     // Return JSON response based on success or failure
@@ -341,7 +347,5 @@ public function resend(Request $request)
         return response()->json(['success' => false, 'message' => 'Failed to resend OTP.']);
     }
 }
-
-
 
 }

@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditTable;  // Use the correct model
 use Illuminate\Http\Request;
-use App\Models\AuditTrail;
 
 class AuditTrailController extends Controller
 {
     public function index()
     {
-        // Retrieve the logs from the database
-        $logs = AuditTrail::orderBy('created_at', 'desc')->paginate(10);
-        
-        
+        // Retrieve audit logs
+        $audits = AuditTable::latest() // Get the latest records
+            ->with(['user', 'reservation', 'payment'])  // Load related models if necessary
+            ->paginate(10); // Adjust pagination size
 
-        // Pass the logs to the view
-        return view('audittrail.index', compact('logs'));
-        
-        
+        // Pass the audits to the view
+        return view('audittrail.index', compact('audits'));
+    }
+
+    public function showAuditTrail()
+    {
+        return $this->index();  // Reuse the index method for showAuditTrail
     }
 }

@@ -279,6 +279,47 @@
 
 
 
+<style>
+    /* Initial state (hidden and positioned below) */
+    .hidden-post {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95); /* Scale down slightly for a modern feel */
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out; /* Faster transitions for reveal */
+    }
+
+    /* Visible state when in the viewport */
+    .visible-post {
+        opacity: 1;
+        transform: translateY(0) scale(1); /* Full size and in position */
+        transition: transform 0.3s ease-in, opacity 0.3s ease-in; /* Slower transition for hiding */
+    }
+</style>
+
+<script>
+    // Intersection Observer to reveal each blog post when it enters the viewport
+    document.addEventListener("DOMContentLoaded", function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible-post');
+                    entry.target.classList.remove('hidden-post');
+                } else {
+                    entry.target.classList.remove('visible-post');
+                    entry.target.classList.add('hidden-post');
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        // Select all blog posts and observe each one
+        const posts = document.querySelectorAll('.blog-post');
+        posts.forEach(post => observer.observe(post));
+    });
+</script>
+
+
+
 
 
 

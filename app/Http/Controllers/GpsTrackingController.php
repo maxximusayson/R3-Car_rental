@@ -48,8 +48,7 @@ class GpsTrackingController extends Controller
 {
     Log::info('fetchGpsFromProxy method was called');
 
-    $proxyServerUrl = 'https://r3garagerental.online/gps.php'; // Your proxy server URL
-
+    $proxyServerUrl = 'http:/r3garagerental.online/gps.php'; 
     // Attempt to get the response from the proxy server
     $response = @file_get_contents($proxyServerUrl);
 

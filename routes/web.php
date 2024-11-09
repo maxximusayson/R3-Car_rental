@@ -724,3 +724,7 @@ Route::get('/paypal/success', function() {
 Route::get('/paypal/cancel', function() {
     return view('paypal.cancel');
 })->name('paypal.cancel');
+
+
+
+Route::get('/audit-trail', [AuditTrailController::class, 'showAuditTrail'])->name('audit-trail.index');

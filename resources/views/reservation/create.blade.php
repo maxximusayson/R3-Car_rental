@@ -5,20 +5,46 @@
 
 <!-- Stepper and Form Container -->
 <div class="container mx-auto px-4 py-8">
-    <div class="stepper-container mb-6 flex justify-between">
-        <div class="stepper-item active" id="step-1">
-            <div class="step-counter">1</div>
-            <div class="step-name">Fill up Information and Payments</div>
-        </div>
-        <div class="stepper-item" id="step-2">
-            <div class="step-counter">2</div>
-            <div class="step-name">Review</div>
-        </div>
-        <div class="stepper-item" id="step-3">
-            <div class="step-counter">3</div>
-            <div class="step-name">Done!</div>
-        </div>
+<div class="stepper-container mb-6 flex justify-between">
+    <div class="stepper-item active" id="step-1">
+        <div class="step-counter">1</div>
+        <div class="step-name">Fill up Information and Payments</div>
     </div>
+    <div class="stepper-item" id="step-2">
+        <div class="step-counter">2</div>
+        <div class="step-name">Review</div>
+    </div>
+    <div class="stepper-item" id="step-3">
+        <div class="step-counter">3</div>
+        <div class="step-name">Done!</div>
+    </div>
+</div>
+<style>
+    body {
+    font-family: "Century Gothic", sans-serif;
+}
+
+.stepper-container {
+    font-family: "Century Gothic", sans-serif;
+    background-color: white; /* White background */
+    padding: 20px; /* Optional padding for spacing */
+    border-radius: 10px; /* Optional rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for a subtle effect */
+}
+
+.stepper-item {
+    font-family: "Century Gothic", sans-serif;
+}
+
+.step-counter {
+    font-family: "Century Gothic", sans-serif;
+}
+
+.step-name {
+    font-family: "Century Gothic", sans-serif;
+}
+
+</style>
 
     <!-- Informations Form -->
     <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg p-8">
@@ -158,65 +184,83 @@
                     </div>
 
                     <!-- paypal codes -->
-                    <script src="https://www.paypal.com/sdk/js?client-id=AUD5EUaZdfhFxTftE7maWnumaSb-cvFBlGhx6pxBGjxCDzIl0b9VBOKHtHUQJGDMSyBkxK4DNvg8IMzz"></script>                  
+                    <script src="https://www.paypal.com/sdk/js?client-id=AXaOPwR8AQL8wrQch1mwDSfNQmqwfcqdeJlx2XAxVS5WRcoHQEwhD6B_P3Lh3ehSVuda7yB9InLP61iC&currency=PHP"></script>
                     <div id="paypal-button-container"></div>
 
                     <script>
-                         paypal.Buttons({
-                                fundingSource: paypal.FUNDING.PAYPAL, // Force the button to only use PayPal
-                                createOrder: function(data, actions) {
-                                   
-                                    return actions.order.create({
-                                        purchase_units: [{
-                                            amount: {
-                                                value: '200'
-                                            }
-                                        }]
-                                    });
-                                },
-                                onApprove:function(data, actions){
-                                    console.log('Data :', data);
-                                    console.log('Actions :', actions);
-                                    return actions.order.capture().then
-                                }
-                            }).render('#paypal-button-container');
-                    </script>
+    function getRentalPrice() {
+        const pricePerDay = parseFloat('{{ $car->price_per_day }}');
+        const duration = parseFloat(document.getElementById('duration').innerText);
+        const totalPrice = pricePerDay * duration;
+        console.log(`Rental Price (PHP): ${totalPrice.toFixed(2)}`);
+        return totalPrice.toFixed(2);
+    }
+
+    paypal.Buttons({
+        style: {
+            layout: 'vertical',
+            color: 'gold',
+            shape: 'rect',
+            label: 'paypal'
+        },
+        fundingSource: paypal.FUNDING.PAYPAL, // Restricts the payment options to PayPal only
+        createOrder: function(data, actions) {
+            console.log('Creating PayPal Order...');
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        currency_code: 'PHP', // Set the currency to Philippine Peso
+                        value: getRentalPrice()
+                    }
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                alert('Transaction completed by ' + details.payer.name.given_name);
+                $('#gcash-status').val('completed');
+            });
+        },
+        onError: function(err) {
+            console.error('PayPal Checkout Error: ', err);
+            alert(`An error occurred: ${err.message}. Please try again.`);
+        }
+    }).render('#paypal-button-container');
+</script>
 
 </div>
+
+
                 <!-- Note Section -->
-<div class="note mb-6">
-    <p class="note-title font-bold">Note:</p>
-    <ul class="list-disc ml-6">
-        <li class="note-item"><strong>First Payment:</strong> Pay the downpayment of 1k per day.</li>
-        <li class="note-item"><strong>On the Day of the Rent:</strong> Pay the remaining balance.</li>
-        <li class="note-item"><strong>Additional Charges:</strong> If the car goes outside of Metro Manila, there is an additional charge of 500 - 1000.</li>
-    </ul>
-</div>
+                <div class="note mb-6">
+                    <p class="note-title font-bold">Note:</p>
+                    <ul class="list-disc ml-6">
+                        <li class="note-item"><strong>First Payment:</strong> Pay the downpayment of 1k per day.</li>
+                        <li class="note-item"><strong>On the Day of the Rent:</strong> Pay the remaining balance.</li>
+                        <li class="note-item"><strong>Additional Charges:</strong> If the car goes outside of Metro Manila, there is an additional charge of 500 - 1000.</li>
+                    </ul>
+                </div>
 
 
 
 
 
                <!-- Price Summary Section -->
-<!-- Price Summary Section -->
-<div id="price-summary" class="mt-4 p-4 border rounded-md w-full hidden"> <!-- Add the hidden class initially -->
-    <div class="flex justify-between items-center">
-        <p class="font-bold">Duration:</p>
-        <p id="duration"><span></span> days</p>
-    </div>
-    <div class="flex justify-between items-center">
-        <p class="font-bold">Total Price:</p>
-        <p id="total-price"><span></span> PHP</p>
-    </div>
-    <div class="flex justify-between items-center">
-        <p class="font-bold">Downpayment:</p>
-        <p id="downpayment"><span></span> PHP</p>
-    </div>
-    <div class="flex justify-between items-center font-bold">
-        <p class="font-bold">Grand Total:</p>
-        <p id="grand-total"><span></span> PHP</p>
-    </div>
-</div>
+            <!-- Price Summary Section -->
+            <div id="price-summary" class="mt-4 p-4 border rounded-md w-full hidden"> <!-- Add the hidden class initially -->
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Duration:</p>
+                    <p id="duration"><span></span></p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <p class="font-bold">Total Price:</p>
+                    <p id="total-price"><span></span></p>
+                </div>
+                <div class="flex justify-between items-center font-bold">
+                    <p class="font-bold">Grand Total:</p>
+                    <p id="grand-total"><span></span></p>
+                </div>
+            </div>
 
 
 
@@ -225,28 +269,19 @@
                 <div id="payment-details" class="mt-6">
                     <!-- QR Code for GCash -->
                     <div id="gcash-details" class="payment-info hidden">
-                        <p class="text-gray-700 mb-4">Follow these instructions to complete your payment:</p>
-                        <ol class="list-decimal list-inside text-gray-600 mb-4">
-                            <li>Open the GCash app on your mobile device.</li>
-                            <li>Tap on the "Pay QR" option from the main menu.</li>
-                            <li>Scan the QR code below.</li>
-                            <li>Enter the amount and confirm the payment.</li>
-                        </ol>
-                        <p class="text-gray-700 mb-4">Once the payment is made, you will be redirected to the PayMongo dashboard to complete the reservation.</p>
+         
                        
                         <button id="proceed-to-paymongo" class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" type="button">Proceed to PayMongo</button>
                     </div>
 
                     <!-- Cash Amount Input -->
                     <div id="cash-details" class="hidden">
-                        <div class="form-group mb-6">
-                            <label for="cash-amount">Enter amount of Downpayment</label>
-                            <input type="number" name="cash_amount" id="cash-amount" class="form-input" placeholder="Enter amount" min="0" step="0.01">
-                            @error('cash_amount')
-                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                            @enderror
-                        </div>
+                    <div class="form-group mb-6">
+                        <p class="font-bold text-xl">Amount of Downpayment</p> <!-- Adjusted font size -->
+                        <p id="downpayment" class="text-xl"><span></span></p> <!-- Adjusted font size -->
                     </div>
+                </div>
+
                 </div>
 
                 <!-- Modal background -->
@@ -353,6 +388,11 @@
                 });
             </script>
         </div>
+
+
+
+
+
    <!-- Car Specifications and Description Section -->
    <div class="mt-0 md:w-full bg-white p-6 rounded-lg shadow-md">
     <!-- Car Specifications -->
@@ -403,12 +443,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-
-
-
-
-
 
 <script>
 $(document).ready(function() {
@@ -720,20 +754,9 @@ $(document).ready(function() {
     $('#agree').change(function() {
         validateForm();
     });
+    
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 <style>
     .hidden {
@@ -757,6 +780,7 @@ $(document).ready(function() {
     flex: 1;
     position: relative;
     text-align: center;
+    transition: all 0.3s ease-in-out;
 }
 
 .stepper-item::before {
@@ -799,7 +823,7 @@ $(document).ready(function() {
 .step-name {
     font-size: 16px;
     color: #4b5563; /* Dark gray color for step names */
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .stepper-item.active .step-name {
