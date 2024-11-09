@@ -728,3 +728,9 @@ Route::get('/paypal/cancel', function() {
 
 
 Route::get('/audit-trail', [AuditTrailController::class, 'showAuditTrail'])->name('audit-trail.index');
+
+
+
+// Define routes for GPS Tracking options
+Route::get('/gps/tracking1', [GpsTrackingController::class, 'tracking1'])->name('gps.tracking1');
+Route::get('/gps/tracking2', [GpsTrackingController::class, 'tracking2'])->name('gps.tracking2');

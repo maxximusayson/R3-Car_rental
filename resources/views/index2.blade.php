@@ -158,7 +158,7 @@ tbody tr:hover {
 <body>
     <!-- Welcome Message -->
     <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white p-6 rounded-lg shadow-lg mb-8">
-        <h1 class="text-2xl font-bold">GPS 1</h1>
+        <h1 class="text-2xl font-bold">GPS 2</h1>
         <p class="mt-2">Here's an overview of the current GPS devices and their statuses.</p>
     </div>
 

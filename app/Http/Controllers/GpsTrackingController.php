@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http; // Import the Http facade
 
 class GpsTrackingController extends Controller
 {
@@ -14,30 +12,26 @@ class GpsTrackingController extends Controller
     private $proxyServerUrl = 'https://r3garagecarrental.online/gps.php'; // Define your proxy server URL
 
     /**
-     * Display the GPS Tracking page.
+     * Display the GPS Tracking main page (index).
      *
      * @return \Illuminate\View\View
      */
-    public function track()
+    public function tracking1()
     {
-        // Return the GPS tracking page
+        // Loads the main index view for GPS tracking located at resources/views/index.blade.php
         return view('index');
     }
 
     /**
-     * Store GPS data sent via POST request.
+     * Method to load GPS tracking2 view (index2).
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
-   
-
-    /**
-     * Serve the latest GPS data for all devices.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-   
+    public function tracking2()
+    {
+        // This will load the index2 view located in resources/views/index2.blade.php
+        return view('index2');
+    }
 
     /**
      * Fetch GPS data from the proxy server.
@@ -45,30 +39,29 @@ class GpsTrackingController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function fetchGpsFromProxy()
-{
-    Log::info('fetchGpsFromProxy method was called');
+    {
+        Log::info('fetchGpsFromProxy method was called');
 
-    $proxyServerUrl = 'http:/r3garagerental.online/gps.php'; 
-    // Attempt to get the response from the proxy server
-    $response = @file_get_contents($proxyServerUrl);
+        $proxyServerUrl = 'http:/r3garagerental.online/gps.php'; 
+        // Attempt to get the response from the proxy server
+        $response = @file_get_contents($proxyServerUrl);
 
-    header('Content-Type: application/json');
-    
-    if ($response !== false) {
-        Log::info('Successfully fetched data from proxy server.');
-        return response()->json(json_decode($response), 200);
-    } else {
-        Log::error('Failed to fetch data from proxy server.');
-        return response()->json([
-            'gps_id' => 'N/A',
-            'wifi_status' => 'No device found',
-            'latitude' => 0.0,
-            'longitude' => 0.0,
-            'speed' => 0.0,
-            'satellites' => 0,
-            'gps_status' => 'No Signal'
-        ], 500);
+        header('Content-Type: application/json');
+        
+        if ($response !== false) {
+            Log::info('Successfully fetched data from proxy server.');
+            return response()->json(json_decode($response), 200);
+        } else {
+            Log::error('Failed to fetch data from proxy server.');
+            return response()->json([
+                'gps_id' => 'N/A',
+                'wifi_status' => 'No device found',
+                'latitude' => 0.0,
+                'longitude' => 0.0,
+                'speed' => 0.0,
+                'satellites' => 0,
+                'gps_status' => 'No Signal'
+            ], 500);
+        }
     }
-}
-    
 }
