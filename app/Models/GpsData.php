@@ -9,10 +9,9 @@ class GpsData extends Model
 {
     use HasFactory;
 
-    // Specify the table name if it's different from the model name
-    protected $table = 'gps_data';
+    protected $table = 'gps_data'; // Specify the table name if it's not the default
 
-    // Define the fillable properties
+    // Specify the fields that can be mass-assigned
     protected $fillable = [
         'gps_id',
         'latitude',
@@ -22,6 +21,4 @@ class GpsData extends Model
         'gps_status',
         'timestamp',
     ];
-
-    // Optional: Define any relationships or additional methods
 }

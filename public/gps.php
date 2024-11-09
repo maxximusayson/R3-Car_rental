@@ -1,4 +1,6 @@
 <?php
+
+
 // Directory to store the latest GPS data for each device
 $dataDir = 'gps_data/';
 $timeoutDuration = 60; // 1 minute timeout duration
@@ -38,3 +40,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     echo json_encode($allData);
 }
+?>

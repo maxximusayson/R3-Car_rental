@@ -734,3 +734,18 @@ Route::get('/audit-trail', [AuditTrailController::class, 'showAuditTrail'])->nam
 // Define routes for GPS Tracking options
 Route::get('/gps/tracking1', [GpsTrackingController::class, 'tracking1'])->name('gps.tracking1');
 Route::get('/gps/tracking2', [GpsTrackingController::class, 'tracking2'])->name('gps.tracking2');
+
+// Fetch GPS data from the database
+Route::get('/gps-data', [GpsTrackingController::class, 'fetchData'])->name('gps-data.fetch');
+
+// Store GPS data (if required)
+Route::get('/gps-data/store', [GpsTrackingController::class, 'storeData'])->name('gps-data.store');
+
+// Calculate total distance (presumably for GPS logs)
+Route::get('/gps/total-distance', [GpsLogController::class, 'calculateTotalDistance'])->name('gps.total-distance');
+
+// Fetch GPS data from an external proxy
+Route::get('/fetch-gps-from-proxy', [GpsTrackingController::class, 'fetchGpsFromProxy'])->name('fetchGpsData');
+
+
+Route::get('/gps/fetch', [GpsTrackingController::class, 'fetchGpsFromProxy']);
