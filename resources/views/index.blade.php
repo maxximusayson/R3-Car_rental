@@ -11,247 +11,187 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDg7pLs7iesp74vQ-KSEjnFJW3BKhVq7k"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <style>
-        /* Global Styling */
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+   <style>
+    /* Global Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
 
-        /* Header Styling */
-        .header {
-            background: linear-gradient(to right, #4b6cb7, #182848);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            margin: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    /* Header Styling */
+    .header {
+        background: linear-gradient(to right, #4b6cb7, #182848);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        .header h1 {
-            font-size: 28px;
-            font-weight: bold;
-        }
+    .header h1 {
+        font-size: 28px;
+        font-weight: bold;
+    }
 
-        .header p {
-            margin-top: 10px;
-        }
+    .header p {
+        margin-top: 10px;
+    }
 
-        /* Clock Styling */
-        #clock {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #4b6cb7;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    /* Clock Styling */
+    #clock {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #4b6cb7;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        /* Main Container */
-        #mainContainer {
+    /* Main Container */
+    #mainContainer {
         display: flex;
         gap: 20px;
         margin: 20px;
     }
-    
 
-        /* Legend Styling */
-        #legend {
-            flex: 1;
-            min-width: 250px;
-            background-color: #ffffff;
+    /* Legend Styling */
+    #legend {
+        flex: 1;
+        min-width: 250px;
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #legend h3 {
+        font-size: 18px;
+        color: #4b6cb7;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .legend-item:hover {
+        background-color: #f0f4f8;
+        cursor: pointer;
+    }
+
+    .legend-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Card Styling */
+    .card {
+        flex: 2;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-header h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Tile Styling */
+    .tile {
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #555;
+    }
+
+    .tile strong {
+        font-weight: bold;
+    }
+
+    /* Map Container */
+    #map {
+        width: 100%;
+        height: 400px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    /* Last Known Location Styling */
+    #lastKnownLocation, #gpsDataContainer {
+        flex: 1;
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Location History Styling */
+    #locationHistoryContainer {
+        flex: 2;
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        max-height: 300px;
+        margin-top: 20px;
+    }
+
+    #locationHistoryList {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #locationHistoryList th, #locationHistoryList td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    #locationHistoryList th {
+        background-color: #f7f7f7;
+        color: #333;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        #mainContainer {
+            flex-direction: column;
             padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        #legend h3 {
-            font-size: 18px;
-            color: #4b6cb7;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: #ffffff;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-
-        .legend-item:hover {
-            background-color: #f0f4f8;
-            cursor: pointer;
-        }
-
-        .legend-icon {
-            width: 40px; /* Increased icon size */
-            height: 40px;
-        }
-
-        .legend-item div {
-            width: 50px; /* Increased circle size */
-            height: 16px;
-            border-radius: 50%;
-        }
-
-        /* Card Styling */
-        .card {
-            flex: 2;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Map Container */
-        #map {
-            width: 100%;
-            height: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        /* Last Known Location Styling */
-        #lastKnownLocation {
-            flex: 1;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* GPS Data Container */
-        #gpsDataContainer {
-            flex: 1;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        /* Location History Styling */
-        #locationHistoryContainer {
-            flex: 2;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            max-height: 300px;
-            margin-top: 20px;
-        }
-
-        #locationHistoryList {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        #locationHistoryList th, #locationHistoryList td {
+        #clock {
+            font-size: 14px;
             padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #f1f1f1;
         }
+    }
 
-        #locationHistoryList th {
-            background-color: #f7f7f7;
-            color: #333;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            #mainContainer {
-                flex-direction: column;
-                padding: 15px;
-            }
-
-            #clock {
-                font-size: 14px;
-                padding: 8px 12px;
-            }
-        }
-        .card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
-}
-
-.card-header h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.card-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.tile {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #555;
-}
-
-.tile strong {
-    font-weight: bold;
-}
-
-.value {
-    font-size: 18px;
-    color: #333;
-}
-
-.status-icon {
-    font-weight: bold;
-    font-size: 16px;
-    margin-left: 5px;
-}
-
-.status-ok {
-    color: #28a745;
-}
-
-.status-no-signal {
-    color: #dc3545;
-}
-
-.timestamp {
-    font-size: 16px;
-    color: #333;
-}
-
-.street-name {
-    font-size: 16px;
-    color: #555;
-}
-
-.divider {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin-top: 20px;
-}
-
-.fas {
-    margin-right: 5px;
-}
-  /* Button Group Styling */
-  .button-group {
+    /* Button Group Styling */
+    .button-group {
         display: flex;
         gap: 15px;
         justify-content: center;
@@ -315,8 +255,8 @@
     .action-btn i {
         font-size: 18px;
     }
+</style>
 
-    </style>
 </head>
 <body>
     <div class="header">
