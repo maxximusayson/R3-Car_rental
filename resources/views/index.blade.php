@@ -226,6 +226,8 @@
      <div id="gpsDataContainer" class="info-box">
         <h2 class="text-lg font-semibold">GPS DATA</h2>
         <div>Data is loading...</div>
+
+        
     </div>
 
     <!-- Last Known Location Section -->
@@ -351,7 +353,20 @@ function animateMarker(newLat, newLng) {
                 <div class="card-title">Device ID: ${device.gps_id || 'N/A'}</div>  
                 <div class="tile"><strong>Speed:</strong> ${device.speed || 0} km/h</div>
                 <div class="tile"><strong>GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span></div>
-                <div class="tile"><strong>Timestamp:</strong> ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString() : 'N/A'}</div>
+                <div class="tile">
+  <strong>Timestamp:</strong> 
+  ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString('en-PH', { 
+    timeZone: 'Asia/Manila', 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric', 
+    second: 'numeric', 
+    hour12: true 
+  }) : 'N/A'}
+</div>
+
                 <p><strong>Street:</strong> <span id="street_${device.gps_id}">Loading...</span></p>
             </div>
             <hr>

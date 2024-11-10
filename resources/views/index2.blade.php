@@ -188,17 +188,25 @@
 
     <div id="mainContainer">
         <!-- Legend Section -->
-        <div id="legend" class="info-box">
-            <h3>Legend</h3>
-            <div class="legend-item">
-                <img src="/images/icons/XpanderVios-pin.png" alt="Active Device" class="legend-icon">
-                <span class="legend-label">Active Device</span>
-            </div>
-            <div class="legend-item">
-                <img src="/images/icons/offline-icon.png" alt="No Signal" class="legend-icon">
-                <span class="legend-label">Offline Device</span>
-            </div>
+  <div id="legend" class="info-box" style="width: 250px; padding: 10px; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h3 style="text-align: center; font-size: 1.2em; color: #4b6cb7; margin-bottom: 15px;">Device Status</h3>
+
+    <div class="legend-item" title="Device is active and reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+            <div style="width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%;"></div>
+            <span class="legend-label" style="font-weight: bold; color: #4CAF50;">Active Device</span>
+            <img src="/images/icons/XpanderVios-pin.png" alt="Active Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
         </div>
+    </div>
+
+    <div class="legend-item" title="Device is offline and not reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+            <div style="width: 20px; height: 20px; background-color: #f44336; border-radius: 50%;"></div>
+            <span class="legend-label" style="font-weight: bold; color: #f44336;">Offline Device</span>
+            <img src="/images/icons/offline-icon.png" alt="Offline Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
+        </div>
+    </div>
+</div>
 
         <!-- GPS Data Section -->
         <div id="gpsDataContainer" class="info-box">
@@ -297,7 +305,20 @@
                     <div class="card-title">Device ID: ${device.gps_id || 'N/A'}</div>  
                     <div class="tile"><strong>Speed:</strong> ${device.speed || 0} km/h</div>
                     <div class="tile"><strong>GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span></div>
-                    <div class="tile"><strong>Timestamp:</strong> ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString() : 'N/A'}</div>
+                   <div class="tile">
+  <strong>Timestamp:</strong> 
+  ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString('en-PH', { 
+    timeZone: 'Asia/Manila', 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric', 
+    second: 'numeric', 
+    hour12: true 
+  }) : 'N/A'}
+</div>
+
                     <p><strong>Street:</strong> <span id="street_${device.gps_id}">Loading...</span></p>
                 </div>
                 <hr>
@@ -434,6 +455,21 @@
             }
         }
     });
+
+    // Get street name from latitude and longitude using Google Geocoding API
+function getStreetName(lat, lng, gps_id) {
+    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCDg7pLs7iesp74vQ-KSEjnFJW3BKhVq7k`;
+
+    $.getJSON(geocodeUrl, function(response) {
+        let street = 'Unavailable';
+        if (response.status === 'OK' && response.results.length > 0) {
+            street = response.results[0].formatted_address;
+        }
+        $(`#street_${gps_id}`).text(street); // Set the street text for the specific GPS ID
+    }).fail(function() {
+        $(`#street_${gps_id}`).text('Unavailable'); // Set to unavailable if API call fails
+    });
+}
 </script>
 
 </body>
