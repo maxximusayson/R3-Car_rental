@@ -183,6 +183,139 @@
                 padding: 8px 12px;
             }
         }
+        .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.tile {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+.tile strong {
+    font-weight: bold;
+}
+
+.value {
+    font-size: 18px;
+    color: #333;
+}
+
+.status-icon {
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.status-ok {
+    color: #28a745;
+}
+
+.status-no-signal {
+    color: #dc3545;
+}
+
+.timestamp {
+    font-size: 16px;
+    color: #333;
+}
+
+.street-name {
+    font-size: 16px;
+    color: #555;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.fas {
+    margin-right: 5px;
+}
+  /* Button Group Styling */
+  .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    /* Action Button Styling */
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s;
+        font-size: 16px;
+        gap: 8px;
+    }
+
+    /* Button Colors */
+    .delete-btn {
+        background-color: #e74c3c;
+    }
+
+    .calculate-btn {
+        background-color: #3498db;
+    }
+
+    .return-btn {
+        background-color: #2ecc71;
+    }
+
+    /* Hover Effects */
+    .action-btn:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .calculate-btn:hover {
+        background-color: #2980b9;
+    }
+
+    .return-btn:hover {
+        background-color: #27ae60;
+    }
+
+    /* Button Focus Effect */
+    .action-btn:focus {
+        outline: none;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Icon Styling */
+    .action-btn i {
+        font-size: 18px;
+    }
+
     </style>
 </head>
 <body>
@@ -245,6 +378,21 @@
     <!-- Map Section -->
     <div id="map"></div>
 
+
+    <!-- Buttons for additional functionalities -->
+    <div class="button-group">
+    <button id="deleteHistory" class="action-btn delete-btn">
+        <i class="fas fa-trash-alt"></i> Delete History
+    </button>
+    <button id="calculateKM" class="action-btn calculate-btn">
+        <i class="fas fa-route"></i> Calculate KM
+    </button>
+    <button id="returnCar" class="action-btn return-btn">
+        <i class="fas fa-undo-alt"></i> Return Car
+    </button>
+</div>
+
+
     <!-- Location History Section -->
     <div id="locationHistoryContainer">
         <h3 class="text-lg font-semibold">Location History:</h3>
@@ -260,6 +408,61 @@
         </table>
     </div>
 
+    
+
+<script>
+    // Function to handle "Delete History" button
+    document.getElementById('deleteHistory').addEventListener('click', function() {
+        if (confirm("Are you sure you want to delete the history?")) {
+            localStorage.removeItem('locationHistory'); // Remove history from local storage
+            locationHistory = {}; // Reset local history variable
+            displayLocationHistory(); // Update the display
+            alert("Location history deleted successfully.");
+        }
+    });
+
+    // Function to handle "Calculate KM" button
+    document.getElementById('calculateKM').addEventListener('click', function() {
+        if (locationHistory['GPS01'] && locationHistory['GPS01'].length > 1) {
+            let totalDistance = 0;
+            for (let i = 1; i < locationHistory['GPS01'].length; i++) {
+                const prev = locationHistory['GPS01'][i - 1];
+                const curr = locationHistory['GPS01'][i];
+                totalDistance += calculateDistance(prev.latitude, prev.longitude, curr.latitude, curr.longitude);
+            }
+            alert(`Total Distance Covered: ${totalDistance.toFixed(2)} km`);
+        } else {
+            alert("Not enough data to calculate distance.");
+        }
+    });
+
+    // Function to calculate distance between two coordinates using Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the Earth in kilometers
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in kilometers
+    }
+
+    // Function to handle "Return Car" button
+    document.getElementById('returnCar').addEventListener('click', function() {
+        const defaultLocation = { lat: 0, lng: 0 }; // Set to initial or predefined location
+        if (marker) {
+            animateMarker(defaultLocation.lat, defaultLocation.lng); // Animate back to default
+            map.setCenter(defaultLocation);
+            alert("Car returned to the starting point.");
+        } else {
+            alert("No car location found to return.");
+        }
+    });
+</script>
+
+
+    
     <script>
         let map;
         let marker;
@@ -284,34 +487,56 @@
                 });
             }
 
-            // Function to animate marker smoothly
-function animateMarker(newLat, newLng) {
+            function animateMarker(newLat, newLng) {
     const currentPos = marker.getPosition();
     const targetPos = { lat: newLat, lng: newLng };
 
     let step = 0;
-    const totalSteps = 100;  // The number of steps to reach the destination
-    const intervalTime = 10; // Interval time in milliseconds
+    const totalSteps = 200;  // Number of steps for smoother movement (higher value = smoother)
+    const intervalTime = 10; // Interval time in milliseconds (lower value = smoother)
 
+    // Easing function for smooth acceleration and deceleration (ease-in-out)
+    function easeInOutQuad(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+    }
+
+    // Function to update the marker's position over time with smooth transition
     function move() {
         if (step <= totalSteps) {
-            // Calculate the new position using linear interpolation (lerp)
-            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * (step / totalSteps);
-            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * (step / totalSteps);
+            // Calculate the progress using the easing function
+            const progress = easeInOutQuad(step, 0, 1, totalSteps);
 
-            marker.setPosition(new google.maps.LatLng(lat, lng)); // Update marker position
+            // Calculate the intermediate position using the progress factor
+            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
+            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
+
+            // Update marker's position smoothly
+            marker.setPosition(new google.maps.LatLng(lat, lng));
+
+            // Continuously update the map's center to keep the marker in focus
+            map.setCenter(new google.maps.LatLng(lat, lng));
+
             step++;
 
-            // Keep calling the move function until the target position is reached
+            // Call the move function again after the specified interval
             setTimeout(move, intervalTime);
         } else {
-            marker.setPosition(targetPos);  // Ensure the marker ends exactly at the target position
+            // Ensure marker is exactly at the target position when done
+            marker.setPosition(targetPos);
+            map.setCenter(targetPos);  // Optionally, keep the map centered on the final position
         }
     }
 
-    // Start moving the marker
+    // Start the animation
     move();
 }
+
+
+
+
 
             // Fetch GPS data
     function fetchGPSData() {
@@ -343,58 +568,89 @@ function animateMarker(newLat, newLng) {
         });
     }
 
-             // Process GPS device data
-    function processDeviceData(device) {
-        const isGoodSignal = device.gps_status && (device.gps_status.toUpperCase() === 'OK' || device.gps_status.toUpperCase() === 'GOOD');
-        const gpsStatusClass = isGoodSignal ? 'status-ok' : 'status-no-signal';
+            // Process GPS device data
+function processDeviceData(device) {
+    const isGoodSignal = device.gps_status && (device.gps_status.toUpperCase() === 'OK' || device.gps_status.toUpperCase() === 'GOOD');
+    const gpsStatusClass = isGoodSignal ? 'status-ok' : 'status-no-signal';
 
-        const card = `
-            <div class="card">
-                <div class="card-title">Device ID: ${device.gps_id || 'N/A'}</div>  
-                <div class="tile"><strong>Speed:</strong> ${device.speed || 0} km/h</div>
-                <div class="tile"><strong>GPS Status:</strong> <span class="${gpsStatusClass}">${device.gps_status || 'No Signal'}</span></div>
+    const card = `
+        <div class="card">
+            <div class="card-header">
+                <h3>Device ID: ${device.gps_id || 'N/A'}</h3>
+            </div>  
+            <div class="card-body">
                 <div class="tile">
-  <strong>Timestamp:</strong> 
-  ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString('en-PH', { 
-    timeZone: 'Asia/Manila', 
-    month: 'long', 
-    day: 'numeric', 
-    year: 'numeric', 
-    hour: 'numeric', 
-    minute: 'numeric', 
-    second: 'numeric', 
-    hour12: true 
-  }) : 'N/A'}
-</div>
-
-                <p><strong>Street:</strong> <span id="street_${device.gps_id}">Loading...</span></p>
+                    <strong>Speed:</strong> <span class="value">${device.speed || 0} km/h</span>
+                </div>
+                <div class="tile">
+                    <strong>GPS Status:</strong> 
+                    <span class="status-icon ${gpsStatusClass}">
+                        <i class="fas ${isGoodSignal ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                        ${device.gps_status || 'No Signal'}
+                    </span>
+                </div>
+                <div class="tile">
+                    <strong>Timestamp:</strong> 
+                    <span class="timestamp">
+                        ${device.timestamp ? new Date(device.timestamp * 1000).toLocaleString('en-PH', { 
+                            timeZone: 'Asia/Manila', 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric', 
+                            hour: 'numeric', 
+                            minute: 'numeric', 
+                            second: 'numeric', 
+                            hour12: true 
+                        }) : 'N/A'}
+                    </span>
+                </div>
+                <p class="street-name"><strong>Street:</strong> <span id="street_${device.gps_id}">Loading...</span></p>
             </div>
-            <hr>
-        `;
-        $('#gpsDataContainer').append(card);
+        </div>
+        <hr class="divider">
+    `;
 
-        if (device.latitude && device.longitude) {
-            addMarker(device);
-            saveLastKnownLocation(device);
-            getStreetName(device.latitude, device.longitude, device.gps_id); // Fetch street name
-        }
+    $('#gpsDataContainer').append(card);
+
+    if (device.latitude && device.longitude) {
+        addMarker(device);
+        saveLastKnownLocation(device);
+        getStreetName(device.latitude, device.longitude, device.gps_id); // Fetch street name
     }
+}
+
 
             // Add a marker for the device location
             function addMarker(device) {
-                const carIconUrl = '/images/icons/Gps1-icon.png';
+    // If there is an existing marker, remove it first
+    if (marker) {
+        marker.setMap(null);  // This will remove the old marker from the map
+    }
 
-                marker = new google.maps.Marker({
-                    position: { lat: parseFloat(device.latitude), lng: parseFloat(device.longitude) },
-                    map: map,
-                    title: device.gps_id,
-                    icon: {
-                        url: carIconUrl,
-                        scaledSize: new google.maps.Size(62, 62),
-                    }
-                });
-                map.setCenter(marker.getPosition());
-            }
+    // Create a new marker at the initial position
+    const carIconUrl = '/images/icons/Gps1-icon.png';
+    marker = new google.maps.Marker({
+        position: { lat: parseFloat(device.latitude), lng: parseFloat(device.longitude) },
+        map: map,
+        title: device.gps_id,
+        icon: {
+            url: carIconUrl,
+            scaledSize: new google.maps.Size(62, 62),
+        }
+    });
+
+    // Center the map to the new marker's position
+    map.setCenter(marker.getPosition());
+
+    // Optionally, set the zoom level explicitly
+    map.setZoom(15); // Example of setting the zoom level to a fixed value
+
+    // Animate the marker smoothly to the new position and keep map focused on the marker
+    animateMarker(parseFloat(device.latitude), parseFloat(device.longitude));
+}
+
+
+
 
             // Get street name from latitude and longitude using Google Geocoding API
             function getStreetName(lat, lng, gps_id) {

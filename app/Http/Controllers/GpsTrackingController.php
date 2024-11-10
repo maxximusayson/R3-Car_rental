@@ -39,6 +39,8 @@ class GpsTrackingController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+     
     public function fetchGpsFromProxy()
     {
         Log::info('fetchGpsFromProxy method was called');

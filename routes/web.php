@@ -749,3 +749,4 @@ Route::get('/fetch-gps-from-proxy', [GpsTrackingController::class, 'fetchGpsFrom
 
 
 Route::get('/gps/fetch', [GpsTrackingController::class, 'fetchGpsFromProxy']);
+
