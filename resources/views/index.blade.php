@@ -82,20 +82,28 @@
         .legend-item {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 8px;
+            padding: 10px;
+            background-color: #ffffff;
             border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s ease;
         }
 
         .legend-item:hover {
-            background-color: #eef3fc;
+            background-color: #f0f4f8;
+            cursor: pointer;
         }
 
         .legend-icon {
-            width: 60px;
-            height: 50px;
-            margin-right: 12px;
+            width: 40px; /* Increased icon size */
+            height: 40px;
+        }
+
+        .legend-item div {
+            width: 50px; /* Increased circle size */
+            height: 16px;
+            border-radius: 50%;
         }
 
         /* Card Styling */
@@ -179,8 +187,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>GPS Device Data - GPS01</h1>
-        <p>Overview of GPS01 and its status</p>
+        <h1>GPS Device Data - GPS01 (Montero)</h1>
+        <p>Overview of GPS01-Montero and its status</p>
     </div>
 
     <div id="clock">
@@ -188,18 +196,31 @@
     </div>
 
     <div id="mainContainer">
+
+
     <!-- Legend Section -->
-    <div id="legend" class="info-box">
-        <h3>Legend</h3>
-        <div class="legend-item">
-            <img src="/images/icons/Gps1-icon.png" alt="Active Device" class="legend-icon">
-            <span class="legend-label">Active Device</span>
-        </div>
-        <div class="legend-item">
-            <img src="/images/icons/offline-icon.png" alt="No Signal" class="legend-icon">
-            <span class="legend-label">Offline Device</span>
+    <div id="legend" class="info-box" style="width: 250px; padding: 10px; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h3 style="text-align: center; font-size: 1.2em; color: #4b6cb7; margin-bottom: 15px;">Device Status</h3>
+
+    <div class="legend-item" title="Device is active and reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+            <div style="width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%;"></div>
+            <span class="legend-label" style="font-weight: bold; color: #4CAF50;">Active Device</span>
+            <img src="/images/icons/Gps1-icon.png" alt="Active Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
         </div>
     </div>
+
+    <div class="legend-item" title="Device is offline and not reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+            <div style="width: 20px; height: 20px; background-color: #f44336; border-radius: 50%;"></div>
+            <span class="legend-label" style="font-weight: bold; color: #f44336;">Offline Device</span>
+            <img src="/images/icons/offline-icon.png" alt="Offline Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
+        </div>
+    </div>
+</div>
+
+
+
 
      <!-- GPS Data Section -->
      <div id="gpsDataContainer" class="info-box">
@@ -354,7 +375,7 @@ function animateMarker(newLat, newLng) {
                     title: device.gps_id,
                     icon: {
                         url: carIconUrl,
-                        scaledSize: new google.maps.Size(32, 32),
+                        scaledSize: new google.maps.Size(62, 62),
                     }
                 });
                 map.setCenter(marker.getPosition());
