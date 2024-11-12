@@ -311,7 +311,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>GPS Device Data - GPS02 (Xpander)</h1>
+        <h1>GPS Device Data - Xpander</h1>
         <p>Overview of GPS02-Xpander and its status</p>
     </div>
 
