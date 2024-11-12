@@ -362,7 +362,8 @@ Route::post('/password/phone', [ForgotPasswordController::class, 'sendResetLinkV
 // Route::post('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
 // Route::get('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
 
-Route::post('/paymongo/create-source', [PaymentController::class, 'createSource'])->name('paymongo.createSource');
+// Route::post('/paymongo/create-source', [PaymentController::class, 'createSource'])->name('paymongo.createSource');
+Route::post('/paymongo/paid', [PaymentController::class, 'paymentSuccess'])->name('paymongo.paid');
 Route::get('/paymongo/success', function () {
     // Handle success
     return view('paymongo.success');
