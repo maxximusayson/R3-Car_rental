@@ -271,8 +271,17 @@
                     <div id="gcash-details" class="payment-info hidden">
          
                        
-                        <button id="proceed-to-paymongo" class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" type="button">Proceed to PayMongo</button>
-                    </div>
+                        <button id="proceed-to-paymongo" class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" type="button">
+                            Proceed to PayMongo
+                        </button>
+                        
+                        <script>
+                            document.getElementById('proceed-to-paymongo').addEventListener('click', function() {
+                                // Redirect to the paid route
+                                window.location.href = "{{ route('paymongo.paid') }}";
+                            });
+                        </script>
+
 
                     <!-- Cash Amount Input -->
                     <div id="cash-details" class="hidden">
