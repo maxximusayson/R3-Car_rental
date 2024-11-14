@@ -21,6 +21,7 @@ class Car extends Model
         // 'available' is not needed here as we use reservation logic to check availability
     ];
 
+    // Relationships
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
@@ -34,6 +35,21 @@ class Car extends Model
     public function images()
     {
         return $this->hasMany(CarImage::class); // Adjust this to your actual model
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(CarVideo::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function gpsLogs()
+    {
+        return $this->hasMany(GpsLog::class);  // Assumes a one-to-many relationship with gps_log
     }
 
     // Check if the car is available on a specific date
@@ -52,13 +68,15 @@ class Car extends Model
                                      ->exists();
     }
 
-    public function videos()
-{
-    return $this->hasMany(CarVideo::class);
-}
-public function ratings()
-{
-    return $this->hasMany(Rating::class);
-}
-    
+    // Example method to fetch the car's latest GPS log entry (optional)
+    public function latestGpsLog()
+    {
+        return $this->gpsLogs()->latest()->first();  // Fetch the most recent GPS log entry
+    }
+
+    // Example method to check if the car has GPS logs for a specific date (optional)
+    public function hasGpsLogFor($date)
+    {
+        return $this->gpsLogs()->whereDate('date', $date)->exists();
+    }
 }

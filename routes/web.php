@@ -362,21 +362,32 @@ Route::post('/password/phone', [ForgotPasswordController::class, 'sendResetLinkV
 // Route::post('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
 // Route::get('/paymongo/failed', [FailedController::class, 'failed'])->name('paymongo.failed');
 
-Route::post('/paymongo/create-source', [PaymentController::class, 'createSource'])->name('paymongo.createSource');
-Route::get('/paymongo/success', function () {
-    // Handle success
-    return view('paymongo.success');
-})->name('paymongo.success');
+// Route::post('/paymongo/create-source', [PaymentController::class, 'createSource'])->name('paymongo.createSource'); eto yung original gcash ro
+// Route::post('/paymongo/paid', [PaymentController::class, 'paid'])->name('paymongo.paid');
+// Route::get('/paymongo/success', function () {
 
-Route::get('/paymongo/failed', function () {
-    // Handle failure
-    return view('paymongo.failed');
-})->name('paymongo.failed');
 
-Route::get('/paymongo/paid', function () {
-    // Handle paid
-    return view('paymongo.paid');
-})->name('paymongo.paid');
+//     Route::get('/paid', function () {
+//         return view('paid');
+//     });
+//     // Handle success
+//     return view('paymongo.success');
+// })->name('paymongo.success');
+
+// Route::get('/paymongo/failed', function () {
+//     // Handle failure
+//     return view('paymongo.failed');
+// })->name('paymongo.failed');
+
+// Route::get('/paymongo/paid', function () {
+//     // Handle paid
+//     return view('paymongo.paid');
+// })->name('paymongo.paid');
+
+Route::get('/paid', function () {
+    return view('paid');
+});
+
 
 // Going back to reservation form
 Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
@@ -750,3 +761,4 @@ Route::get('/fetch-gps-from-proxy', [GpsTrackingController::class, 'fetchGpsFrom
 
 Route::get('/gps/fetch', [GpsTrackingController::class, 'fetchGpsFromProxy']);
 
+Route::get('/calculate-distance/{filepath}', [GpsTrackingController::class, 'calculateTotalDistance']);

@@ -271,7 +271,14 @@
                     <div id="gcash-details" class="payment-info hidden">
          
                        
-                        <button id="proceed-to-paymongo" class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" type="button">Proceed to PayMongo</button>
+                    <button
+    id="proceed-to-paymongo"
+    class="button button-primary mt-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+    type="button"
+    onclick="window.location.href='{{ url('paid') }}'">
+    Proceed to Gcash
+</button>
+
                     </div>
 
                     <!-- Cash Amount Input -->
