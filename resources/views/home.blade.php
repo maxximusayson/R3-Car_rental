@@ -81,7 +81,7 @@
         <div class="text-center mb-5">
             <h3 class="text-dark" style="font-size: 2.5rem; font-weight: 600;">Choose Dates & Location</h3>
         </div>
-        
+
         <div class="row justify-content-center">
             <div class="col-12 col-md-10">
                 <div class="row">
@@ -94,13 +94,13 @@
                                     <i class="fa fa-calendar"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" value="2024-09-27" style="transition: all 0.3s ease;">
+                            <input type="date" class="form-control" placeholder="YYYY-MM-DD" style="transition: all 0.3s ease;">
                             <div class="input-group-append">
                                 <span class="input-group-text bg-light">
                                     <i class="fa fa-clock"></i>
                                 </span>
                             </div>
-                            <input type="time" class="form-control" value="08:00" style="transition: all 0.3s ease;">
+                            <input type="time" class="form-control" placeholder="HH:MM" style="transition: all 0.3s ease;">
                         </div>
                     </div>
 
@@ -113,16 +113,19 @@
                                     <i class="fa fa-calendar"></i>
                                 </span>
                             </div>
-                            <input type="date" class="form-control" value="2024-09-29" style="transition: all 0.3s ease;">
+                            <input type="date" class="form-control" placeholder="YYYY-MM-DD" style="transition: all 0.3s ease;">
                             <div class="input-group-append">
                                 <span class="input-group-text bg-light">
                                     <i class="fa fa-clock"></i>
                                 </span>
                             </div>
-                            <input type="time" class="form-control" value="08:00" style="transition: all 0.3s ease;">
+                            <input type="time" class="form-control" placeholder="HH:MM" style="transition: all 0.3s ease;">
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
 
                 <!-- Car Brand and Location -->
                 <div class="row mt-4">
