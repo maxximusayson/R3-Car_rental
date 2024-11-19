@@ -9,6 +9,7 @@ use App\Models\Car;
 use App\Models\Reservation;
 use App\Models\Notification; // Ensure this line is present
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class adminDashboardController extends Controller
@@ -100,5 +101,36 @@ class adminDashboardController extends Controller
     return redirect()->back()->with('success', 'Downpayment approved. Remaining balance is now due.');
 }
 
-    
+
+    public function toggleGcash(Request $request)
+    {
+        // Get current GCash status
+        $gcashStatus = env('GCASH_ENABLED', true);
+        $newStatus = !$gcashStatus;
+
+        // Update .env file with the new GCash status
+        $this->updateEnv('GCASH_ENABLED', $newStatus);
+
+        return response()->json([
+            'message' => 'GCash payment method has been ' . ($newStatus ? 'enabled' : 'disabled'),
+            'status' => $newStatus
+        ]);
+    }
+
+    // Helper function to update .env file
+    private function updateEnv($key, $value)
+    {
+        $path = base_path('.env');
+        $key = strtoupper($key);
+
+        if (file_exists($path)) {
+            $str = file_get_contents($path);
+            $str = preg_replace("/^{$key}=\S*/m", "{$key}={$value}", $str);
+            file_put_contents($path, $str);
+
+            Artisan::call('config:clear'); // Clear the config cache to apply the new value immediately
+        }
+    }
 }
+
+    

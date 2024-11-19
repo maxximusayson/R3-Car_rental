@@ -24,46 +24,66 @@
     <div id="mainContainer">
 
 
-    <!-- Legend Section -->
-    <div id="legend" class="info-box" style="width: 250px; padding: 10px; border-radius: 8px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h3 style="text-align: center; font-size: 1.2em; color: #4b6cb7; margin-bottom: 15px;">Device Status</h3>
+   <!-- Legend Section -->
+<div id="legend" class="info-box" style="width: 250px; margin: 20px auto; padding: 20px; border-radius: 12px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); font-family: 'Arial', sans-serif">
+    <h3 style="text-align: center; font-size: 1.5em; color: #3B82F6; margin-bottom: 20px; font-weight: bold; text-transform: uppercase;">Legend</h3>
 
-    <div class="legend-item" title="Device is active and reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-            <div style="width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%;"></div>
-            <span class="legend-label" style="font-weight: bold; color: #4CAF50;">Active Device</span>
-            <img src="/images/icons/Gps1-icon.png" alt="Active Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
+    <!-- Active Device -->
+    <div class="legend-item" title="Device is active and reporting data" style="display: flex; align-items: center; background-color: #ffffff; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);">
+        <div style="width: 30px; height: 30px; background-color: #4CAF50; border-radius: 50%; margin-right: 15px;"></div>
+        <div style="flex-grow: 1;">
+            <span class="legend-label" style="font-weight: bold; font-size: 1.1em; color: #4CAF50;">Active Device</span>
+            <p style="margin: 5px 0 0; font-size: 0.9em; color: #6B7280;">Device is active and reporting data.</p>
         </div>
+        <img src="/images/icons/Gps1-icon.png" alt="Active Device Icon" style="width: 40px; height: 40px; margin-left: auto;">
     </div>
 
-    <div class="legend-item" title="Device is offline and not reporting data" style="width: 100%; height: 80px; display: flex; align-items: center; background-color: #f9f9f9; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-        <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
-            <div style="width: 20px; height: 20px; background-color: #f44336; border-radius: 50%;"></div>
-            <span class="legend-label" style="font-weight: bold; color: #f44336;">LastKnown Location</span>
-            <img src="/images/icons/offline-icon.png" alt="Offline Device Icon" class="legend-icon" style="width: 50px; height: 50px; margin-left: auto;">
+    <!-- Offline Device -->
+    <div class="legend-item" title="Device is offline and not reporting data" style="display: flex; align-items: center; background-color: #ffffff; border-radius: 10px; padding: 15px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);">
+        <div style="width: 30px; height: 30px; background-color: #f44336; border-radius: 50%; margin-right: 15px;"></div>
+        <div style="flex-grow: 1;">
+            <span class="legend-label" style="font-weight: bold; font-size: 1.1em; color: #f44336;">Last Known Location / Offline</span>
+            <p style="margin: 5px 0 0; font-size: 0.9em; color: #6B7280;">Device is offline or no siganl and not reporting data.</p>
+        </div>
+        <img src="/images/icons/offline-icon.png" alt="Offline Device Icon" style="width: 40px; height: 40px; margin-left: auto;">
+    </div>
+</div>
+
+<!-- GPS Data Section with Loader -->
+<div id="gpsDataContainer" class="info-box" style="width: 250px; margin: 20px auto; padding: 20px; border-radius: 12px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); font-family: 'Arial', sans-serif; text-align: justify;">
+    <h2 style="font-size: 1.5em; font-weight: bold; color: #3B82F6; margin-bottom: 20px; text-align: center;">GPS Data</h2>
+    
+    <!-- Loader -->
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px;">
+        <div class="loader" style="width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid #3B82F6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div style="font-size: 1em; color: #6B7280; font-weight: 500; margin-top: 10px;">
+            Data is loading... Please wait as we retrieve the most up-to-date GPS data for your device.
         </div>
     </div>
 </div>
 
+<!-- Loader Animation -->
+<style>
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
-     <!-- GPS Data Section -->
-     <div id="gpsDataContainer" class="info-box">
-        <h2 class="text-lg font-semibold">GPS DATA</h2>
-        <div>Data is loading...</div>
 
-        
+   <!-- Last Known Location Section -->
+<div id="lastKnownLocation" class="info-box" style="width: 250px; margin: 20px auto; padding: 20px; border-radius: 12px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); font-family: 'Arial', sans-serif; text-align: center;">
+    <h2 style="font-size: 1.5em; font-weight: bold; color: #3B82F6; margin-bottom: 20px; text-align: center;">Last Known Location</h2>
+    
+    <div id="lastKnownLocationData" class="tile" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+        <i class="fas fa-map-marker-alt" style="color: #3B82F6; font-size: 1.5em;"></i>
+        <span id="lastLocationText" style="font-size: 1em; color: #6B7280; font-weight: 500;">Fetching last known location...</span>
     </div>
-
-    <!-- Last Known Location Section -->
-    <div id="lastKnownLocation" class="info-box">
-        <h2 class="text-lg font-semibold">Last Known Location</h2>
-        <div id="lastKnownLocationData" class="tile">
-            <i class="fas fa-map-marker-alt text-blue-500"></i>
-            <span id="lastLocationText" class="ml-2">Fetching last known location...</span>
-        </div>
-    </div>
-
-
+</div>
 </div>
 
     <!-- Map Section -->
@@ -139,65 +159,6 @@
     <!-- Log details will be inserted here -->
 </div>
 
-
-<!-- Add some CSS for the modal -->
-<style>
-
-.close-log-btn {
-        background-color: #f44336; /* Red */
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        cursor: pointer;
-        margin-top: 20px;
-        border-radius: 5px;
-    }
-
-    .close-log-btn:hover {
-        background-color: #d32f2f; /* Darker Red */
-    }
-
-    #logDetailsContainer {
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .modal {
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .modal-content {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        width: 50%;
-        max-width: 600px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        position: relative;
-        text-align: left;
-    }
-    .close-modal {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
-        cursor: pointer;
-        color: #333;
-    }
-</style>
-
-    
-
  <script>
                     // Function to handle "Delete History" button
                     document.getElementById('deleteHistory').addEventListener('click', function() {
@@ -245,51 +206,51 @@
                             }
 
                             function animateMarker(newLat, newLng) {
-                    const currentPos = marker.getPosition();
-                    const targetPos = { lat: newLat, lng: newLng };
+    const currentPos = marker.getPosition();
+    const targetPos = { lat: newLat, lng: newLng };
 
-                    let step = 0;
-                    const totalSteps = 200;  // Number of steps for smoother movement (higher value = smoother)
-                    const intervalTime = 10; // Interval time in milliseconds (lower value = smoother)
+    let step = 0;
+    const totalSteps = 200; // Number of steps for smoother movement (higher value = smoother)
+    const intervalTime = 10; // Interval time in milliseconds (lower value = smoother)
 
-                    // Easing function for smooth acceleration and deceleration (ease-in-out)
-                    function easeInOutQuad(t, b, c, d) {
-                        t /= d / 2;
-                        if (t < 1) return c / 2 * t * t + b;
-                        t--;
-                        return -c / 2 * (t * (t - 2) - 1) + b;
-                    }
+    // Easing function for smooth acceleration and deceleration (ease-in-out)
+    function easeInOutQuad(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return (c / 2) * t * t + b;
+        t--;
+        return (-c / 2) * (t * (t - 2) - 1) + b;
+    }
 
-                    // Function to update the marker's position over time with smooth transition
-                    function move() {
-                        if (step <= totalSteps) {
-                            // Calculate the progress using the easing function
-                            const progress = easeInOutQuad(step, 0, 1, totalSteps);
+    // Function to update the marker's position and map's center
+    function move() {
+        if (step <= totalSteps) {
+            const progress = easeInOutQuad(step, 0, 1, totalSteps);
 
-                            // Calculate the intermediate position using the progress factor
-                            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
-                            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
+            // Calculate intermediate position
+            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
+            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
 
-                            // Update marker's position smoothly
-                            marker.setPosition(new google.maps.LatLng(lat, lng));
+            // Update marker's position smoothly
+            marker.setPosition(new google.maps.LatLng(lat, lng));
 
-                            // Continuously update the map's center to keep the marker in focus
-                            map.setCenter(new google.maps.LatLng(lat, lng));
+            // Smoothly pan the map to follow the marker
+            map.panTo(new google.maps.LatLng(lat, lng));
 
-                            step++;
+            step++;
 
-                            // Call the move function again after the specified interval
-                            setTimeout(move, intervalTime);
-                        } else {
-                            // Ensure marker is exactly at the target position when done
-                            marker.setPosition(targetPos);
-                            map.setCenter(targetPos);  // Optionally, keep the map centered on the final position
-                        }
-                    }
+            // Recursive call with a slight delay
+            setTimeout(move, intervalTime);
+        } else {
+            // Ensure marker and map are perfectly at the target position
+            marker.setPosition(targetPos);
+            map.panTo(targetPos);
+        }
+    }
 
-                    // Start the animation
-                    move();
-                }
+    // Start the animation
+    move();
+}
+    
                             // Fetch GPS data
                     function fetchGPSData() {
                         $.ajax({
@@ -1227,6 +1188,60 @@ async function viewLogDetails(rentalId) {
 .delete-log-btn:hover {
     background-color: #e53935;
 }
+
+    
+
+.close-log-btn {
+        background-color: #f44336; /* Red */
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+
+    .close-log-btn:hover {
+        background-color: #d32f2f; /* Darker Red */
+    }
+
+    #logDetailsContainer {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        width: 50%;
+        max-width: 600px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        text-align: left;
+    }
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #333;
+    }
 
 
 </style>

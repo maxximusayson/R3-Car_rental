@@ -762,3 +762,6 @@ Route::get('/fetch-gps-from-proxy', [GpsTrackingController::class, 'fetchGpsFrom
 Route::get('/gps/fetch', [GpsTrackingController::class, 'fetchGpsFromProxy']);
 
 Route::get('/calculate-distance/{filepath}', [GpsTrackingController::class, 'calculateTotalDistance']);
+
+Route::post('/admin/gcash/toggle', [\App\Http\Controllers\adminDashboardController::class, 'toggleGcash'])->name('admin.gcash.toggle');
+

@@ -175,12 +175,52 @@
                 <div class="form-group mb-6">
                     <label for="payment_method">Mode of Payment</label>
                     <div class="flex gap-4 mt-2">
-                        <button type="button" class="payment-button" data-method="gcash">
-                            <img src="{{ asset('images/icons/gcash-icon.png') }}" alt="GCash" class="w-8 h-8"> <span>GCash</span>
-                        </button>
+                    <button type="button" class="payment-button {{ !env('GCASH_ENABLED', true) ? 'disabled-gcash' : '' }}" data-method="gcash" {{ !env('GCASH_ENABLED', true) ? 'disabled' : '' }}>
+                        <img src="{{ asset('images/icons/gcash-icon.png') }}" alt="GCash" class="w-8 h-8"> <span>GCash</span>
+                    </button>
+
                         <button type="button" class="payment-button" data-method="cash">
                             <img src="{{ asset('images/icons/cash.png') }}" alt="Cash" class="w-8 h-8"> <span>Cash</span>
                         </button>
+                    <style>
+                    /* Style for the GCash button */
+.payment-button {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Default color */
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Style for the GCash button when it is disabled */
+.disabled-gcash {
+    background-color: #d3d3d3; /* Light gray color */
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Tooltip message that appears on hover (above the button) */
+.payment-button.disabled-gcash:hover::after {
+    content: "Under Maintenance"; /* The error message */
+    position: absolute;
+    bottom: 100%; /* Position the message above the button */
+    left: 50%;
+    transform: translateX(-50%); /* Center the message horizontally */
+    background-color: #f44336; /* Red background */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+    margin-bottom: 5px; /* Space between the button and the message */
+}
+
+                    </style>
                     </div>
 
                     <!-- paypal codes -->
