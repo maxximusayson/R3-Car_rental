@@ -206,50 +206,50 @@
                             }
 
                             function animateMarker(newLat, newLng) {
-    const currentPos = marker.getPosition();
-    const targetPos = { lat: newLat, lng: newLng };
+                            const currentPos = marker.getPosition();
+                            const targetPos = { lat: newLat, lng: newLng };
 
-    let step = 0;
-    const totalSteps = 200; // Number of steps for smoother movement (higher value = smoother)
-    const intervalTime = 10; // Interval time in milliseconds (lower value = smoother)
+                            const animationDuration = 2000; // Total animation duration in milliseconds
+                            const startTime = performance.now(); // Start time of the animation
 
-    // Easing function for smooth acceleration and deceleration (ease-in-out)
-    function easeInOutQuad(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return (c / 2) * t * t + b;
-        t--;
-        return (-c / 2) * (t * (t - 2) - 1) + b;
-    }
+                            // Easing function for smooth acceleration and deceleration (ease-in-out)
+                            function easeInOutQuad(t) {
+                                return t < 0.5
+                                    ? 2 * t * t
+                                    : -1 + (4 - 2 * t) * t;
+                            }
+                        
+                                
 
-    // Function to update the marker's position and map's center
-    function move() {
-        if (step <= totalSteps) {
-            const progress = easeInOutQuad(step, 0, 1, totalSteps);
+                        // Function to update the marker's position and map's center
+                        function move() {
+                            if (step <= totalSteps) {
+                                const progress = easeInOutQuad(step, 0, 1, totalSteps);
 
-            // Calculate intermediate position
-            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
-            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
+                                // Calculate intermediate position
+                                const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
+                                const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
 
-            // Update marker's position smoothly
-            marker.setPosition(new google.maps.LatLng(lat, lng));
+                                // Update marker's position smoothly
+                                marker.setPosition(new google.maps.LatLng(lat, lng));
 
-            // Smoothly pan the map to follow the marker
-            map.panTo(new google.maps.LatLng(lat, lng));
+                                // Smoothly pan the map to follow the marker
+                                map.panTo(new google.maps.LatLng(lat, lng));
 
-            step++;
+                                step++;
 
-            // Recursive call with a slight delay
-            setTimeout(move, intervalTime);
-        } else {
-            // Ensure marker and map are perfectly at the target position
-            marker.setPosition(targetPos);
-            map.panTo(targetPos);
-        }
-    }
+                                // Recursive call with a slight delay
+                                setTimeout(move, intervalTime);
+                            } else {
+                                // Ensure marker and map are perfectly at the target position
+                                marker.setPosition(targetPos);
+                                map.panTo(targetPos);
+                            }
+                        }
 
-    // Start the animation
-    move();
-}
+                        // Start the animation
+                        move();
+                    }
     
                             // Fetch GPS data
                     function fetchGPSData() {
@@ -496,7 +496,7 @@
                 // Call the addLegend function after initializing the map
                 function initMap() {
                     map = new google.maps.Map(document.getElementById('map'), {
-                        center: { lat: 0, lng: 0 },
+                        center: { lat: 0, lng: 0 }, 
                         zoom: 10
                     });
 
@@ -548,7 +548,6 @@
             })
             .join('');
     }
-
 
     // On logout, ensure logs are saved
     function saveLogsOnLogout() {
@@ -723,7 +722,7 @@ async function viewLogDetails(rentalId) {
         if (!isRentalActive) return;
 
         fetchGPSData();
-        setTimeout(monitorGPSData, 10000);
+        setTimeout(monitorGPSData, 10000); // Monitor every 10 seconds
     }
 
     // Fetch and update GPS data
@@ -741,7 +740,8 @@ async function viewLogDetails(rentalId) {
                         updateMonitoringData(rental, device);
                     }
                 });
-            }
+            },
+            error: () => console.error('Error fetching GPS data.')
         });
     }
 
@@ -763,9 +763,19 @@ async function viewLogDetails(rentalId) {
         lastCoordinates = { latitude: device.latitude, longitude: device.longitude };
         rental.data.push({ latitude: device.latitude, longitude: device.longitude, speed: device.speed });
 
+        // Save updates to localStorage
         localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
         localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
     }
+
+      // Save the current session state on page unload
+      window.addEventListener('beforeunload', () => {
+        localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+        localStorage.setItem('currentRentalId', currentRentalId);
+        localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
+    });
+
+
 
     // Calculate total distance using Haversine formula
     function calculateTotalDistance(rental) {
@@ -808,10 +818,31 @@ async function viewLogDetails(rentalId) {
     // Resume ongoing rental on page load
     function resumeRentalSession() {
         if (currentRentalId && rentalLogs[currentRentalId]?.status === 'active') {
+            isRentalActive = true;
+            monitorGPSData(); // Resume GPS monitoring
             toggleRentalButtons(true);
-            monitorGPSData();
         }
     }
+
+    // Initialize on page load
+    function initialize() {
+        displayRentalLogs();
+        resumeRentalSession();
+    }
+
+    // Event listeners for rental controls
+    document.getElementById('startRental').addEventListener('click', () => {
+        // Start new rental logic...
+    });
+
+    document.getElementById('stopRental').addEventListener('click', () => {
+        // Stop rental logic...
+        isRentalActive = false;
+        localStorage.removeItem('currentRentalId');
+        localStorage.removeItem('lastCoordinates');
+        toggleRentalButtons(false);
+    });
+
 
     // Event listeners
     document.getElementById('startRental').addEventListener('click', startRental);
@@ -833,6 +864,7 @@ async function viewLogDetails(rentalId) {
     // Initialize
     displayRentalLogs();
     resumeRentalSession();
+     initialize();
 </script>
 
 
