@@ -43,7 +43,7 @@
         <div style="width: 30px; height: 30px; background-color: #f44336; border-radius: 50%; margin-right: 15px;"></div>
         <div style="flex-grow: 1;">
             <span class="legend-label" style="font-weight: bold; font-size: 1.1em; color: #f44336;">Last Known Location / Offline</span>
-            <p style="margin: 5px 0 0; font-size: 0.9em; color: #6B7280;">Device is offline or no siganl and not reporting data.</p>
+            <p style="margin: 5px 0 0; font-size: 0.9em; color: #6B7280;">Device is offline or no signal and not reporting data.</p>
         </div>
         <img src="/images/icons/offline-icon.png" alt="Offline Device Icon" style="width: 40px; height: 40px; margin-left: auto;">
     </div>
@@ -504,6 +504,8 @@
                 }
     </script>
     
+
+    <!-- script for rental logs -->
     <script>
     const deviceId = 'GPS01'; // Hardcoded device ID
     let rentalLogs = JSON.parse(localStorage.getItem('rentalLogs')) || {};
@@ -513,40 +515,65 @@
 
     // Function to display rental logs in the table
     function displayRentalLogs() {
-    const logsTable = document.querySelector('#rentalLogsTable tbody');
-    logsTable.innerHTML = Object.entries(rentalLogs)
-        .map(([rentalId, log]) => {
-            const createdDate = new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
-                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-            });
-            const rentedDate = new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
-                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-            });
-            const returnedDate = log.returnedTimestamp
-                ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
+        const logsTable = document.querySelector('#rentalLogsTable tbody');
+        logsTable.innerHTML = Object.entries(rentalLogs)
+            .map(([rentalId, log]) => {
+                const createdDate = new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                })
-                : 'Not Returned';
-            const totalDistance = log.returnedTimestamp
-                ? `${log.totalDistance.toFixed(2)} km`
-                : 'Not Calculated';
+                });
+                const rentedDate = new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                });
+                const returnedDate = log.returnedTimestamp
+                    ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
+                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    })
+                    : 'Not Returned';
+                const totalDistance = log.returnedTimestamp
+                    ? `${log.totalDistance.toFixed(2)} km`
+                    : 'Not Calculated';
 
-            return `
-                <tr>
-                    <td>${log.deviceId}</td>
-                    <td>${createdDate}</td>
-                    <td>${rentedDate}</td>
-                    <td>${returnedDate}</td>
-                    <td>${totalDistance}</td>
-                    <td>
-                        <button class="view-log-btn" data-rental-id="${rentalId}">View Log</button>
-                        <button class="delete-log-btn" data-rental-id="${rentalId}">Delete</button>
-                    </td>
-                </tr>`;
-        })
-        .join('');
-}
+                return `
+                    <tr>
+                        <td>${log.deviceId}</td>
+                        <td>${createdDate}</td>
+                        <td>${rentedDate}</td>
+                        <td>${returnedDate}</td>
+                        <td>${totalDistance}</td>
+                        <td>
+                            <button class="view-log-btn" data-rental-id="${rentalId}">View Log</button>
+                            <button class="delete-log-btn" data-rental-id="${rentalId}">Delete</button>
+                        </td>
+                    </tr>`;
+            })
+            .join('');
+    }
 
+
+    // On logout, ensure logs are saved
+    function saveLogsOnLogout() {
+        localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+        localStorage.setItem('currentRentalId', currentRentalId);
+        localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
+    }
+
+    // On login or page load, restore logs
+    function restoreLogsOnLogin() {
+        rentalLogs = JSON.parse(localStorage.getItem('rentalLogs')) || {};
+        currentRentalId = localStorage.getItem('currentRentalId') || '';
+        lastCoordinates = JSON.parse(localStorage.getItem('lastCoordinates')) || null;
+        isRentalActive = currentRentalId !== '';
+        displayRentalLogs();
+        if (isRentalActive) {
+            monitorGPSData(); // Resume monitoring if a session is active
+        }
+    }
+
+    // Attach saveLogsOnLogout to window's beforeunload event to ensure logs are saved
+    window.addEventListener('beforeunload', saveLogsOnLogout);
+
+    // Initialize on page load
+    restoreLogsOnLogin();
 
     async function getAddressFromCoordinates(lat, lon) {
     const apiKey = 'AIzaSyCWrXtUyyqoWHwLddsIRgZKjKc9YGeW7FI'; // Replace with your actual API key

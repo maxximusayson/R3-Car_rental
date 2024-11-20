@@ -76,7 +76,7 @@
 
 <!-- Full Pick-up and Return Date/Time Section with Header, Car Brands, Location Input, and Search Button -->
 <section id="pickupReturnSection" class="py-5 hidden-section" style="background: linear-gradient(135deg, #4e73df, #1cc88a);">
-    <div class="container p-5 rounded" style="background: #fff; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.6s ease;">
+    <div class="container p-5 rounded" style="background: #fff; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.6s ease;">      
         <!-- Header: Choose Dates & Location -->
         <div class="text-center mb-5">
             <h3 class="text-dark" style="font-size: 2.5rem; font-weight: 600;">Choose Dates & Location</h3>
