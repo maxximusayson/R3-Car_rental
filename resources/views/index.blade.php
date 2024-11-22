@@ -114,15 +114,74 @@
     </div>
 
 
-     <!-- Rental Buttons -->
-     <div class="button-group">
+<div class="button-group">
     <button id="startRental" class="action-btn start-btn">
         <i class="fas fa-play"></i> Start Rental
     </button>
     <button id="stopRental" class="action-btn stop-btn" style="display: none;">
         <i class="fas fa-stop"></i> Stop Rental
     </button>
+    <button id="exportLogs" class="action-btn export-btn">
+        <i class="fas fa-download"></i> Export Logs (GPS01)
+    </button>
 </div>
+
+<script>
+    // Function to export logs for GPS01 as CSV
+function exportLogsForGPS01() {
+    // Filter logs for GPS01
+    const filteredLogs = Object.entries(rentalLogs).filter(([_, log]) => log.deviceId === 'GPS01');
+
+    if (!filteredLogs.length) {
+        alert('No rental logs available for GPS01 to export.');
+        return;
+    }
+
+    // Generate CSV content
+    const headers = ['Rental ID', 'Device ID', 'Created', 'Rented', 'Returned', 'Total Distance'];
+    const rows = filteredLogs.map(([rentalId, log]) => {
+        const createdDate = new Date(log.createdTimestamp).toLocaleString();
+        const rentedDate = new Date(log.rentedTimestamp).toLocaleString();
+        const returnedDate = log.returnedTimestamp
+            ? new Date(log.returnedTimestamp).toLocaleString()
+            : 'Not Returned';
+        const totalDistance = log.returnedTimestamp
+            ? `${log.totalDistance.toFixed(2)} km`
+            : 'Not Calculated';
+
+        return [
+            rentalId,
+            log.deviceId,
+            createdDate,
+            rentedDate,
+            returnedDate,
+            totalDistance
+        ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+
+    // Create a blob and download it as a CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rental_logs_gps01.csv';
+    a.style.display = 'none';
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    alert('Rental logs for GPS01 exported successfully.');
+}
+
+// Attach event listener to the Export Logs button
+document.getElementById('exportLogs').addEventListener('click', exportLogsForGPS01);
+
+</script>
+
 
 <!-- Rental Logs Table -->
 <div class="scrollable-table">
@@ -159,7 +218,7 @@
     <!-- Log details will be inserted here -->
 </div>
 
- <script>
+                <script>
                     // Function to handle "Delete History" button
                     document.getElementById('deleteHistory').addEventListener('click', function() {
                         if (confirm("Are you sure you want to delete the history?")) {
@@ -206,51 +265,50 @@
                             }
 
                             function animateMarker(newLat, newLng) {
-                            const currentPos = marker.getPosition();
-                            const targetPos = { lat: newLat, lng: newLng };
+    const currentPos = marker.getPosition();
+    const targetPos = { lat: newLat, lng: newLng };
 
-                            const animationDuration = 2000; // Total animation duration in milliseconds
-                            const startTime = performance.now(); // Start time of the animation
+    let step = 0;
+    const totalSteps = 200; // Number of steps for smoother movement (higher value = smoother)
+    const intervalTime = 10; // Interval time in milliseconds (lower value = smoother)
 
-                            // Easing function for smooth acceleration and deceleration (ease-in-out)
-                            function easeInOutQuad(t) {
-                                return t < 0.5
-                                    ? 2 * t * t
-                                    : -1 + (4 - 2 * t) * t;
-                            }
-                        
-                                
+    // Easing function for smooth acceleration and deceleration (ease-in-out)
+    function easeInOutQuad(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return (c / 2) * t * t + b;
+        t--;
+        return (-c / 2) * (t * (t - 2) - 1) + b;
+    }
 
-                        // Function to update the marker's position and map's center
-                        function move() {
-                            if (step <= totalSteps) {
-                                const progress = easeInOutQuad(step, 0, 1, totalSteps);
+    // Function to update the marker's position and map's center
+    function move() {
+        if (step <= totalSteps) {
+            const progress = easeInOutQuad(step, 0, 1, totalSteps);
 
-                                // Calculate intermediate position
-                                const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
-                                const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
+            // Calculate intermediate position
+            const lat = currentPos.lat() + (targetPos.lat - currentPos.lat()) * progress;
+            const lng = currentPos.lng() + (targetPos.lng - currentPos.lng()) * progress;
 
-                                // Update marker's position smoothly
-                                marker.setPosition(new google.maps.LatLng(lat, lng));
+            // Update marker's position smoothly
+            marker.setPosition(new google.maps.LatLng(lat, lng));
 
-                                // Smoothly pan the map to follow the marker
-                                map.panTo(new google.maps.LatLng(lat, lng));
+            // Smoothly pan the map to follow the marker
+            map.panTo(new google.maps.LatLng(lat, lng));
 
-                                step++;
+            step++;
 
-                                // Recursive call with a slight delay
-                                setTimeout(move, intervalTime);
-                            } else {
-                                // Ensure marker and map are perfectly at the target position
-                                marker.setPosition(targetPos);
-                                map.panTo(targetPos);
-                            }
-                        }
+            // Recursive call with a slight delay
+            setTimeout(move, intervalTime);
+        } else {
+            // Ensure marker and map are perfectly at the target position
+            marker.setPosition(targetPos);
+            map.panTo(targetPos);
+        }
+    }
 
-                        // Start the animation
-                        move();
-                    }
-    
+    // Start the animation
+    move();
+}
                             // Fetch GPS data
                     function fetchGPSData() {
                         $.ajax({
@@ -332,6 +390,7 @@
                     }
                 }
 
+
                             // Add a marker for the device location
                             function addMarker(device) {
                     // If there is an existing marker, remove it first
@@ -360,6 +419,9 @@
                     // Animate the marker smoothly to the new position and keep map focused on the marker
                     animateMarker(parseFloat(device.latitude), parseFloat(device.longitude));
                 }
+
+
+
 
                             // Get street name from latitude and longitude using Google Geocoding API
                             function getStreetName(lat, lng, gps_id) {
@@ -492,376 +554,398 @@
                 // Call the addLegend function after initializing the map
                 function initMap() {
                     map = new google.maps.Map(document.getElementById('map'), {
-                        center: { lat: 0, lng: 0 }, 
+                        center: { lat: 0, lng: 0 },
                         zoom: 10
                     });
 
                     addLegend(); // Add the legend to the map
                 }
+                
     </script>
     
+    
+    
+    
 
-    <!-- script for rental logs -->
-            <script>
-            const deviceId = 'GPS01'; // Hardcoded device ID
-            let rentalLogs = JSON.parse(localStorage.getItem('rentalLogs')) || {};
-            let currentRentalId = localStorage.getItem('currentRentalId') || '';
-            let lastCoordinates = JSON.parse(localStorage.getItem('lastCoordinates')) || null;
-            let isRentalActive = currentRentalId !== ''; // Set rental active if currentRentalId exists
+     <script>
+const deviceId = 'GPS01'; // Hardcoded device ID for GPS01
+let rentalLogs = JSON.parse(localStorage.getItem('rentalLogs')) || {};
+let currentRentalId = localStorage.getItem('currentRentalId') || '';
+let lastCoordinates = JSON.parse(localStorage.getItem('lastCoordinates')) || null;
+let isRentalActive = currentRentalId !== ''; // Set rental active if currentRentalId exists
 
-            // Function to display rental logs in the table
-            function displayRentalLogs() {
-                const logsTable = document.querySelector('#rentalLogsTable tbody');
-                logsTable.innerHTML = Object.entries(rentalLogs)
-                    .map(([rentalId, log]) => {
-                        const createdDate = new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
-                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                        });
-                        const rentedDate = new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
-                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                        });
-                        const returnedDate = log.returnedTimestamp
-                            ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
-                                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                            })
-                            : 'Not Returned';
-                        const totalDistance = log.returnedTimestamp
-                            ? `${log.totalDistance.toFixed(2)} km`
-                            : 'Not Calculated';
 
-                        return `
-                            <tr>
-                                <td>${log.deviceId}</td>
-                                <td>${createdDate}</td>
-                                <td>${rentedDate}</td>
-                                <td>${returnedDate}</td>
-                                <td>${totalDistance}</td>
-                                <td>
-                                    <button class="view-log-btn" data-rental-id="${rentalId}">View Log</button>
-                                    <button class="delete-log-btn" data-rental-id="${rentalId}">Delete</button>
-                                </td>
-                            </tr>`;
-                    })
-                    .join('');
-            }
+// Ensure actions are only triggered for the correct device
+function validateDeviceId(actionName) {
+    if (deviceId !== 'GPS01') {
+        alert(`This action (${actionName}) is only allowed for GPS01.`);
+        return false;
+    }
+    return true;
+}
 
-            // On logout, ensure logs are saved
-            function saveLogsOnLogout() {
-                localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
-                localStorage.setItem('currentRentalId', currentRentalId);
-                localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
-            }
+// Start Rental Button (Only for GPS01)
+document.getElementById('startRental').addEventListener('click', () => {
+    if (!validateDeviceId('Start Rental')) return;
+    startRental();
+});
 
-            // On login or page load, restore logs
-            function restoreLogsOnLogin() {
-                rentalLogs = JSON.parse(localStorage.getItem('rentalLogs')) || {};
-                currentRentalId = localStorage.getItem('currentRentalId') || '';
-                lastCoordinates = JSON.parse(localStorage.getItem('lastCoordinates')) || null;
-                isRentalActive = currentRentalId !== '';
-                displayRentalLogs();
-                if (isRentalActive) {
-                    monitorGPSData(); // Resume monitoring if a session is active
-                }
-            }
+// Stop Rental Button (Only for GPS01)
+document.getElementById('stopRental').addEventListener('click', () => {
+    if (!validateDeviceId('Stop Rental')) return;
+    stopRental();
+});
 
-            // Attach saveLogsOnLogout to window's beforeunload event to ensure logs are saved
-            window.addEventListener('beforeunload', saveLogsOnLogout);
+// Export Logs Button (Only for GPS01)
+document.getElementById('exportLogs').addEventListener('click', () => {
+    if (!validateDeviceId('Export Logs')) return;
+    exportLogs();
+});
+    // Function to display rental logs in the table
+function displayRentalLogs() {
+    const logsTable = document.querySelector('#rentalLogsTable tbody');
+    logsTable.innerHTML = Object.entries(rentalLogs)
+        .filter(([_, log]) => log.deviceId === 'GPS01') // Only include logs for GPS01
+        .map(([rentalId, log]) => {
+            const createdDate = new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            });
+            const rentedDate = new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            });
+            const returnedDate = log.returnedTimestamp
+                ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                })
+                : 'Not Returned';
+            const totalDistance = log.returnedTimestamp
+                ? `${log.totalDistance.toFixed(2)} km`
+                : 'Not Calculated';
 
-            // Initialize on page load
-            restoreLogsOnLogin();
+            return `
+                <tr>
+                    <td>${log.deviceId}</td>
+                    <td>${createdDate}</td>
+                    <td>${rentedDate}</td>
+                    <td>${returnedDate}</td>
+                    <td>${totalDistance}</td>
+                    <td>
+                        <button class="view-log-btn" data-rental-id="${rentalId}">View Log</button>
+                        <button class="delete-log-btn" data-rental-id="${rentalId}">Delete</button>
+                    </td>
+                </tr>`;
+        })
+        .join('');
+}
 
-            async function getAddressFromCoordinates(lat, lon) {
-            const apiKey = 'AIzaSyCWrXtUyyqoWHwLddsIRgZKjKc9YGeW7FI'; // Replace with your actual API key
-            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+    async function getAddressFromCoordinates(lat, lon) {
+    const apiKey = 'AIzaSyCWrXtUyyqoWHwLddsIRgZKjKc9YGeW7FI'; // Replace with your actual API key
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
 
-                if (data.status === 'OK' && data.results.length > 0) {
-                    return data.results[0].formatted_address; // Return the first result
-                } else {
-                    return 'Address not found';
-                }
-            } catch (error) {
-                console.error('Error fetching address:', error);
-                return 'Error fetching address';
-            }
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.status === 'OK' && data.results.length > 0) {
+            return data.results[0].formatted_address; // Return the first result
+        } else {
+            return 'Address not found';
         }
+    } catch (error) {
+        console.error('Error fetching address:', error);
+        return 'Error fetching address';
+    }
+}
 
-        async function viewLogDetails(rentalId) {
-            const log = rentalLogs[rentalId];
-            if (!log) {
-                alert('Rental log not found.');
-                return;
-            }
+async function viewLogDetails(rentalId) {
+    const log = rentalLogs[rentalId];
+    if (!log) {
+        alert('Rental log not found.');
+        return;
+    }
 
-            const address = log.currentLatitude && log.currentLongitude
-                ? await getAddressFromCoordinates(log.currentLatitude, log.currentLongitude)
-                : 'N/A';
+    const address = log.currentLatitude && log.currentLongitude
+        ? await getAddressFromCoordinates(log.currentLatitude, log.currentLongitude)
+        : 'N/A';
 
-            const logDetailsHTML = `
-                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px;">
-                    <h3 style="color: #4CAF50; margin-bottom: 15px;">Rental Log Details</h3>
-                    
-                    <p><strong>Device ID:</strong> ${log.deviceId}</p>
-                    <p><strong>Created:</strong> ${new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
-                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                    })}</p>
-                    <p><strong>Rented:</strong> ${new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
-                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                    })}</p>
-                    <p><strong>Returned:</strong> ${log.returnedTimestamp 
-                        ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
-                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                        }) 
-                        : '<span style="color: red;">Not Returned</span>'}</p>
-                    <p><strong>Total Distance:</strong> ${log.totalDistance 
-                        ? `${log.totalDistance.toFixed(2)} km` 
-                        : '<span style="color: red;">Not Calculated</span>'}</p>
+    const logDetailsHTML = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px;">
+            <h3 style="color: #4CAF50; margin-bottom: 15px;">Rental Log Details</h3>
+            
+            <p><strong>Device ID:</strong> ${log.deviceId}</p>
+            <p><strong>Created:</strong> ${new Date(log.createdTimestamp).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            })}</p>
+            <p><strong>Rented:</strong> ${new Date(log.rentedTimestamp).toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            })}</p>
+            <p><strong>Returned:</strong> ${log.returnedTimestamp 
+                ? new Date(log.returnedTimestamp).toLocaleDateString('en-US', { 
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                }) 
+                : '<span style="color: red;">Not Returned</span>'}</p>
+            <p><strong>Total Distance:</strong> ${log.totalDistance 
+                ? `${log.totalDistance.toFixed(2)} km` 
+                : '<span style="color: red;">Not Calculated</span>'}</p>
 
-                    <h4 style="color: #4CAF50; margin-top: 25px; margin-bottom: 15px;">GPS Monitoring</h4>
-                    <p><strong>Current Location:</strong> ${address}</p>
-                    <p><strong>Current Speed:</strong> ${log.currentSpeed ? `${log.currentSpeed} km/h` : '<em>0 km/h</em>'}</p>
-                </div>
-            `;
+            <h4 style="color: #4CAF50; margin-top: 25px; margin-bottom: 15px;">GPS Monitoring</h4>
+            <p><strong>Current Location:</strong> ${address}</p>
+            <p><strong>Current Speed:</strong> ${log.currentSpeed ? `${log.currentSpeed} km/h` : '<em>0 km/h</em>'}</p>
+        </div>
+    `;
 
-            const logDetailsContainer = document.getElementById('logDetailsContent');
-            logDetailsContainer.innerHTML = logDetailsHTML;
-            document.getElementById('logDetailsContainer').style.display = 'block';
+    const logDetailsContainer = document.getElementById('logDetailsContent');
+    logDetailsContainer.innerHTML = logDetailsHTML;
+    document.getElementById('logDetailsContainer').style.display = 'block';
+}
+
+    // Close the rental log details
+    function closeLogDetails() {
+        document.getElementById('logDetailsContainer').style.display = 'none';
+    }
+
+    // Function to create a new rental log
+function createRentalLog(rentalId) {
+    return {
+        deviceId,
+        createdTimestamp: Date.now(),
+        rentedTimestamp: Date.now(),
+        status: 'active',
+        currentLatitude: null,
+        currentLongitude: null,
+        currentSpeed: 0,
+        totalDistance: 0,
+        returnedTimestamp: null,
+        data: []
+    };
+}
+
+    // Function to start a rental session
+function startRental() {
+    // Check if the device is GPS01
+    if (deviceId !== 'GPS01') {
+        alert('Only GPS01 is allowed to start a rental session.');
+        return;
+    }
+
+    // Proceed with rental logic
+    $.ajax({
+        url: '/gps/fetch',
+        type: 'GET',
+        dataType: 'json',
+        success: handleGPSData,
+        error: () => alert('Error fetching GPS data. Please try again later.')
+    });
+}
+
+
+    // Handle GPS data to start a rental
+function handleGPSData(data) {
+    const deviceActive = data.some(
+        (device) => device.gps_id === deviceId && device.latitude && device.longitude
+    );
+
+    if (!deviceActive) {
+        alert('Device is not active. Please check and try again.');
+        return;
+    }
+
+    currentRentalId = `rental_${Date.now()}`;
+    localStorage.setItem('currentRentalId', currentRentalId);
+
+    rentalLogs[currentRentalId] = createRentalLog(currentRentalId);
+    localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+
+    displayRentalLogs();
+    toggleRentalButtons(true);
+    isRentalActive = true;
+    monitorGPSData();
+}
+
+    // Function to stop a rental session
+  function stopRental() {
+    if (!currentRentalId || !rentalLogs[currentRentalId]) {
+        alert('No active rental session to stop.');
+        return;
+    }
+
+    const rental = rentalLogs[currentRentalId];
+    if (rental.status === 'stopped') {
+        alert('Rental session is already stopped.');
+        return;
+    }
+
+    rental.status = 'stopped';
+    rental.returnedTimestamp = Date.now();
+    rental.totalDistance = calculateTotalDistance(rental);
+
+    localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+    localStorage.removeItem('currentRentalId');
+    displayRentalLogs();
+
+    toggleRentalButtons(false);
+    isRentalActive = false;
+
+    alert(`Rental session ended. Total distance: ${rental.totalDistance.toFixed(2)} km`);
+}
+
+
+// Initialize button visibility based on deviceId
+function initializeButtons() {
+    if (deviceId !== 'GPS01') {
+        document.getElementById('startRental').style.display = 'none'; // Hide start button for other devices
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeButtons();
+    displayRentalLogs();
+    resumeRentalSession();
+});
+
+
+// Attach event listeners
+document.getElementById('startRental').addEventListener('click', startRental);
+document.getElementById('stopRental').addEventListener('click', stopRental);
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', initializeButtons);
+
+    // Monitor GPS data
+ function monitorGPSData() {
+    if (!isRentalActive) return;
+
+    fetchGPSData();
+    setTimeout(monitorGPSData, 10000);
+}
+
+    // Fetch and update GPS data
+   function fetchGPSData() {
+    $.ajax({
+        url: '/gps/fetch',
+        type: 'GET',
+        dataType: 'json',
+        success: (data) => {
+            const rental = rentalLogs[currentRentalId];
+            if (!rental || rental.status !== 'active') return;
+
+            data.forEach((device) => {
+                if (device.gps_id === deviceId && device.latitude && device.longitude) {
+                    updateMonitoringData(rental, device);
+                }
+            });
         }
+    });
+}
 
-            // Close the rental log details
-            function closeLogDetails() {
-                document.getElementById('logDetailsContainer').style.display = 'none';
-            }
+    // Update monitoring data
+     function updateMonitoringData(rental, device) {
+    rental.currentLatitude = device.latitude;
+    rental.currentLongitude = device.longitude;
+    rental.currentSpeed = device.speed || 0;
 
-            // Function to create a new rental log
-            function createRentalLog(rentalId) {
-                return {
-                    deviceId,
-                    createdTimestamp: Date.now(),
-                    rentedTimestamp: Date.now(),
-                    status: 'active',
-                    currentLatitude: null,
-                    currentLongitude: null,
-                    currentSpeed: 0,
-                    totalDistance: 0,
-                    returnedTimestamp: null,
-                    data: []
-                };
-            }
+    if (lastCoordinates) {
+        rental.totalDistance += haversineDistance(
+            lastCoordinates.latitude, lastCoordinates.longitude,
+            device.latitude, device.longitude
+        );
+    }
+    
+     rental.data.push({ latitude: device.latitude, longitude: device.longitude });
+    lastCoordinates = { latitude: device.latitude, longitude: device.longitude };
 
-            // Function to start a rental session
-            function startRental() {
-                $.ajax({
-                    url: '/gps/fetch',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: handleGPSData,
-                    error: () => alert('Error fetching GPS data. Please try again later.')
-                });
-            }
+    localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
+    localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+}
 
-            // Handle GPS data to start a rental
-            function handleGPSData(data) {
-                const deviceActive = data.some(
-                    (device) => device.gps_id === deviceId && device.latitude && device.longitude
-                );
+    
+          // Save the current session state on page unload
+          window.addEventListener('beforeunload', () => {
+            localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+            localStorage.setItem('currentRentalId', currentRentalId);
+            localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
+        });
 
-                if (!deviceActive) {
-                    alert('Device is not active. Please check and try again.');
-                    return;
-                }
+    // Calculate total distance using Haversine formula
+ function calculateTotalDistance(rental) {
+    let totalDistance = 0;
+    const coordinates = rental.data;
 
-                currentRentalId = `rental_${Date.now()}`;
-                localStorage.setItem('currentRentalId', currentRentalId);
+    for (let i = 0; i < coordinates.length - 1; i++) {
+        const { latitude: lat1, longitude: lon1 } = coordinates[i];
+        const { latitude: lat2, longitude: lon2 } = coordinates[i + 1];
 
-                rentalLogs[currentRentalId] = createRentalLog(currentRentalId);
-                localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+        totalDistance += haversineDistance(lat1, lon1, lat2, lon2);
+    }
 
-                displayRentalLogs();
-                toggleRentalButtons(true);
-                isRentalActive = true;
-                monitorGPSData();
-            }
+    return totalDistance;
+}
 
-            // Function to stop a rental session
-            function stopRental() {
-                if (!currentRentalId || !rentalLogs[currentRentalId]) {
-                    alert('No active rental session to stop.');
-                    return;
-                }
+    // Haversine formula for calculating distance
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
 
-                const rental = rentalLogs[currentRentalId];
-                if (rental.status === 'stopped') {
-                    alert('Rental session is already stopped.');
-                    return;
-                }
+    // Convert degrees to radians
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
 
-                rental.status = 'stopped';
-                rental.returnedTimestamp = Date.now();
-                rental.totalDistance = calculateTotalDistance(rental);
+    // Toggle start/stop buttons
+   function toggleRentalButtons(isActive) {
+    document.getElementById('startRental').style.display = isActive ? 'none' : 'inline-block';
+    document.getElementById('stopRental').style.display = isActive ? 'inline-block' : 'none';
+}
 
-                localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
-                localStorage.removeItem('currentRentalId');
-                displayRentalLogs();
-
-                toggleRentalButtons(false);
-                isRentalActive = false;
-
-                alert(`Rental session ended. Total distance: ${rental.totalDistance.toFixed(2)} km`);
-            }
-
-            // Monitor GPS data
-            function monitorGPSData() {
-                if (!isRentalActive) return;
-
-                fetchGPSData();
-                setTimeout(monitorGPSData, 10000); // Monitor every 10 seconds
-            }
-
-            // Fetch and update GPS data
-            function fetchGPSData() {
-                $.ajax({
-                    url: '/gps/fetch',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: (data) => {
-                        const rental = rentalLogs[currentRentalId];
-                        if (!rental || rental.status !== 'active') return;
-
-                        data.forEach((device) => {
-                            if (device.gps_id === deviceId && device.latitude && device.longitude) {
-                                updateMonitoringData(rental, device);
-                            }
-                        });
-                    },
-                    error: () => console.error('Error fetching GPS data.')
-                });
-            }
-
-            // Update monitoring data
-            function updateMonitoringData(rental, device) {
-                rental.currentLatitude = device.latitude;
-                rental.currentLongitude = device.longitude;
-                rental.currentSpeed = device.speed || 0;
-
-                if (lastCoordinates) {
-                    rental.totalDistance += haversineDistance(
-                        lastCoordinates.latitude,
-                        lastCoordinates.longitude,
-                        device.latitude,
-                        device.longitude
-                    );
-                }
-
-                lastCoordinates = { latitude: device.latitude, longitude: device.longitude };
-                rental.data.push({ latitude: device.latitude, longitude: device.longitude, speed: device.speed });
-
-                // Save updates to localStorage
-                localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
-                localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
-            }
-
-            // Save the current session state on page unload
-            window.addEventListener('beforeunload', () => {
-                localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
-                localStorage.setItem('currentRentalId', currentRentalId);
-                localStorage.setItem('lastCoordinates', JSON.stringify(lastCoordinates));
-            });
-
-
-
-            // Calculate total distance using Haversine formula
-            function calculateTotalDistance(rental) {
-                let totalDistance = 0;
-                const coordinates = rental.data;
-
-                for (let i = 0; i < coordinates.length - 1; i++) {
-                    const { latitude: lat1, longitude: lon1 } = coordinates[i];
-                    const { latitude: lat2, longitude: lon2 } = coordinates[i + 1];
-
-                    totalDistance += haversineDistance(lat1, lon1, lat2, lon2);
-                }
-
-                return totalDistance;
-            }
-
-            // Haversine formula for calculating distance
-            function haversineDistance(lat1, lon1, lat2, lon2) {
-                const R = 6371; // Earth's radius in km
-                const dLat = deg2rad(lat2 - lat1);
-                const dLon = deg2rad(lon2 - lon1);
-                const a =
-                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            }
-
-            // Convert degrees to radians
-            function deg2rad(deg) {
-                return deg * (Math.PI / 180);
-            }
-
-            // Toggle start/stop buttons
-            function toggleRentalButtons(isActive) {
-                document.getElementById('startRental').style.display = isActive ? 'none' : 'inline-block';
-                document.getElementById('stopRental').style.display = isActive ? 'inline-block' : 'none';
-            }
-
-            // Resume ongoing rental on page load
-            function resumeRentalSession() {
-                if (currentRentalId && rentalLogs[currentRentalId]?.status === 'active') {
-                    isRentalActive = true;
-                    monitorGPSData(); // Resume GPS monitoring
-                    toggleRentalButtons(true);
-                }
-            }
-
-            // Initialize on page load
-            function initialize() {
-                displayRentalLogs();
-                resumeRentalSession();
-            }
-
-            // Event listeners for rental controls
-            document.getElementById('startRental').addEventListener('click', () => {
-                // Start new rental logic...
-            });
-
-            document.getElementById('stopRental').addEventListener('click', () => {
-                // Stop rental logic...
-                isRentalActive = false;
-                localStorage.removeItem('currentRentalId');
-                localStorage.removeItem('lastCoordinates');
-                toggleRentalButtons(false);
-            });
-
-
-            // Event listeners
-            document.getElementById('startRental').addEventListener('click', startRental);
-            document.getElementById('stopRental').addEventListener('click', stopRental);
-            document.getElementById('closeLog').addEventListener('click', closeLogDetails);
-            $(document).on('click', '.delete-log-btn', function () {
-                const rentalId = $(this).data('rental-id');
-                if (confirm('Are you sure you want to delete this rental log?')) {
-                    delete rentalLogs[rentalId];
-                    localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
-                    displayRentalLogs();
-                }
-            });
-            $(document).on('click', '.view-log-btn', function () {
-                const rentalId = $(this).data('rental-id');
-                viewLogDetails(rentalId);
-            });
-
-            // Initialize
+  // Resume ongoing rental on page load
+       function resumeRentalSession() {
+    if (currentRentalId && rentalLogs[currentRentalId]?.status === 'active') {
+        isRentalActive = true;
+        monitorGPSData(); // Resume GPS monitoring
+        toggleRentalButtons(true);
+    }
+}
+        
+    // Initialize on page load
+        function initialize() {
             displayRentalLogs();
             resumeRentalSession();
-            initialize();
-        </script>
+        }
+        
+        
+
+    // Event listeners
+    document.getElementById('startRental').addEventListener('click', startRental);
+    document.getElementById('stopRental').addEventListener('click', stopRental);
+    document.getElementById('closeLog').addEventListener('click', closeLogDetails);
+    $(document).on('click', '.delete-log-btn', function () {
+        const rentalId = $(this).data('rental-id');
+        if (confirm('Are you sure you want to delete this rental log?')) {
+            delete rentalLogs[rentalId];
+            localStorage.setItem('rentalLogs', JSON.stringify(rentalLogs));
+            displayRentalLogs();
+        }
+    });
+    $(document).on('click', '.view-log-btn', function () {
+        const rentalId = $(this).data('rental-id');
+        viewLogDetails(rentalId);
+    });
+
+     // Initialize
+        displayRentalLogs();
+        resumeRentalSession();
+         initialize();
+</script>
+
 
 
 
@@ -1297,6 +1381,50 @@
         cursor: pointer;
         color: #333;
     }
+    .button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn i {
+    font-size: 16px;
+}
+
+.start-btn {
+    background-color: #4caf50; /* Green */
+    color: white;
+}
+
+.stop-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.export-btn {
+    background-color: #2196f3; /* Blue */
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
 
 
 </style>
