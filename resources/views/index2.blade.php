@@ -807,7 +807,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Attach event listeners
-document.getElementById('startRental1').addEventListener('click', startRental1);
 document.getElementById('stopRental1').addEventListener('click', stopRental1);
 
 // Call the function on page load
@@ -924,7 +923,6 @@ document.addEventListener('DOMContentLoaded', initializeButtons);
         
 
     // Event listeners
-    document.getElementById('startRental1').addEventListener('click', startRental1);
     document.getElementById('stopRental1').addEventListener('click', stopRental1);
     document.getElementById('closeLog').addEventListener('click', closeLogDetails);
     $(document).on('click', '.delete-log-btn', function () {
